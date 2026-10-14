@@ -1,16 +1,18 @@
 <?php
 
+use App\Http\Controllers\Member\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Member area routes (/member and /hi/member)
 |--------------------------------------------------------------------------
-| Requires an authenticated member (OTP login, `member` guard) — added in P04.
+| Logged-in members only (OTP login, `member` guard). Suspended or removed
+| accounts are signed out by `member.active`.
 */
 
 Route::localized(function () {
-    Route::prefix('member')->name('member.')->group(function () {
-        //
+    Route::prefix('member')->name('member.')->middleware(['auth:member', 'member.active'])->group(function () {
+        Route::get('dashboard', DashboardController::class)->name('dashboard');
     });
 });

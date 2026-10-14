@@ -32,7 +32,7 @@ screens + tests for that module. Each part ends in a working, testable state.
 | [P01](parts/P01-foundation.md) ✅ | Foundation: Laravel setup, tooling, env, base config | — |
 | [P02](parts/P02-design-system-layouts.md) ✅ | Design system, layouts, Blade components, bilingual engine | P01 |
 | [P03](parts/P03-settings-branding-logo.md) ✅ | Site settings, **Branding / Logo manager**, translations manager | P02 |
-| [P04](parts/P04-auth.md) | Admin auth + roles, member OTP auth, SMS abstraction | P03 |
+| [P04](parts/P04-auth.md) ✅ | Admin auth + roles, member OTP auth, SMS abstraction | P03 |
 | [P05](parts/P05-areas-members-profile.md) | Jaipur areas, member registration, profile, **family details**, verification | P04 |
 | [P06](parts/P06-payments-membership-receipts.md) | Payment abstraction, lifetime membership, PDF receipts | P05 |
 | [P07](parts/P07-donations-campaigns.md) | Donation campaigns, online/offline donations, live totals | P06 |

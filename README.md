@@ -51,6 +51,13 @@ Open `/admin` and log in with `ADMIN_SEED_USERNAME` / `ADMIN_SEED_PASSWORD` from
 (change the password after the first login). Five wrong attempts lock the username for
 15 minutes, and sessions end after 30 idle minutes.
 
+## Member login (local)
+
+Open `/login` (or `/register`), enter any valid 10-digit mobile number and read the OTP from
+`portal/storage/logs/otp.log` (only while `SMS_DRIVER=log`). New numbers continue to the
+registration form. For real SMS set `SMS_DRIVER=msg91`, `MSG91_AUTH_KEY` and each template's
+DLT/MSG91 template id.
+
 ## Commands
 
 | Command | Does |
@@ -71,4 +78,4 @@ Open `/admin` and log in with `ADMIN_SEED_USERNAME` / `ADMIN_SEED_PASSWORD` from
 
 ## Build progress
 
-See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**, **P03 Settings, Branding/Logo, Site Texts + admin login**.
+See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**, **P03 Settings, Branding/Logo, Site Texts + admin login**, **P04 Member OTP login/registration, SMS layer, Admin Users**.

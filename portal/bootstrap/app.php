@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminIdleTimeout;
+use App\Http\Middleware\EnsureMemberIsActive;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
@@ -32,17 +33,23 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'setlocale' => SetLocale::class,
             'admin.idle' => AdminIdleTimeout::class,
+            'member.active' => EnsureMemberIsActive::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
         ]);
 
-        // Guests hitting a protected page go to the matching login screen.
-        $middleware->redirectGuestsTo(fn ($request) => $request->is('admin', 'admin/*')
-            ? route('admin.login')
-            : (Route::has('login') ? route('login') : route('home')));
-        $middleware->redirectUsersTo(fn ($request) => $request->is('admin', 'admin/*')
-            ? route('admin.dashboard')
-            : route('home'));
+        // Guests hitting a protected page go to the matching login screen
+        // (admin login, or member login in the page's language).
+        $middleware->redirectGuestsTo(fn ($request) => match (true) {
+            $request->is('admin', 'admin/*') => route('admin.login'),
+            $request->segment(1) === 'hi' => route('hi.login'),
+            default => route('login'),
+        });
+        $middleware->redirectUsersTo(fn ($request) => match (true) {
+            $request->is('admin', 'admin/*') => route('admin.dashboard'),
+            $request->segment(1) === 'hi' => route('hi.member.dashboard'),
+            default => route('member.dashboard'),
+        });
 
         // The language cookie only holds "en"/"hi"; no need to encrypt it.
         $middleware->encryptCookies(except: [SetLocale::COOKIE]);

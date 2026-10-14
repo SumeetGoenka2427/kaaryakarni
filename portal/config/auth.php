@@ -1,11 +1,12 @@
 <?php
 
 use App\Models\AdminUser;
+use App\Models\Member;
 
 /*
 | Two completely separate login systems:
 |   admin  → admin panel, username + password (admin_users)
-|   member → website member area, mobile OTP (members) — added in P04
+|   member → website member area, mobile OTP (members)
 */
 
 return [
@@ -20,12 +21,20 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+        'member' => [
+            'driver' => 'session',
+            'provider' => 'members',
+        ],
     ],
 
     'providers' => [
         'admins' => [
             'driver' => 'eloquent',
             'model' => AdminUser::class,
+        ],
+        'members' => [
+            'driver' => 'eloquent',
+            'model' => Member::class,
         ],
     ],
 

@@ -438,3 +438,40 @@ table.data-table tbody tr:hover { background: var(--color-bg-alt); }
 /* Uploaded logo image (Admin → Branding) in place of the "KS" mark */
 .brand-logo { height: 46px; width: auto; max-width: 220px; object-fit: contain; flex-shrink: 0; }
 .align-start { align-items: start; }
+
+/* ---- Member auth (login / register / OTP) ---- */
+.auth-section { padding-top: 56px; }
+.auth-head { margin-bottom: var(--space-5); }
+.auth-head h1 { font-size: 1.6rem; }
+.auth-head p { margin: 0; }
+.auth-shell-wide { max-width: 640px; }
+.auth-field { margin-bottom: var(--space-5); }
+.auth-footnote { margin: var(--space-5) 0 0; font-size: 0.82rem; }
+.auth-switch { margin: var(--space-3) 0 0; font-size: 0.9rem; }
+.auth-resend { margin-top: var(--space-4); gap: var(--space-3); flex-wrap: wrap; }
+.auth-resend form { margin: 0; }
+.otp-fieldset { border: none; padding: 0; margin: 0 0 var(--space-4); min-width: 0; }
+.otp-fieldset legend { font-weight: 600; font-size: 0.9rem; color: var(--color-navy-900); margin-bottom: 6px; padding: 0; }
+.otp-error { margin-top: 0; }
+.link-button { background: none; border: none; padding: 0; color: var(--color-navy-700); font: inherit; font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+.register-note { font-size: 0.85rem; margin: 0; }
+@media (max-width: 400px) { .otp-inputs { gap: 6px; } .otp-inputs input { width: 40px; height: 48px; } }
+
+/* ---- Member dashboard ---- */
+.page-hero-compact { padding: 20px 0; }
+.page-hero-compact h1 { font-size: 1.3rem; margin-bottom: 4px; }
+.page-hero-compact p { margin: 0; font-size: 0.9rem; }
+.section-tight { padding-top: var(--space-6); }
+.dashboard-cards { margin-bottom: var(--space-7); }
+.dashboard-cards .card-body { gap: 10px; }
+.card-value { margin: 0; font-size: 1.15rem; }
+.card-note { margin: 0; font-size: 0.85rem; }
+.panel-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-gold-600); font-weight: 700; }
+
+/* Pagination */
+.pagination-wrap { margin-top: var(--space-5); }
+.pagination { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.page-link { min-width: 38px; padding: 7px 12px; text-align: center; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-white); color: var(--color-navy-800); font-weight: 600; font-size: 0.88rem; }
+.page-link:hover { text-decoration: none; border-color: var(--color-navy-600); }
+.page-link.is-current { background: var(--color-navy-800); border-color: var(--color-navy-800); color: var(--color-white); }
+.page-link.is-disabled { color: var(--color-text-muted); opacity: 0.6; }

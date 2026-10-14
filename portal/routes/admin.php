@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\BrandingController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -32,6 +33,11 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
         Route::get('branding', [BrandingController::class, 'edit'])->name('branding.edit');
         Route::post('branding/{type}', [BrandingController::class, 'update'])->name('branding.update');
         Route::delete('branding', [BrandingController::class, 'destroy'])->name('branding.destroy');
+    });
+
+    Route::middleware('permission:admins.manage,admin')->group(function () {
+        Route::resource('admin-users', AdminUserController::class)->except(['show', 'destroy'])
+            ->parameters(['admin-users' => 'adminUser']);
     });
 
     Route::middleware('permission:content.manage,admin')->group(function () {

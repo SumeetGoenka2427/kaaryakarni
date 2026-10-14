@@ -65,6 +65,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // Local development only: SMS_DRIVER=log writes outgoing SMS (incl. OTPs) here.
+        'sms' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/otp.log'),
+            'level' => 'debug',
+            'replace_placeholders' => true,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

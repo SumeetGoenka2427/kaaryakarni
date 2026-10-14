@@ -7,10 +7,13 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Local development: production essentials (+ demo data once DemoSeeder exists, P05+).
+     * Local development: production essentials + clearly-marked sample data.
      */
     public function run(): void
     {
-        $this->call(ProductionSeeder::class);
+        $this->call([
+            ProductionSeeder::class,
+            SampleAreasSeeder::class,
+        ]);
     }
 }

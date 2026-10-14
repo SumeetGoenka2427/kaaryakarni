@@ -6,8 +6,12 @@ use App\Models\AdminUser;
 use App\Services\Audit\AuditLogger;
 use App\Services\Branding\BrandingService;
 use App\Services\Settings\SettingsService;
+use App\Services\Sms\LogSmsProvider;
+use App\Services\Sms\Msg91SmsProvider;
+use App\Services\Sms\SmsProvider;
 use App\Translation\DatabaseOverrideLoader;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +26,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SettingsService::class);
         $this->app->singleton(BrandingService::class);
         $this->app->singleton(AuditLogger::class);
+
+        // SMS gateway chosen by SMS_DRIVER (log = local development only).
+        $this->app->singleton(SmsProvider::class, fn () => match (config('portal.sms.driver')) {
+            'msg91' => new Msg91SmsProvider(config('portal.sms.msg91')),
+            default => new LogSmsProvider,
+        });
 
         // Admin-edited site texts override the lang/ files (Admin → Site Texts).
         $this->app->extend('translation.loader', function (FileLoader $loader, $app) {
@@ -40,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict(! $this->app->isProduction());
 
         $this->registerLocalizedRouteMacro();
+
+        Paginator::defaultView('partials.pagination');
 
         // Super Admin passes every permission check; everyone else needs the permission.
         Gate::before(fn ($user) => $user instanceof AdminUser && $user->isSuperAdmin() ? true : null);
