@@ -556,3 +556,29 @@ table.data-table tbody tr:hover { background: var(--color-bg-alt); }
 .action-text { margin: 0; font-size: 0.85rem; }
 .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .row-actions form { margin: 0; }
+
+/* ---- Membership & payments ---- */
+.container-narrow-form { max-width: 600px; }
+.content-gap { margin-bottom: var(--space-5); }
+.detail-rows { gap: 10px; }
+.alert-with-action { align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.secure-note { font-size: 0.8rem; text-align: center; margin-top: var(--space-4); }
+.ref-text { font-size: 0.78rem; overflow-wrap: anywhere; }
+.checkout-title { font-size: 1.5rem; }
+.checkout-cancel { margin-top: var(--space-4); }
+
+/* ---- Tables become stacked cards on phones (public, member and admin) ---- */
+.mobile-hide { }
+@media (max-width: 720px) {
+  table.data-table thead { display: none; }
+  table.data-table, table.data-table tbody, table.data-table tr, table.data-table td { display: block; width: 100%; }
+  table.data-table tr { border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 12px; padding: 8px 4px; }
+  table.data-table td { border-bottom: none; padding: 6px 10px; }
+  table.data-table td::before { content: attr(data-label); display: block; font-size: 0.72rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; margin-bottom: 2px; }
+  .data-table-wrap { border: none; }
+}
+@media (max-width: 720px) {
+  table.data-table { min-width: 0; }
+  table.data-table td { overflow-wrap: anywhere; }
+  table.data-table td .flex > * { min-width: 0; }
+}

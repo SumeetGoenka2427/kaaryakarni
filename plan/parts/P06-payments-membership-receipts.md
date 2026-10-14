@@ -1,34 +1,40 @@
-# P06 — Payments, Lifetime Membership & PDF Receipts
+# P06 — Payments, Lifetime Membership & PDF Receipts ✅ Done
 
-## Tasks
-### Payment layer
-- [ ] `payments`, `payment_events`, `receipts`, `memberships` migrations
-- [ ] `PaymentGateway` interface (`createOrder`, `verifyCallback`, `verifyWebhook`, `refund`) + `RazorpayGateway`
-- [ ] `PaymentService`: create order → checkout → **server-side signature verify** → mark successful inside a DB transaction → side effects (membership/donation status, counters, receipt, notification)
-- [ ] `/webhooks/razorpay`: HMAC verify, idempotent on `provider_payment_id`, amount check, logged in `payment_events`
-- [ ] Offline flow: member submits method (cash/cheque/UPI/NEFT) + reference + optional proof (private disk) → `submitted` → admin verifies or rejects
-- [ ] Never trust the redirect query string. The status page polls the server for the final state
+## Payment engine (shared with donations in P07)
+- [x] Tables: `payments` (single source of truth, ULIDs), `payment_events` (callback/webhook log, unique event id), `memberships` (one per member, **no expiry/renewal columns**), `receipts`, `sequences` (gap-free counters)
+- [x] `PaymentGateway` interface + `RazorpayGateway` (orders, checkout HMAC check, webhook HMAC check). Swapping the provider = new class + binding
+- [x] `PaymentService` is the only place payment status changes:
+  - Online: created → pending → **successful only after server-side signature verification** (checkout callback) or a **signed webhook**. Idempotent, row-locked, amount re-checked (a mismatch marks the payment failed)
+  - Offline: submitted (method, reference, date, optional private proof image/PDF) → admin **verify** (receipt issued) or **reject** (reason, member can pay again)
+  - Payable hooks (`Membership`, later `Donation`) run in the same transaction
+- [x] Without Razorpay keys, online payment shows "not available" (never faked). Offline works fully
+- [x] Checkout page loads Razorpay's script only there (CSP-allowed) and posts the result to our server for verification. Closing the widget marks the attempt failed. The webhook still confirms late payments
 
-### Lifetime membership
-- [ ] `/membership` public page (existing design): "One-time membership with lifetime validity", fee from settings
-- [ ] `/member/membership` + `/member/membership/pay` (existing designs): online or offline pay
-- [ ] Statuses: pending → payment_pending → payment_submitted → under_verification → **active (Lifetime Member)** / rejected / suspended
-- [ ] Approval assigns `membership_no` (`KSJ-YYYY-NNNN`, gap-free via locked sequence) + approval date
-- [ ] **No renewal, expiry, reminder or renewal button anywhere.** A test asserts this
-- [ ] Admin → Memberships (existing design): records, filters, verify payment, approve/reject, receipt link
+## Lifetime membership
+- [x] Becomes **Lifetime Member automatically** when the fee is confirmed **and** the profile is verified (whichever is last), with a membership ID `KSJ-YYYY-NNNN` and an SMS
+- [x] Member pages (designs `member/membership.html`, `pay-membership.html`, `payments.html`): status card, pay CTA, online/offline toggle, rejection reason, receipt download, payment history (own payments only)
+- [x] Dashboard membership status card + "Pay Now"
+- [x] Fee changes apply only to members who have not paid. Lifetime members are never charged again
 
-### Receipts (English only)
-- [ ] `ReceiptService`: receipt no. per financial year (`KSJ/25-26/000123`), generated on success/verify
-- [ ] Blade → dompdf template: receipt logo, org name/address, receipt no., date, name, amount (figures + words), mode, purpose/campaign, transaction/reference no., authorised signatory, 80G text if configured
-- [ ] PDF is generated on demand and cached on the private disk. Download via policy-checked route
-- [ ] `/member/payments` (existing design): list + receipt download
-- [ ] Admin → Payments and Admin → Receipts (existing designs): search, filters (mode/status/purpose/date), view, download, regenerate
+## Receipts
+- [x] Numbered per Indian financial year: `KSJ/26-27/000001` (gap-free, locked)
+- [x] English A5 PDF (dompdf): logo (Branding receipt logo or default mark), org address/phone/email, receipt no, date, payer + membership ID, purpose, amount + **amount in words (Indian system)**, mode/method, transaction reference, authorised signatory. ~30 KB (font subsetting)
+- [x] Stored on the private disk. Downloads are owner-checked (member) or permission-checked (admin). Admin can regenerate after logo/address changes
 
-## Tests
-Online success only after a valid signature. Forged webhook is rejected. Duplicate webhook is
-idempotent. Offline submit → verify → receipt. Member can't download another member's receipt.
-Lifetime status has no expiry. No renewal text in rendered pages.
+## Admin (designs `memberships.html`, `payments.html`, `receipts.html`)
+- [x] Memberships: stat cards, fee setting, status filter, offline membership payments awaiting review
+- [x] Payments: filters (mode/status/purpose/date/search), detail with proof viewer + gateway event log, **Verify / Reject (reason)** for `payments.verify` only, CSV export
+- [x] Receipts: tabs by purpose, search, PDF download, regenerate
 
-## Acceptance
-End to end: a member pays online (Razorpay test mode) or offline, admin approves, the member
-sees "Lifetime Member" + membership no. + downloadable PDF receipt.
+## SMS (EN/HI templates)
+`payment_submitted`, `payment_received` (with receipt no), `payment_rejected`, `membership_active`
+
+## Fixed during testing
+- Amount-mismatch failure was rolled back by the exception in the same transaction, so the payment stayed "pending". Now committed as "failed" before the error is raised
+- Member payment table on phones hid the Download button behind a sideways scroll. Card-style mobile tables now apply site-wide
+
+## Tests: 150 passing
+Valid / forged checkout signature, signed / forged / replayed webhook, amount mismatch, callback + webhook
+idempotency (one receipt), activation waits for profile verification, offline submit → verify → receipt →
+lifetime, reject → pay again, validation, no double payment, receipt owner-only + sequential numbers,
+gateway-not-configured, permission 403 for verification, admin screens + CSV + fee change.

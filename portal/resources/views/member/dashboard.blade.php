@@ -18,6 +18,12 @@
 
             <div class="grid grid-3 dashboard-cards">
                 <div class="card"><div class="card-body">
+                    <span class="panel-label">{{ __('web.my_membership.status') }}</span>
+                    <h2 class="card-value"><x-pill :status="$membership->status" /></h2>
+                    <p class="muted card-note">{{ $member->membership_no ?? __('web.my_membership.type_value') }}</p>
+                    @if ($membership->canPay())<a href="{{ localized_route('member.membership.pay') }}" class="btn btn-primary btn-sm">{{ __('web.my_membership.pay_now') }}</a>@endif
+                </div></div>
+                <div class="card"><div class="card-body">
                     <span class="panel-label">{{ __('web.dashboard.verification') }}</span>
                     <h2 class="card-value"><x-pill :status="$member->status" /></h2>
                     <p class="muted card-note">{{ __('web.dashboard.managed_by_admin') }}</p>
@@ -26,11 +32,6 @@
                     <span class="panel-label">{{ __('web.dashboard.area') }}</span>
                     <h2 class="card-value">{{ $member->area?->t('name') ?? __('web.dashboard.no_area') }}</h2>
                     <p class="muted card-note">{{ __('web.common.jaipur') }}</p>
-                </div></div>
-                <div class="card"><div class="card-body">
-                    <span class="panel-label">{{ __('web.dashboard.mobile') }}</span>
-                    <h2 class="card-value">{{ $member->mobile }}</h2>
-                    <p class="muted card-note">{{ __('web.dashboard.member_since', ['date' => $member->created_at->translatedFormat('d M Y')]) }}</p>
                 </div></div>
             </div>
 

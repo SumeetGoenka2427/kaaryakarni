@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\AdminUser;
 use App\Services\Audit\AuditLogger;
 use App\Services\Branding\BrandingService;
+use App\Services\Payments\PaymentGateway;
+use App\Services\Payments\RazorpayGateway;
 use App\Services\Settings\SettingsService;
 use App\Services\Sms\LogSmsProvider;
 use App\Services\Sms\Msg91SmsProvider;
@@ -26,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SettingsService::class);
         $this->app->singleton(BrandingService::class);
         $this->app->singleton(AuditLogger::class);
+
+        // Online payment gateway (Razorpay). Unconfigured = online payment shown as unavailable.
+        $this->app->singleton(PaymentGateway::class, fn () => new RazorpayGateway(config('portal.payments.razorpay')));
 
         // SMS gateway chosen by SMS_DRIVER (log = local development only).
         $this->app->singleton(SmsProvider::class, fn () => match (config('portal.sms.driver')) {

@@ -43,6 +43,26 @@ class NotificationTemplateSeeder extends Seeder
             'sms_en' => 'Dear {name}, your Khandelwal Samaj Jaipur member account is active again.',
             'sms_hi' => 'प्रिय {name}, आपका खंडेलवाल समाज जयपुर सदस्य खाता पुनः सक्रिय हो गया है।',
         ],
+        'membership_active' => [
+            'description' => 'Lifetime membership activated',
+            'sms_en' => 'Congratulations {name}! You are now a Lifetime Member of Khandelwal Samaj Jaipur. Membership ID: {membership_no}.',
+            'sms_hi' => 'बधाई हो {name}! अब आप खंडेलवाल समाज जयपुर के आजीवन सदस्य हैं। सदस्यता आईडी: {membership_no}।',
+        ],
+        'payment_received' => [
+            'description' => 'Payment received (online or verified offline)',
+            'sms_en' => 'Dear {name}, we have received your payment of Rs {amount} for {purpose}. Receipt: {receipt_no}. Thank you - Khandelwal Samaj Jaipur.',
+            'sms_hi' => 'प्रिय {name}, {purpose} हेतु आपका Rs {amount} का भुगतान प्राप्त हुआ। रसीद: {receipt_no}। धन्यवाद - खंडेलवाल समाज जयपुर।',
+        ],
+        'payment_submitted' => [
+            'description' => 'Offline payment details submitted',
+            'sms_en' => 'Dear {name}, your offline payment details of Rs {amount} have been received and will be verified by the Samaj office.',
+            'sms_hi' => 'प्रिय {name}, आपके Rs {amount} के ऑफ़लाइन भुगतान का विवरण प्राप्त हुआ, समाज कार्यालय द्वारा सत्यापन किया जाएगा।',
+        ],
+        'payment_rejected' => [
+            'description' => 'Offline payment could not be verified',
+            'sms_en' => 'Dear {name}, your offline payment of Rs {amount} could not be verified. Please log in or contact the Samaj office.',
+            'sms_hi' => 'प्रिय {name}, आपके Rs {amount} के ऑफ़लाइन भुगतान का सत्यापन नहीं हो सका। कृपया लॉगिन करें या समाज कार्यालय से संपर्क करें।',
+        ],
     ];
 
     public function run(): void

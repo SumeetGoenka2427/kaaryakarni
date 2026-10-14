@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Member\DashboardController;
 use App\Http\Controllers\Member\FamilyController;
+use App\Http\Controllers\Member\MembershipController;
+use App\Http\Controllers\Member\PaymentHistoryController;
 use App\Http\Controllers\Member\ProfileController;
 use App\Http\Controllers\PrivateImageController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +29,13 @@ Route::localized(function () {
         Route::get('family/{family}/edit', [FamilyController::class, 'edit'])->name('family.edit');
         Route::put('family/{family}', [FamilyController::class, 'update'])->name('family.update');
         Route::delete('family/{family}', [FamilyController::class, 'destroy'])->name('family.destroy');
+
+        // Lifetime membership (one-time fee) and payment history
+        Route::get('membership', [MembershipController::class, 'show'])->name('membership');
+        Route::get('membership/pay', [MembershipController::class, 'create'])->name('membership.pay');
+        Route::post('membership/pay', [MembershipController::class, 'store'])->middleware('throttle:10,1')->name('membership.pay.store');
+        Route::get('payments', [PaymentHistoryController::class, 'index'])->name('payments');
+        Route::get('payments/{payment}/receipt', [PaymentHistoryController::class, 'receipt'])->name('payments.receipt');
     });
 });
 

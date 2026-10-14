@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Models\MemberVerification;
 use App\Services\Audit\AuditLogger;
 use App\Services\Content\PublicContent;
+use App\Services\Membership\MembershipService;
 use App\Services\Sms\SmsService;
 use DomainException;
 use Illuminate\Support\Facades\Cache;
@@ -38,6 +39,9 @@ class MemberService
             $member->rejection_reason = null;
         });
         $this->sms->queue($member->mobile, 'member_verified', ['name' => $member->firstName()], $member->locale);
+
+        // Fee already confirmed? Verification completes the lifetime membership.
+        app(MembershipService::class)->activateIfReady($member);
     }
 
     public function reject(Member $member, string $reason): void

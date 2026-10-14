@@ -35,7 +35,7 @@ screens + tests for that module. Each part ends in a working, testable state.
 | [P04](parts/P04-auth.md) ✅ | Admin auth + roles, member OTP auth, SMS abstraction | P03 |
 | [W01](parts/W01-website-pages.md) ✅ | **Website pages pass** (home banner, About, Committee, Membership, Contact + admin content screens), done before P05 at the client's request | P04 |
 | [P05](parts/P05-areas-members-profile.md) ✅ | Jaipur areas, member registration, profile, **family details**, verification | P04 |
-| [P06](parts/P06-payments-membership-receipts.md) | Payment abstraction, lifetime membership, PDF receipts | P05 |
+| [P06](parts/P06-payments-membership-receipts.md) ✅ | Payment abstraction, lifetime membership, PDF receipts | P05 |
 | [P07](parts/P07-donations-campaigns.md) | Donation campaigns, online/offline donations, live totals | P06 |
 | [P08](parts/P08-homepage-banners-cms.md) | Homepage 3-column banner, carousel, page content CMS | P07 |
 | [P09](parts/P09-business-directory.md) | Business directory + approval workflow | P05 |

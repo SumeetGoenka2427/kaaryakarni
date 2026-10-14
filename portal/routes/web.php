@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\Auth\OtpController;
 use App\Http\Controllers\Web\Auth\RegistrationController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\PageController;
+use App\Http\Controllers\Web\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,4 +37,9 @@ Route::localized(function () {
     });
 
     Route::post('logout', [OtpController::class, 'logout'])->middleware('auth:member')->name('logout');
+
+    // Online checkout (membership + donations). Owner-checked in the controller.
+    Route::get('payments/{payment}/checkout', [PaymentController::class, 'checkout'])->name('payments.checkout');
+    Route::post('payments/{payment}/callback', [PaymentController::class, 'callback'])->middleware('throttle:20,1')->name('payments.callback');
+    Route::post('payments/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
 });

@@ -121,16 +121,7 @@ body.admin-body {
 .admin-login-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, var(--color-navy-900), var(--color-navy-700)); padding: 20px; }
 .admin-login-card { background: var(--color-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 36px 32px; max-width: 400px; width: 100%; }
 
-/* ---------- Misc table helpers ---------- */
-.mobile-hide { }
-@media (max-width: 720px) {
-  table.data-table thead { display: none; }
-  table.data-table, table.data-table tbody, table.data-table tr, table.data-table td { display: block; width: 100%; }
-  table.data-table tr { border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 12px; padding: 8px 4px; }
-  table.data-table td { border-bottom: none; padding: 6px 10px; }
-  table.data-table td::before { content: attr(data-label); display: block; font-size: 0.72rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; margin-bottom: 2px; }
-  .data-table-wrap { border: none; }
-}
+
 
 /* Native <dialog> modals (same look as .admin-modal; built-in focus trap + Esc) */
 dialog.admin-modal { padding: 0; border: none; margin: auto; }
@@ -190,12 +181,6 @@ dialog.admin-modal::backdrop { background: rgba(10,15,25,0.5); }
 .admin-panel-body.grid { display: grid; }
 @media (max-width: 720px) { .admin-content .grid-2 { grid-template-columns: 1fr; } .row-actions { flex-wrap: wrap; } }
 
-/* Phone card-mode tables: drop the desktop min-width and let long text wrap */
-@media (max-width: 720px) {
-  table.data-table { min-width: 0; }
-  table.data-table td { overflow-wrap: anywhere; }
-  table.data-table td .flex > * { min-width: 0; }
-}
 @media (max-width: 480px) { .admin-user-name { display: none; } }
 
 /* Areas ordering + misc */
@@ -206,3 +191,10 @@ dialog.admin-modal::backdrop { background: rgba(10,15,25,0.5); }
 .admin-panel-body.form-row-3 { display: grid; }
 dialog.admin-modal { width: min(560px, calc(100% - 32px)); }
 .admin-page-head .profile-photo { width: 72px; height: 72px; }
+
+/* Memberships / payments */
+.stat-link { text-decoration: none; color: inherit; display: block; }
+.stat-link:hover { text-decoration: none; border-color: var(--color-gold-500); }
+.proof-image { max-width: 100%; max-height: 420px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+.no-margin { margin: 0; }
+.action-gap { margin-top: var(--space-3); }

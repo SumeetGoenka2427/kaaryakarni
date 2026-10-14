@@ -12,6 +12,9 @@ use App\Http\Controllers\Admin\ContentBlockController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberFamilyController;
+use App\Http\Controllers\Admin\MembershipAdminController;
+use App\Http\Controllers\Admin\PaymentAdminController;
+use App\Http\Controllers\Admin\ReceiptAdminController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SiteTextController;
 use Illuminate\Support\Facades\Route;
@@ -76,6 +79,25 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
         Route::delete('members/{member}/family/{family}', [MemberFamilyController::class, 'destroy'])->name('members.family.destroy');
     });
     Route::get('members/{member}', [MemberController::class, 'show'])->middleware('permission:members.view,admin')->name('members.show');
+
+    // Lifetime memberships
+    Route::get('memberships', [MembershipAdminController::class, 'index'])->middleware('permission:memberships.view,admin')->name('memberships.index');
+    Route::put('memberships/fee', [MembershipAdminController::class, 'updateFee'])->middleware('permission:memberships.manage,admin')->name('memberships.fee');
+
+    // Payments & receipts
+    Route::middleware('permission:payments.view,admin')->group(function () {
+        Route::get('payments', [PaymentAdminController::class, 'index'])->name('payments.index');
+        Route::get('payments/export', [PaymentAdminController::class, 'export'])->name('payments.export');
+        Route::get('payments/{payment}', [PaymentAdminController::class, 'show'])->name('payments.show');
+        Route::get('payments/{payment}/proof', [PaymentAdminController::class, 'proof'])->name('payments.proof');
+        Route::get('receipts', [ReceiptAdminController::class, 'index'])->name('receipts.index');
+        Route::get('receipts/{receipt}/download', [ReceiptAdminController::class, 'download'])->name('receipts.download');
+    });
+    Route::middleware('permission:payments.verify,admin')->group(function () {
+        Route::patch('payments/{payment}/verify', [PaymentAdminController::class, 'verify'])->name('payments.verify');
+        Route::patch('payments/{payment}/reject', [PaymentAdminController::class, 'reject'])->name('payments.reject');
+        Route::patch('receipts/{receipt}/regenerate', [ReceiptAdminController::class, 'regenerate'])->name('receipts.regenerate');
+    });
 
     Route::middleware('permission:admins.manage,admin')->group(function () {
         Route::resource('admin-users', AdminUserController::class)->except(['show', 'destroy'])
