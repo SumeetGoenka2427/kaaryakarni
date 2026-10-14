@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             ProductionSeeder::class,
             SampleAreasSeeder::class,
             SampleWebsiteSeeder::class,
+            SampleMembersSeeder::class,
         ]);
     }
 }

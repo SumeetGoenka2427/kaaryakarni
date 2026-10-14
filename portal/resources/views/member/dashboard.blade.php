@@ -33,6 +33,33 @@
                     <p class="muted card-note">{{ __('web.dashboard.member_since', ['date' => $member->created_at->translatedFormat('d M Y')]) }}</p>
                 </div></div>
             </div>
+
+            {{-- Quick actions (design: action cards). A card appears once its module is live. --}}
+            @php
+                $actions = collect([
+                    ['route' => 'member.profile', 'key' => 'profile', 'icon' => '&#9998;'],
+                    ['route' => 'member.family.index', 'key' => 'family', 'icon' => '&#128106;', 'note' => __('web.family.summary', ['count' => $familyCount])],
+                    ['route' => 'member.membership', 'key' => 'membership', 'icon' => '&#127894;'],
+                    ['route' => 'member.payments', 'key' => 'payments', 'icon' => '&#8377;'],
+                    ['route' => 'donations.index', 'key' => 'donate', 'icon' => '&#127873;'],
+                    ['route' => 'member.business', 'key' => 'business', 'icon' => '&#127970;'],
+                    ['route' => 'member.matrimonial.index', 'key' => 'matrimonial', 'icon' => '&#128150;'],
+                ])->filter(fn ($a) => Route::has($a['route']));
+            @endphp
+            <h2 class="dashboard-subhead">{{ __('web.dashboard.quick_actions') }}</h2>
+            <div class="grid grid-4 dashboard-cards">
+                @foreach ($actions as $a)
+                    @php [$title, $text] = __('web.dashboard.actions.'.$a['key']); @endphp
+                    <a href="{{ localized_route($a['route']) }}" class="card action-card">
+                        <div class="card-body">
+                            <span class="action-icon" aria-hidden="true">{!! $a['icon'] !!}</span>
+                            <h3 class="action-title">{{ $title }}</h3>
+                            <p class="muted action-text">{{ $a['note'] ?? $text }}</p>
+                            <span class="action-link">{{ __('web.dashboard.open') }} <span class="arrow" aria-hidden="true">&rarr;</span></span>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
         </div>
     </section>
 </x-layouts.member>

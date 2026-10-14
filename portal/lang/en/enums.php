@@ -81,4 +81,6 @@ return [
         'granddaughter' => 'Granddaughter',
         'other' => 'Other',
     ],
+
+    'marital_status' => ['unmarried' => 'Unmarried', 'married' => 'Married', 'widowed' => 'Widowed', 'divorced' => 'Divorced'],
 ];

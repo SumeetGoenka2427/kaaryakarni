@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BrandingController;
@@ -9,6 +10,8 @@ use App\Http\Controllers\Admin\CommitteeMemberController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ContentBlockController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\MemberFamilyController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SiteTextController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +42,40 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
         Route::post('branding/{type}', [BrandingController::class, 'update'])->name('branding.update');
         Route::delete('branding', [BrandingController::class, 'destroy'])->name('branding.destroy');
     });
+
+    // Jaipur areas
+    Route::middleware('permission:areas.manage,admin')->group(function () {
+        Route::get('areas', [AreaController::class, 'index'])->name('areas.index');
+        Route::post('areas', [AreaController::class, 'store'])->name('areas.store');
+        Route::get('areas/{area}/edit', [AreaController::class, 'edit'])->name('areas.edit');
+        Route::put('areas/{area}', [AreaController::class, 'update'])->name('areas.update');
+        Route::patch('areas/{area}/toggle', [AreaController::class, 'toggle'])->name('areas.toggle');
+        Route::patch('areas/{area}/move', [AreaController::class, 'move'])->name('areas.move');
+        Route::delete('areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+    });
+
+    // Members: view vs. manage permissions
+    Route::middleware('permission:members.view,admin')->group(function () {
+        Route::get('members', [MemberController::class, 'index'])->name('members.index');
+        Route::get('members/export', [MemberController::class, 'export'])->name('members.export');
+    });
+    Route::middleware('permission:members.manage,admin')->group(function () {
+        Route::get('members/create', [MemberController::class, 'create'])->name('members.create');
+        Route::post('members', [MemberController::class, 'store'])->name('members.store');
+        Route::get('members/{member}/edit', [MemberController::class, 'edit'])->name('members.edit');
+        Route::put('members/{member}', [MemberController::class, 'update'])->name('members.update');
+        Route::patch('members/{member}/verify', [MemberController::class, 'verify'])->name('members.verify');
+        Route::patch('members/{member}/reject', [MemberController::class, 'reject'])->name('members.reject');
+        Route::patch('members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
+        Route::patch('members/{member}/reinstate', [MemberController::class, 'reinstate'])->name('members.reinstate');
+
+        Route::get('members/{member}/family/create', [MemberFamilyController::class, 'create'])->name('members.family.create');
+        Route::post('members/{member}/family', [MemberFamilyController::class, 'store'])->name('members.family.store');
+        Route::get('members/{member}/family/{family}/edit', [MemberFamilyController::class, 'edit'])->name('members.family.edit');
+        Route::put('members/{member}/family/{family}', [MemberFamilyController::class, 'update'])->name('members.family.update');
+        Route::delete('members/{member}/family/{family}', [MemberFamilyController::class, 'destroy'])->name('members.family.destroy');
+    });
+    Route::get('members/{member}', [MemberController::class, 'show'])->middleware('permission:members.view,admin')->name('members.show');
 
     Route::middleware('permission:admins.manage,admin')->group(function () {
         Route::resource('admin-users', AdminUserController::class)->except(['show', 'destroy'])

@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Concerns\BustsPublicCache;
 use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class CommitteeMember extends Model
 {
@@ -25,8 +24,6 @@ class CommitteeMember extends Model
     /** "Shri R. Khandelwal" → "RK" (honorifics skipped). */
     public function initials(): string
     {
-        return Str::upper(collect(preg_split('/\s+/', trim($this->name_en)))
-            ->reject(fn ($w) => in_array(Str::lower(rtrim($w, '.')), ['shri', 'smt', 'dr', 'late'], true))
-            ->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->implode(''));
+        return initials($this->name_en);
     }
 }

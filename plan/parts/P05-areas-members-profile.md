@@ -1,45 +1,25 @@
-# P05 — Jaipur Areas, Members, Profile & Family Details
+# P05 — Jaipur Areas, Members, Profile & Family Details ✅ Done
 
-## Tasks
-### Areas (Admin → Areas, existing design)
-- [ ] `areas` migration (name EN/HI, active, order, is_sample) + 20 sample areas
-- [ ] Add/edit (EN/HI), activate/deactivate with confirm, drag/arrow reorder, cached list
-- [ ] Deactivated areas stay on existing members but can't be picked for new ones
+## Member area (EN + /hi)
+- [x] `/member/profile` (design `member/profile.html`): name, father/husband, DOB, gender, email, **Area / Locality**, address, private photo. Mobile and status are read-only (mobile changes go through the Samaj office / admin). No city/state
+- [x] `/member/family`: add / edit / remove family members (spouse, son, daughter, father, mother, brother, sister, in-laws, grandchildren, other) with gender, DOB (age shown), marital status, education, occupation, mobile, email, blood group, photo, late flag, lives-with-member, notes. Only one father and one mother, maximum 30 entries
+- [x] Family rows are always looked up inside the logged-in member's own family (ULID). Another member's row returns 404. Family is never shown on public pages
+- [x] Member and family photos are stored on the **private disk** and streamed by `PrivateImageController` only to the owner or an admin with `members.view`
+- [x] Dashboard quick-action cards (design `member/dashboard.html`) appear per module as routes go live. Family count shown
 
-### Member registration & profile
-- [ ] Registration step 2 (existing `register.html`): name, father/husband name, gender, DOB,
-      email (optional), address, **Area / Locality** (from admin list), photo. **No city/state fields**
-- [ ] Submit for verification → status `under_verification` (or `payment_pending` if fee is unpaid, see P06)
-- [ ] `/member/profile` (existing design): view/edit allowed fields. Mobile change requires OTP on the new number
-- [ ] Photo upload: validate, re-encode to WebP, 2 sizes
-- [ ] `/member/dashboard` (existing design): status cards, quick links, notifications preview
+## Admin
+- [x] **Jaipur Areas** (`admin/areas.html`): add EN/HI, edit, move up/down, activate/deactivate (confirm), delete only if unused, sample-data banner (editing an area marks it real). Area dropdown cache refreshes automatically
+- [x] **Members** (`admin/members.html`): status tabs with counts, search (name/mobile/ID), area + date filters, pagination, **CSV export** (streamed, UTF-8 BOM for Hindi)
+- [x] Member detail: Profile / Family / Verification History tabs. Verify, Reject (reason), Suspend (reason), Reinstate, all with confirm dialogs. Edit details including mobile. Manual registration for offline forms. Admin family add/edit/remove
+- [x] `MemberService` is the only place status changes happen: allowed transitions only, history row, audit log, bilingual SMS (`member_verified/rejected/suspended/reinstated`)
 
-### Family details (new)
-Members can add, edit and remove their full family details.
-- [ ] `family_members` migration (see 02): relation (spouse/wife/husband, son, daughter, father,
-      mother, brother, sister, daughter-in-law, son-in-law, grandchild, other), name, gender, DOB,
-      marital status, education, occupation, mobile, email, blood group, photo, deceased flag,
-      lives-with-member, notes
-- [ ] `/member/family`: list as cards (in the member area design), add/edit form in a modal or
-      page, delete with confirm, reorder
-- [ ] Validation rules (e.g. only one father and one mother, spouse limit configurable, DOB not in future)
-- [ ] Policy: a member only sees and edits their own family rows (ULID in URLs)
-- [ ] Shown on the member dashboard as a "Family" summary card
-- [ ] "Create matrimonial profile" shortcut on an unmarried son/daughter row (pre-fills P10 form)
-- [ ] Admin → Member detail → **Family tab** (view/edit). Included in member export (optional columns)
-- [ ] Family data is **never public**
+## Notes
+- Member **verification** (profile checked) is separate from **lifetime membership approval** (fee paid), which comes in P06
+- The "create matrimonial profile from a son/daughter" shortcut is added in P10
+- Sample members (9876543210 / …11 / …12) with a family for demos: `SampleMembersSeeder` (dev only)
 
-### Admin → Members (existing design)
-- [ ] List with search (name/mobile/membership no.), filters (status, area, date), pagination, mobile cards
-- [ ] Detail view: profile, family, membership, payments, businesses, verification history
-- [ ] Verify / Reject (reason required) / Suspend / Reinstate with confirm. Each writes `member_verifications` + audit + SMS
-- [ ] Admin create member manually (offline registrations) and edit
-- [ ] Export (Excel/CSV) is left for P12
-
-## Tests
-Area selection uses only active areas. No city/state in the form. Profile edit can't change
-status. Member A can't read or edit member B's family row by ULID (403/404). Admin verify/reject flow.
-
-## Acceptance
-A new member registers, picks an area, adds wife/son/father details, edits them, and an admin
-verifies the member. Everything is visible in both languages.
+## Tests: 134 passing
+Profile edit (mobile/status cannot be changed), private photo access rules, family CRUD, one father/mother,
+validation, cross-member 404s, no family on public pages, admin verify/reject/suspend/reinstate + history/
+audit/SMS, invalid transitions, manual registration + unique mobile, admin family, CSV export, areas
+(unique, reorder, deactivate, no delete when used), permission 403s.

@@ -111,6 +111,18 @@ if (! function_exists('safe_url')) {
     }
 }
 
+if (! function_exists('initials')) {
+    /** "Smt. Kamla Khandelwal" → "KK" (honorifics like Shri / Smt. / Dr. / Late are skipped). */
+    function initials(?string $name, int $max = 2): string
+    {
+        $skip = ['shri', 'smt', 'sri', 'dr', 'late', 'mr', 'mrs', 'ms', 'श्री', 'श्रीमती', 'स्व', 'डॉ'];
+
+        return mb_strtoupper(collect(preg_split('/\s+/u', trim((string) $name)))
+            ->reject(fn ($w) => $w === '' || in_array(mb_strtolower(rtrim($w, '.')), $skip, true))
+            ->map(fn ($w) => mb_substr($w, 0, 1))->take($max)->implode(''));
+    }
+}
+
 if (! function_exists('setting')) {
     /** setting('membership_fee') — admin-editable site setting (cached). */
     function setting(string $key, mixed $default = null): mixed

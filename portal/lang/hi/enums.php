@@ -81,4 +81,6 @@ return [
         'granddaughter' => 'पौत्री / नातिन',
         'other' => 'अन्य',
     ],
+
+    'marital_status' => ['unmarried' => 'अविवाहित', 'married' => 'विवाहित', 'widowed' => 'विधवा / विधुर', 'divorced' => 'तलाकशुदा'],
 ];

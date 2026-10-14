@@ -6,6 +6,7 @@ use App\Enums\Gender;
 use App\Enums\MemberStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -36,6 +37,7 @@ class Member extends Authenticatable
             'verified_at' => 'datetime',
             'suspended_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'photo' => 'array',
         ];
     }
 
@@ -59,6 +61,16 @@ class Member extends Authenticatable
     public function area(): BelongsTo
     {
         return $this->belongsTo(Area::class);
+    }
+
+    public function family(): HasMany
+    {
+        return $this->hasMany(FamilyMember::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function verifications(): HasMany
+    {
+        return $this->hasMany(MemberVerification::class)->latest('id');
     }
 
     public function hasCompletedProfile(): bool

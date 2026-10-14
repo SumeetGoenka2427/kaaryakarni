@@ -30,7 +30,7 @@ class ImageService
      * @param  float|null  $ratio  crop to width/height ratio (e.g. 16/7 banners, 1 for avatars)
      * @return array{path: string, width: int, height: int, variants: array<int, string>}
      */
-    public function store(UploadedFile $file, string $directory, array $widths, ?float $ratio = null): array
+    public function store(UploadedFile $file, string $directory, array $widths, ?float $ratio = null, string $disk = 'public'): array
     {
         $manager = new ImageManager(new Driver);
         $source = $manager->read($file->getRealPath());
@@ -53,7 +53,7 @@ class ImageService
             $target = min($width, $source->width());
             $image = (clone $source)->scaleDown(width: $target);
             $path = "{$base}-{$target}.webp";
-            Storage::disk('public')->put($path, (string) $image->encode(new WebpEncoder(quality: 80)));
+            Storage::disk($disk)->put($path, (string) $image->encode(new WebpEncoder(quality: 80)));
             $variants[$target] = $path;
             $largest = $image;
         }
@@ -61,6 +61,7 @@ class ImageService
         ksort($variants);
 
         return [
+            'disk' => $disk,
             'path' => end($variants),
             'width' => $largest->width(),
             'height' => $largest->height(),
@@ -71,7 +72,7 @@ class ImageService
     public function delete(?array $image): void
     {
         if ($image) {
-            Storage::disk('public')->delete(array_values($image['variants'] ?? [$image['path'] ?? null]));
+            Storage::disk($image['disk'] ?? 'public')->delete(array_values($image['variants'] ?? [$image['path'] ?? null]));
         }
     }
 }

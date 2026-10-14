@@ -23,6 +23,26 @@ class NotificationTemplateSeeder extends Seeder
             'sms_en' => 'Dear {name}, your Khandelwal Samaj Jaipur member registration has been received and is under verification.',
             'sms_hi' => 'प्रिय {name}, आपका खंडेलवाल समाज जयपुर सदस्य पंजीकरण प्राप्त हो गया है और सत्यापन प्रक्रिया में है।',
         ],
+        'member_verified' => [
+            'description' => 'Member profile verified',
+            'sms_en' => 'Dear {name}, your Khandelwal Samaj Jaipur member profile has been verified. Thank you.',
+            'sms_hi' => 'प्रिय {name}, आपकी खंडेलवाल समाज जयपुर सदस्य प्रोफ़ाइल सत्यापित हो गई है। धन्यवाद।',
+        ],
+        'member_rejected' => [
+            'description' => 'Member profile could not be verified',
+            'sms_en' => 'Dear {name}, your Khandelwal Samaj Jaipur member profile could not be verified. Please log in to see the reason or contact the Samaj office.',
+            'sms_hi' => 'प्रिय {name}, आपकी खंडेलवाल समाज जयपुर सदस्य प्रोफ़ाइल सत्यापित नहीं हो सकी। कारण जानने के लिए लॉगिन करें या समाज कार्यालय से संपर्क करें।',
+        ],
+        'member_suspended' => [
+            'description' => 'Member account suspended',
+            'sms_en' => 'Dear {name}, your Khandelwal Samaj Jaipur member account has been suspended. Please contact the Samaj office.',
+            'sms_hi' => 'प्रिय {name}, आपका खंडेलवाल समाज जयपुर सदस्य खाता निलंबित कर दिया गया है। कृपया समाज कार्यालय से संपर्क करें।',
+        ],
+        'member_reinstated' => [
+            'description' => 'Member account reinstated',
+            'sms_en' => 'Dear {name}, your Khandelwal Samaj Jaipur member account is active again.',
+            'sms_hi' => 'प्रिय {name}, आपका खंडेलवाल समाज जयपुर सदस्य खाता पुनः सक्रिय हो गया है।',
+        ],
     ];
 
     public function run(): void

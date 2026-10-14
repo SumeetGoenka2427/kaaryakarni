@@ -197,3 +197,12 @@ dialog.admin-modal::backdrop { background: rgba(10,15,25,0.5); }
   table.data-table td .flex > * { min-width: 0; }
 }
 @media (max-width: 480px) { .admin-user-name { display: none; } }
+
+/* Areas ordering + misc */
+.order-controls { display: flex; gap: 4px; }
+.order-controls form { margin: 0; }
+.btn-icon { min-width: 34px; padding-left: 0; padding-right: 0; }
+.align-end { align-items: end; }
+.admin-panel-body.form-row-3 { display: grid; }
+dialog.admin-modal { width: min(560px, calc(100% - 32px)); }
+.admin-page-head .profile-photo { width: 72px; height: 72px; }
