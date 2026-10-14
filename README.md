@@ -37,7 +37,7 @@ CREATE DATABASE kaaryakarni_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_c
 Then:
 
 ```bash
-php artisan migrate --seed       # creates roles + first super-admin from ADMIN_SEED_* in .env
+php artisan migrate --seed       # roles, first super-admin (ADMIN_SEED_*), page content + clearly-marked sample data
 php artisan storage:link        # serves uploaded logos/images
 npm run build                  # or `npm run dev` while editing CSS/JS
 php artisan serve              # http://localhost:8000  (Hindi: /hi)
@@ -78,4 +78,4 @@ DLT/MSG91 template id.
 
 ## Build progress
 
-See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**, **P03 Settings, Branding/Logo, Site Texts + admin login**, **P04 Member OTP login/registration, SMS layer, Admin Users**.
+See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**, **P03 Settings, Branding/Logo, Site Texts + admin login**, **P04 Member OTP login/registration, SMS layer, Admin Users**, **W01 Website pages (Home, About, Committee, Membership, Contact) + content admin**.

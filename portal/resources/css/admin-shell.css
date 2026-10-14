@@ -167,3 +167,33 @@ dialog.admin-modal::backdrop { background: rgba(10,15,25,0.5); }
 .site-texts-table td:first-child { width: 26%; }
 .site-texts-table textarea { width: 100%; padding: 0.5rem 0.65rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font: inherit; font-size: 0.9rem; resize: vertical; }
 .text-key { display: block; font-size: 0.75rem; color: var(--color-text-muted); word-break: break-all; margin-bottom: 4px; }
+
+/* Content management screens */
+.content-section { margin-bottom: var(--space-5); }
+.panel-help { margin: 4px 0 0; font-size: 0.82rem; }
+.data-table-wrap.borderless { border: none; border-radius: 0; }
+.align-self-end { align-self: end; padding-bottom: 10px; }
+.table-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.initials-avatar { display: inline-flex; align-items: center; justify-content: center; background: var(--color-bg-navy-tint); color: var(--color-navy-800); font-weight: 700; font-size: 0.8rem; }
+.slide-thumb { width: 96px; height: 48px; object-fit: cover; border-radius: var(--radius-sm); flex-shrink: 0; }
+.panel-fieldset { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); display: grid; gap: var(--space-4); min-width: 0; }
+.panel-fieldset legend { font-weight: 600; font-size: 0.85rem; padding: 0 6px; color: var(--color-text-muted); }
+.preview-label { margin: 0 0 6px; font-size: 0.8rem; }
+.slide-preview, .slide-preview .carousel-track { min-height: 210px; }
+.slide-preview .carousel-slide-title { font-size: 1.15rem; }
+.field-label { font-weight: 600; font-size: 0.9rem; color: var(--color-navy-900); }
+.image-field-preview img { max-width: 240px; height: auto; border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
+.detail-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); margin: 0; }
+.detail-list dt { font-size: 0.75rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; }
+.detail-list dd { margin: 2px 0 0; }
+.message-body { white-space: pre-line; background: var(--color-bg-alt); border-radius: var(--radius-md); padding: var(--space-4); }
+.admin-panel-body.grid { display: grid; }
+@media (max-width: 720px) { .admin-content .grid-2 { grid-template-columns: 1fr; } .row-actions { flex-wrap: wrap; } }
+
+/* Phone card-mode tables: drop the desktop min-width and let long text wrap */
+@media (max-width: 720px) {
+  table.data-table { min-width: 0; }
+  table.data-table td { overflow-wrap: anywhere; }
+  table.data-table td .flex > * { min-width: 0; }
+}
+@media (max-width: 480px) { .admin-user-name { display: none; } }

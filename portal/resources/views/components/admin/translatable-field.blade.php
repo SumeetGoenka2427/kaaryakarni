@@ -17,6 +17,7 @@
     'required' => false,
     'hint' => null,
     'rows' => 4,
+    'idPrefix' => '',
 ])
 @php
     $group = 'tr-'.$name.'-'.\Illuminate\Support\Str::random(4);
@@ -34,11 +35,11 @@
     </div>
 
     <div data-tab-panel="en" data-tabs-group="{{ $group }}" @if ($hiHasError) hidden @endif>
-        <x-field :name="$name.'_en'" :label="$label.' (English)'" :type="$type" :rows="$rows"
+        <x-field :name="$name.'_en'" :id="$idPrefix.'f-'.$name.'_en'" :label="$label.' (English)'" :type="$type" :rows="$rows"
                  :value="$model?->{$name.'_en'}" :required="$required" :hint="$hint" />
     </div>
     <div data-tab-panel="hi" data-tabs-group="{{ $group }}" @unless ($hiHasError) hidden @endunless>
-        <x-field :name="$name.'_hi'" :label="$label.' (हिन्दी)'" :type="$type" :rows="$rows"
+        <x-field :name="$name.'_hi'" :id="$idPrefix.'f-'.$name.'_hi'" :label="$label.' (हिन्दी)'" :type="$type" :rows="$rows"
                  :value="$model?->{$name.'_hi'}" lang="hi"
                  hint="Optional. If left empty, the English text is shown on Hindi pages." />
     </div>

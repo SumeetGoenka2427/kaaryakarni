@@ -91,6 +91,26 @@ if (! function_exists('inr')) {
     }
 }
 
+if (! function_exists('safe_url')) {
+    /**
+     * Admin-entered link: allow site paths ("/membership") and https:// URLs
+     * only, so javascript:, data: or protocol-relative links can never render.
+     */
+    function safe_url(?string $url): ?string
+    {
+        $url = trim((string) $url);
+
+        if ($url === '') {
+            return null;
+        }
+        if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
+            return $url;
+        }
+
+        return str_starts_with(strtolower($url), 'https://') && filter_var($url, FILTER_VALIDATE_URL) ? $url : null;
+    }
+}
+
 if (! function_exists('setting')) {
     /** setting('membership_fee') — admin-editable site setting (cached). */
     function setting(string $key, mixed $default = null): mixed

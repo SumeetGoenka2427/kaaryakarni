@@ -1,28 +1,106 @@
 {{--
-    Homepage (from web/index.html). P02 renders the static sections; the
-    data-driven sections are added by their parts: top banner + stats (P08),
-    campaigns (P07), featured businesses (P09), events + gallery (P11).
+    Homepage (web/index.html). Every section is admin-managed:
+    banner → Admin › Homepage Banners · about/links → Admin › Page Content ·
+    events → Admin › Announcements · stats → live database counts ·
+    headings → Admin › Site Texts. Campaign, business and gallery sections
+    appear here automatically once those modules have data (P07, P09, P11).
 --}}
 <x-layouts.web>
+    @if ($slides->isNotEmpty())
+        @push('preload')
+            @php $first = $slides->first()->image; @endphp
+            @if ($first)
+                <link rel="preload" as="image" imagesrcset="{{ collect($first['variants'])->map(fn ($p, $w) => Storage::disk('public')->url($p).' '.$w.'w')->implode(', ') }}" imagesizes="(max-width: 1024px) 100vw, 56vw">
+            @endif
+        @endpush
+    @endif
 
-    <section class="section">
+    {{-- ===== Top 3-column banner: left panel / center carousel / right panel ===== --}}
+    <section class="top-banner" aria-label="{{ __('web.banner.region') }}">
         <div class="container">
-            <div class="grid grid-2 align-center">
-                <div class="card-media media-rounded">
-                    <img src="{{ asset('images/sample/1.jpg') }}" width="678" height="452" alt="" loading="lazy" decoding="async">
-                </div>
-                <div>
-                    <h2>{{ __('web.home.about_heading') }}</h2>
-                    <p>{{ __('web.home.about_text') }}</p>
-                    @if (Route::has('about'))
-                        <a href="{{ localized_route('about') }}" class="btn btn-outline">{{ __('web.home.about_cta') }}</a>
+            <div class="banner-grid">
+                @include('web.partials.banner-panel', ['panel' => $panels->get('left'), 'position' => 'left'])
+
+                <div class="banner-carousel" data-carousel data-autoplay="5500" data-dot-label="{{ __('web.carousel.slide') }}"
+                     aria-roledescription="carousel" aria-label="{{ __('web.carousel.label') }}">
+                    <div class="carousel-track">
+                        @forelse ($slides as $i => $slide)
+                            @php $url = $slide->safeCtaUrl(); $tag = $url ? 'a' : 'div'; @endphp
+                            <{{ $tag }} @if ($url) href="{{ $url }}" @endif
+                                class="carousel-slide @if ($i === 0) is-active @endif"
+                                aria-roledescription="slide" aria-label="{{ ($i + 1).' / '.$slides->count() }}">
+                                <x-img :image="$slide->image" class="carousel-slide-img" :priority="$i === 0" sizes="(max-width: 1024px) 100vw, 56vw" />
+                                <span class="carousel-slide-scrim" aria-hidden="true"></span>
+                                <span class="carousel-slide-content">
+                                    <span class="carousel-slide-title">{{ $slide->t('title') }}</span>
+                                    @if ($slide->t('subtitle'))<span class="carousel-slide-subtitle">{{ $slide->t('subtitle') }}</span>@endif
+                                    @if ($url && $slide->t('cta_label'))<span class="carousel-slide-cta">{{ $slide->t('cta_label') }}</span>@endif
+                                </span>
+                            </{{ $tag }}>
+                        @empty
+                            <a href="{{ localized_route('membership') }}" class="carousel-slide is-active">
+                                <span class="carousel-slide-scrim" aria-hidden="true"></span>
+                                <span class="carousel-slide-content">
+                                    <span class="carousel-slide-title">{{ __('web.banner.membership_title') }}</span>
+                                    <span class="carousel-slide-subtitle">{{ __('web.banner.membership_text') }}</span>
+                                    <span class="carousel-slide-cta">{{ __('web.banner.membership_cta') }}</span>
+                                </span>
+                            </a>
+                        @endforelse
+                    </div>
+                    @if ($slides->count() > 1)
+                        <div class="carousel-controls">
+                            <button type="button" class="carousel-arrow" data-carousel-prev aria-label="{{ __('web.carousel.prev') }}">&#8249;</button>
+                            <button type="button" class="carousel-arrow" data-carousel-next aria-label="{{ __('web.carousel.next') }}">&#8250;</button>
+                        </div>
+                        <div class="carousel-dots" data-carousel-dots role="group" aria-label="{{ __('web.carousel.dots') }}"></div>
                     @endif
                 </div>
+
+                @include('web.partials.banner-panel', ['panel' => $panels->get('right'), 'position' => 'right'])
             </div>
         </div>
     </section>
 
+    {{-- ===== About Samaj brief ===== --}}
+    @if ($about)
+        <section class="section">
+            <div class="container">
+                <div class="grid grid-2 align-center">
+                    <div class="card-media media-rounded">
+                        <x-img :image="$about->image" alt="" sizes="(max-width: 600px) 100vw, 50vw" :fallback="asset('images/sample/1.jpg')" />
+                    </div>
+                    <div>
+                        <h2>{{ $about->t('title') }}</h2>
+                        @foreach ($about->paragraphs() as $p)<p>{{ $p }}</p>@endforeach
+                        @if ($about->safeLinkUrl() && $about->t('label'))
+                            <a href="{{ $about->safeLinkUrl() }}" class="btn btn-outline">{{ $about->t('label') }}</a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ===== Key statistics (live counts) ===== --}}
+    @if ($stats)
     <section class="section section-alt">
+        <div class="container">
+            <x-section-head :eyebrow="__('web.home.stats_eyebrow')" :title="__('web.home.stats_heading')" />
+            <div @class(['grid', 'grid-3' => count($stats) === 3, 'grid-2' => count($stats) === 2, 'grid-1-center' => count($stats) === 1])>
+                @foreach ($stats as $stat)
+                    <div class="card stat-card">
+                        <div class="stat-value">{{ $stat['value'] }}</div>
+                        <div class="stat-label">{{ $stat['label'] }}</div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
+    {{-- ===== Membership CTA ===== --}}
+    <section class="section">
         <div class="container">
             <div class="card cta-band">
                 <div class="card-body">
@@ -30,12 +108,54 @@
                         <h2>{{ __('web.home.cta_heading') }}</h2>
                         <p>{{ __('web.home.cta_text') }}</p>
                     </div>
-                    @if (Route::has('register'))
-                        <a href="{{ localized_route('register') }}" class="btn btn-gold">{{ __('web.home.cta_button') }}</a>
-                    @endif
+                    <a href="{{ localized_route('register') }}" class="btn btn-gold">{{ __('web.home.cta_button') }}</a>
                 </div>
             </div>
         </div>
     </section>
 
+    {{-- ===== Events & announcements ===== --}}
+    @if ($announcements->isNotEmpty())
+        <section class="section section-alt">
+            <div class="container">
+                <x-section-head :eyebrow="__('web.home.events_eyebrow')" :title="__('web.home.events_heading')" />
+                <div class="grid grid-3">
+                    @foreach ($announcements as $item)
+                        <article class="card">
+                            <div class="card-body">
+                                <div class="flex-between flex-wrap gap-3">
+                                    <x-pill :variant="$item->type === 'event' ? 'warning' : 'neutral'">{{ __('web.home.'.($item->type === 'event' ? 'event_upcoming' : 'event_notice')) }}</x-pill>
+                                    @if ($item->event_date)
+                                        <time class="muted event-date" datetime="{{ $item->event_date->toDateString() }}">{{ $item->event_date->translatedFormat('d M Y') }}</time>
+                                    @endif
+                                </div>
+                                <h3>{{ $item->t('title') }}</h3>
+                                @if ($item->t('body'))<p>{{ $item->t('body') }}</p>@endif
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ===== Important links ===== --}}
+    @if ($links->isNotEmpty())
+        <section class="section">
+            <div class="container">
+                <x-section-head :eyebrow="__('web.home.links_eyebrow')" :title="__('web.home.links_heading')" />
+                <div class="grid grid-4">
+                    @foreach ($links as $link)
+                        @php $href = $link->safeLinkUrl(); @endphp
+                        <{{ $href ? 'a' : 'div' }} @if ($href) href="{{ $href }}" @endif class="card link-card">
+                            <div class="card-body">
+                                <h3>{{ $link->t('title') }}</h3>
+                                @if ($link->t('body'))<p class="muted link-card-text">{{ $link->t('body') }}</p>@endif
+                            </div>
+                        </{{ $href ? 'a' : 'div' }}>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
 </x-layouts.web>

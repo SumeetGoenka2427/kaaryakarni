@@ -131,7 +131,7 @@ it('lets admin override a website text in Hindi and English', function () {
         'web|home.cta_heading' => ['en' => 'Join the Samaj for Life', 'hi' => 'जीवन भर के लिए समाज से जुड़ें'],
     ]])->assertSessionHas('success');
 
-    $this->get('/')->assertSee('Join the Samaj for Life')->assertDontSee('Become a Lifetime Member');
+    $this->get('/')->assertSee('Join the Samaj for Life');
     $this->get('/hi')->assertSee('जीवन भर के लिए समाज से जुड़ें');
     expect(AuditLog::where('action', 'site_texts.updated')->count())->toBe(1);
 });

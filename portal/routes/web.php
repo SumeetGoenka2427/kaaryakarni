@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Web\Auth\OtpController;
 use App\Http\Controllers\Web\Auth\RegistrationController;
+use App\Http\Controllers\Web\ContactController;
+use App\Http\Controllers\Web\PageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,7 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::localized(function () {
-    Route::view('/', 'web.home')->name('home');
+    Route::get('/', [PageController::class, 'home'])->name('home');
+    Route::get('about', [PageController::class, 'about'])->name('about');
+    Route::get('committee', [PageController::class, 'committee'])->name('committee');
+    Route::get('membership', [PageController::class, 'membership'])->name('membership');
+    Route::get('contact', [ContactController::class, 'show'])->name('contact');
+    Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:5,10')->name('contact.store');
 
     // Member login / registration (mobile + OTP)
     Route::middleware('guest:member')->group(function () {

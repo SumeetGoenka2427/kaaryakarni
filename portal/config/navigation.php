@@ -56,7 +56,7 @@ return [
             ['route' => 'admin.gallery.index', 'label' => 'Gallery', 'can' => 'content.manage'],
             ['route' => 'admin.committee.index', 'label' => 'Committee', 'can' => 'content.manage'],
             ['route' => 'admin.announcements.index', 'label' => 'Announcements', 'can' => 'content.manage'],
-            ['route' => 'admin.pages.index', 'label' => 'Pages', 'can' => 'content.manage'],
+            ['route' => 'admin.content.index', 'label' => 'Page Content', 'can' => 'content.manage'],
             ['route' => 'admin.contact-messages.index', 'label' => 'Contact Messages', 'can' => 'content.manage'],
         ],
         'Finance' => [

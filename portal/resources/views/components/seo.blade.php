@@ -29,6 +29,6 @@
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:locale" content="{{ app()->getLocale() === 'hi' ? 'hi_IN' : 'en_IN' }}">
 @if ($image)
-<meta property="og:image" content="{{ $image }}">
+<meta property="og:image" content="{{ url($image) }}">
 @endif
 <meta name="twitter:card" content="summary_large_image">
