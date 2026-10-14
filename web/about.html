@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About the Samaj — Khandelwal Samaj Membership Portal</title>
+  <meta name="description" content="History, mission and values of the Khandelwal Samaj, Jaipur.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* Page-local bilingual toggle — About page only */
+    .lang-toggle {
+      position: fixed; top: 14px; right: 14px; z-index: 300;
+      display: flex; background: var(--color-navy-900); border-radius: 999px;
+      padding: 3px; box-shadow: var(--shadow-md); border: 1px solid var(--color-gold-500);
+    }
+    .lang-toggle button {
+      border: none; background: transparent; color: rgba(255,255,255,0.75);
+      font-weight: 700; font-size: 0.78rem; padding: 6px 13px; border-radius: 999px;
+      cursor: pointer; line-height: 1; transition: background 0.15s ease, color 0.15s ease;
+    }
+    .lang-toggle button:hover { color: #fff; }
+    .lang-toggle button:focus-visible { outline: 2px solid var(--color-gold-400); outline-offset: 2px; }
+    .lang-toggle button.is-active { background: var(--color-gold-500); color: var(--color-navy-900); }
+    @media (max-width: 640px) {
+      .lang-toggle { top: auto; bottom: 14px; right: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main" class="skip-link" data-i18n="skip_link">Skip to main content</a>
+
+  <div class="lang-toggle" data-lang-toggle role="group" aria-label="Page language / पृष्ठ भाषा">
+    <button type="button" data-lang="en">EN</button>
+    <button type="button" data-lang="hi">हिं</button>
+  </div>
+
+  <div class="topbar">
+    <div class="container">
+      <div class="topbar-contacts">
+        <span class="topbar-tag" data-i18n="topbar_tag">Khandelwal Samaj, Jaipur</span>
+        <a href="tel:+911411234567">+91 141 123 4567</a>
+        <a href="mailto:info@khandelwalsamajjaipur.org">info@khandelwalsamajjaipur.org</a>
+      </div>
+      <div class="topbar-contacts"><a href="contact.html" data-i18n="topbar_address">Samaj Bhawan, Jaipur</a></div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">KS</span>
+        <span class="brand-text"><strong data-i18n="brand_title">Khandelwal Samaj</strong><span data-i18n="brand_subtitle">Jaipur Membership Portal</span></span>
+      </a>
+      <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu"
+        aria-controls="main-nav"><span></span><span></span><span></span></button>
+      <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="index.html" data-i18n="nav_home">Home</a></li>
+          <li><a href="about.html" aria-current="page" data-i18n="nav_about">About Samaj</a></li>
+          <li><a href="membership.html" data-i18n="nav_membership">Membership</a></li>
+          <li><a href="business-directory.html" data-i18n="nav_directory">Business Directory</a></li>
+          <li><a href="gallery.html" data-i18n="nav_gallery">Gallery</a></li>
+          <li><a href="donations.html" data-i18n="nav_donations">Donations</a></li>
+          <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="login.html" class="btn btn-outline btn-sm" data-i18n="nav_login">Login</a>
+          <a href="register.html" class="btn btn-gold btn-sm" data-i18n="nav_join">Become a Member</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html" data-i18n="nav_home">Home</a> / <span data-i18n="nav_about">About Samaj</span></div>
+        <h1 data-i18n="hero_title">About Khandelwal Samaj, Jaipur</h1>
+        <p data-i18n="hero_subtitle">A community organization dedicated to the welfare, unity and progress of the Khandelwal families of Jaipur.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="grid grid-2" style="align-items:center;">
+          <div>
+            <h2 data-i18n="history_heading">Our History</h2>
+            <p data-i18n="history_p1">The Khandelwal Samaj of Jaipur has served the community for over four decades, providing a platform for
+              members to connect, support one another and preserve shared traditions. What began as informal gatherings
+              has grown into a structured organization offering welfare, education support and community services.</p>
+            <p data-i18n="history_p2">This membership portal continues that legacy by making Samaj services — membership, business
+              networking, donations and community information — accessible online for every member.</p>
+          </div>
+          <div class="card-media" style="border-radius:var(--radius-lg);background:url('assets/images/new/2.jpg') center/cover;position:relative;">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="grid grid-3">
+          <div class="card">
+            <div class="card-body">
+              <h3 data-i18n="mission_heading">Our Mission</h3>
+              <p data-i18n="mission_text">To strengthen the Khandelwal community in Jaipur through membership services, welfare support and
+                trustworthy business collaboration.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h3 data-i18n="vision_heading">Our Vision</h3>
+              <p data-i18n="vision_text">A connected, self-reliant Samaj where every member has access to community support, opportunity and
+                shared cultural identity.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h3 data-i18n="values_heading">Our Values</h3>
+              <p data-i18n="values_text">Trust, service, unity and respect for tradition — guiding every initiative undertaken by the Samaj.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="leadership_eyebrow">Leadership</span>
+          <h2 data-i18n="leadership_heading">Samaj Managing Committee</h2>
+        </div>
+        <div class="grid grid-4" id="leadership-grid"></div>
+        <div class="text-center" style="margin-top:32px;">
+          <a href="committee-members.html" class="btn btn-outline" data-i18n="leadership_btn">View All Committee Members</a>
+          <p class="muted" style="margin-top:10px;font-size:0.85rem;" data-i18n="leadership_note">Includes general Samaj committee members shown with name and designation only.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand" style="color:#fff;margin-bottom:12px;">
+            <span class="brand-mark" aria-hidden="true">KS</span>
+            <span class="brand-text"><strong style="color:#fff;" data-i18n="brand_title">Khandelwal Samaj</strong><span
+                style="color:var(--color-gold-400);" data-i18n="brand_subtitle">Jaipur Membership Portal</span></span>
+          </a>
+          <p data-i18n="footer_tagline">Serving the Khandelwal community of Jaipur through membership, welfare, business collaboration and cultural
+            life.</p>
+        </div>
+        <div>
+          <h4 data-i18n="footer_explore">Explore</h4>
+          <ul class="footer-links">
+            <li><a href="about.html" data-i18n="nav_about">About Samaj</a></li>
+            <li><a href="membership.html" data-i18n="nav_membership">Membership</a></li>
+            <li><a href="business-directory.html" data-i18n="nav_directory">Business Directory</a></li>
+            <li><a href="gallery.html" data-i18n="nav_gallery">Gallery</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer_account">Account</h4>
+          <ul class="footer-links">
+            <li><a href="login.html" data-i18n="footer_member_login">Member Login</a></li>
+            <li><a href="register.html" data-i18n="footer_register">Register</a></li>
+            <li><a href="donations.html" data-i18n="footer_donate">Donate</a></li>
+            <li><a href="contact.html" data-i18n="footer_contact_us">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer_office">Samaj Bhawan Office</h4>
+          <ul class="footer-links">
+            <li data-i18n="footer_address">Chandpole, Jaipur, Rajasthan</li>
+            <li><a href="tel:+911411234567">+91 141 123 4567</a></li>
+            <li><a href="mailto:info@khandelwalsamajjaipur.org">info@khandelwalsamajjaipur.org</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span data-i18n="footer_copyright">&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+        <span data-i18n="footer_built">Built for the Khandelwal Samaj community — Jaipur.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../shared/js/store.js"></script>
+  <script src="../shared/js/session.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById('leadership-grid');
+      var leadership = KKStore.getCommitteeMembers().filter(function (m) { return m.tier === 'leadership'; });
+      leadership.forEach(function (m, i) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML =
+          '<div class="card-body text-center">' +
+          '<img src="https://i.pravatar.cc/160?img=' + (11 + i) + '" alt="" style="height:96px;width:96px;border-radius:50%;margin:0 auto 12px;object-fit:cover;border:2px solid var(--color-gold-500);">' +
+          '<h3 style="font-size:1rem;">' + m.name + '</h3>' +
+          '<p class="muted" style="margin:0;font-size:0.85rem;">' + m.designation + '</p>' +
+          '</div>';
+        grid.appendChild(card);
+      });
+    })();
+  </script>
+
+  <script>
+    // English/Hindi toggle for this page only — preference remembered per-browser for the About page.
+    (function () {
+      var LANG_KEY = 'kk_about_lang';
+      var EN = {
+        skip_link: 'Skip to main content',
+        topbar_tag: 'Khandelwal Samaj, Jaipur',
+        topbar_address: 'Samaj Bhawan, Jaipur',
+        brand_title: 'Khandelwal Samaj',
+        brand_subtitle: 'Jaipur Membership Portal',
+        nav_home: 'Home',
+        nav_about: 'About Samaj',
+        nav_membership: 'Membership',
+        nav_directory: 'Business Directory',
+        nav_gallery: 'Gallery',
+        nav_donations: 'Donations',
+        nav_contact: 'Contact',
+        nav_login: 'Login',
+        nav_join: 'Become a Member',
+        hero_title: 'About Khandelwal Samaj, Jaipur',
+        hero_subtitle: 'A community organization dedicated to the welfare, unity and progress of the Khandelwal families of Jaipur.',
+        history_heading: 'Our History',
+        history_p1: 'The Khandelwal Samaj of Jaipur has served the community for over four decades, providing a platform for members to connect, support one another and preserve shared traditions. What began as informal gatherings has grown into a structured organization offering welfare, education support and community services.',
+        history_p2: 'This membership portal continues that legacy by making Samaj services — membership, business networking, donations and community information — accessible online for every member.',
+        mission_heading: 'Our Mission',
+        mission_text: 'To strengthen the Khandelwal community in Jaipur through membership services, welfare support and trustworthy business collaboration.',
+        vision_heading: 'Our Vision',
+        vision_text: 'A connected, self-reliant Samaj where every member has access to community support, opportunity and shared cultural identity.',
+        values_heading: 'Our Values',
+        values_text: 'Trust, service, unity and respect for tradition — guiding every initiative undertaken by the Samaj.',
+        leadership_eyebrow: 'Leadership',
+        leadership_heading: 'Samaj Managing Committee',
+        leadership_btn: 'View All Committee Members',
+        leadership_note: 'Includes general Samaj committee members shown with name and designation only.',
+        footer_tagline: 'Serving the Khandelwal community of Jaipur through membership, welfare, business collaboration and cultural life.',
+        footer_explore: 'Explore',
+        footer_account: 'Account',
+        footer_office: 'Samaj Bhawan Office',
+        footer_member_login: 'Member Login',
+        footer_register: 'Register',
+        footer_donate: 'Donate',
+        footer_contact_us: 'Contact Us',
+        footer_address: 'Chandpole, Jaipur, Rajasthan',
+        footer_copyright: '© 2026 Khandelwal Samaj, Jaipur. All rights reserved.',
+        footer_built: 'Built for the Khandelwal Samaj community — Jaipur.'
+      };
+      var HI = {
+        skip_link: 'मुख्य सामग्री पर जाएं',
+        topbar_tag: 'खंडेलवाल समाज, जयपुर',
+        topbar_address: 'समाज भवन, जयपुर',
+        brand_title: 'खंडेलवाल समाज',
+        brand_subtitle: 'जयपुर सदस्यता पोर्टल',
+        nav_home: 'होम',
+        nav_about: 'समाज परिचय',
+        nav_membership: 'सदस्यता',
+        nav_directory: 'व्यवसाय निर्देशिका',
+        nav_gallery: 'गैलरी',
+        nav_donations: 'दान',
+        nav_contact: 'संपर्क करें',
+        nav_login: 'लॉगिन',
+        nav_join: 'सदस्य बनें',
+        hero_title: 'खंडेलवाल समाज, जयपुर के बारे में',
+        hero_subtitle: 'जयपुर के खंडेलवाल परिवारों के कल्याण, एकता और उन्नति के लिए समर्पित एक सामुदायिक संगठन।',
+        history_heading: 'हमारा इतिहास',
+        history_p1: 'जयपुर के खंडेलवाल समाज ने चार दशकों से अधिक समय तक समुदाय की सेवा की है, सदस्यों को आपस में जुड़ने, एक-दूसरे का सहयोग करने और साझा परंपराओं को संरक्षित रखने का मंच प्रदान करते हुए। अनौपचारिक सभाओं के रूप में शुरू हुआ यह प्रयास आज कल्याण, शिक्षा सहायता और सामुदायिक सेवाएं प्रदान करने वाला एक सुव्यवस्थित संगठन बन चुका है।',
+        history_p2: 'यह सदस्यता पोर्टल उसी विरासत को आगे बढ़ाते हुए समाज की सेवाओं — सदस्यता, व्यावसायिक नेटवर्किंग, दान और सामुदायिक जानकारी — को हर सदस्य के लिए ऑनलाइन सुलभ बनाता है।',
+        mission_heading: 'हमारा उद्देश्य',
+        mission_text: 'सदस्यता सेवाओं, कल्याण सहायता और विश्वसनीय व्यावसायिक सहयोग के माध्यम से जयपुर में खंडेलवाल समुदाय को सशक्त बनाना।',
+        vision_heading: 'हमारी दृष्टि',
+        vision_text: 'एक जुड़ा हुआ, आत्मनिर्भर समाज जहां हर सदस्य को सामुदायिक सहयोग, अवसर और साझा सांस्कृतिक पहचान उपलब्ध हो।',
+        values_heading: 'हमारे मूल्य',
+        values_text: 'विश्वास, सेवा, एकता और परंपरा का सम्मान — समाज की हर पहल का मार्गदर्शन करने वाले मूल्य।',
+        leadership_eyebrow: 'नेतृत्व',
+        leadership_heading: 'समाज प्रबंध समिति',
+        leadership_btn: 'सभी समिति सदस्य देखें',
+        leadership_note: 'इसमें केवल नाम और पदनाम के साथ सामान्य समाज समिति सदस्य दिखाए गए हैं।',
+        footer_tagline: 'सदस्यता, कल्याण, व्यावसायिक सहयोग और सांस्कृतिक गतिविधियों के माध्यम से जयपुर के खंडेलवाल समुदाय की सेवा।',
+        footer_explore: 'एक्सप्लोर करें',
+        footer_account: 'खाता',
+        footer_office: 'समाज भवन कार्यालय',
+        footer_member_login: 'सदस्य लॉगिन',
+        footer_register: 'पंजीकरण करें',
+        footer_donate: 'दान करें',
+        footer_contact_us: 'संपर्क करें',
+        footer_address: 'चांदपोल, जयपुर, राजस्थान',
+        footer_copyright: '© 2026 खंडेलवाल समाज, जयपुर। सर्वाधिकार सुरक्षित।',
+        footer_built: 'खंडेलवाल समाज समुदाय — जयपुर के लिए निर्मित।'
+      };
+
+      function getLang() {
+        return localStorage.getItem(LANG_KEY) === 'hi' ? 'hi' : 'en';
+      }
+
+      function applyLang(lang) {
+        var dict = lang === 'hi' ? HI : EN;
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          var key = el.getAttribute('data-i18n');
+          if (dict[key]) el.textContent = dict[key];
+        });
+        document.querySelectorAll('[data-lang-toggle] button').forEach(function (btn) {
+          var isActive = btn.getAttribute('data-lang') === lang;
+          btn.classList.toggle('is-active', isActive);
+          btn.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      function setLang(lang) {
+        localStorage.setItem(LANG_KEY, lang === 'hi' ? 'hi' : 'en');
+        applyLang(lang);
+      }
+
+      document.querySelectorAll('[data-lang-toggle] button').forEach(function (btn) {
+        btn.addEventListener('click', function () { setLang(btn.getAttribute('data-lang')); });
+      });
+
+      applyLang(getLang());
+    })();
+  </script>
+</body>
+
+</html>

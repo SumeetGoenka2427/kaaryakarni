@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaipur Areas — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span>
+    </div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html" aria-current="page">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Jaipur Areas</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Jaipur Area / Locality Management</h2>
+          <p class="muted">These areas populate the Area/Locality field on member registration and business submission forms.</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="add-area-btn">+ Add Area</button>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Order</th><th>Area Name</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="area-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="state-block" id="area-empty" hidden><h3>No areas configured</h3><p>Add the first Jaipur area/locality.</p></div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function render() {
+      var tbody = document.getElementById('area-rows');
+      tbody.innerHTML = '';
+      var areas = KKStore.all('areas').sort(function (a, b) { return a.order - b.order; });
+      if (!areas.length) { document.getElementById('area-empty').hidden = false; return; }
+      document.getElementById('area-empty').hidden = true;
+      areas.forEach(function (area, idx) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td data-label="Order">' +
+            '<button class="btn btn-outline btn-sm" data-move="up" ' + (idx === 0 ? 'disabled' : '') + ' aria-label="Move up">&uarr;</button> ' +
+            '<button class="btn btn-outline btn-sm" data-move="down" ' + (idx === areas.length - 1 ? 'disabled' : '') + ' aria-label="Move down">&darr;</button>' +
+          '</td>' +
+          '<td data-label="Area Name">' + area.name + '</td>' +
+          '<td data-label="Status"><span class="pill ' + (area.active ? 'pill-success' : 'pill-neutral') + '">' + (area.active ? 'Active' : 'Inactive') + '</span></td>' +
+          '<td data-label="Actions"><div class="row-actions">' +
+            '<button class="btn btn-outline btn-sm" data-edit>Edit</button>' +
+            '<button class="btn btn-outline btn-sm" data-toggle>' + (area.active ? 'Deactivate' : 'Activate') + '</button>' +
+            '<button class="btn btn-danger-outline btn-sm" data-delete>Delete</button>' +
+          '</div></td>';
+
+        tr.querySelector('[data-move="up"]').addEventListener('click', function () { swap(area, areas[idx - 1]); });
+        tr.querySelector('[data-move="down"]').addEventListener('click', function () { swap(area, areas[idx + 1]); });
+        tr.querySelector('[data-edit]').addEventListener('click', function () { openAreaModal(area); });
+        tr.querySelector('[data-toggle]').addEventListener('click', function () {
+          KKConfirm('Are you sure you want to ' + (area.active ? 'deactivate' : 'activate') + ' "' + area.name + '"?', function () {
+            KKStore.update('areas', area.id, { active: !area.active });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, area.active ? 'area-deactivate' : 'area-activate', area.id, area.name);
+            KKToast('Area ' + (area.active ? 'deactivated' : 'activated') + '.', 'success');
+            render();
+          }, { confirmLabel: area.active ? 'Deactivate' : 'Activate' });
+        });
+        tr.querySelector('[data-delete]').addEventListener('click', function () {
+          KKConfirm('Delete area "' + area.name + '"? This cannot be undone.', function () {
+            KKStore.remove('areas', area.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'area-delete', area.id, area.name);
+            KKToast('Area deleted.', 'success');
+            render();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Area' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function swap(a, b) {
+      if (!a || !b) return;
+      var ao = a.order, bo = b.order;
+      KKStore.update('areas', a.id, { order: bo });
+      KKStore.update('areas', b.id, { order: ao });
+      render();
+    }
+
+    function openAreaModal(area) {
+      var isEdit = !!area;
+      KKModal.open({
+        title: isEdit ? 'Edit Area' : 'Add Area',
+        bodyHtml:
+          '<div class="field"><label for="area-name-input">Area / Locality Name <span class="required">*</span></label>' +
+          '<input type="text" id="area-name-input" value="' + (area ? area.name : '') + '" placeholder="e.g. Mansarovar"></div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: isEdit ? 'Save Changes' : 'Add Area', className: 'btn btn-primary', onClick: function (close) {
+            var name = document.getElementById('area-name-input').value.trim();
+            if (!name) return;
+            if (isEdit) {
+              KKStore.update('areas', area.id, { name: name });
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'area-edit', area.id, name);
+              KKToast('Area updated.', 'success');
+            } else {
+              var maxOrder = KKStore.all('areas').reduce(function (m, a) { return Math.max(m, a.order || 0); }, 0);
+              var created = KKStore.add('areas', { name: name, active: true, order: maxOrder + 1 });
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'area-add', created.id, name);
+              KKToast('Area added.', 'success');
+            }
+            close();
+            render();
+          } }
+        ]
+      });
+    }
+
+    document.getElementById('add-area-btn').addEventListener('click', function () { openAreaModal(null); });
+    render();
+  })();
+</script>
+</body>
+</html>

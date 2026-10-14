@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Login — Khandelwal Samaj Membership Portal</title>
+<meta name="description" content="Login to your Khandelwal Samaj member account using mobile OTP verification.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Jaipur Membership Portal</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html">Business Directory</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="donations.html">Donations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta"><a href="register.html" class="btn btn-gold btn-sm">Become a Member</a></div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" style="padding-top:56px;">
+    <div class="container">
+      <div class="auth-shell" data-otp-flow>
+        <div class="text-center" style="margin-bottom:24px;">
+          <h1 style="font-size:1.6rem;">Member Login</h1>
+          <p class="muted" style="margin:0;">Login securely using your registered mobile number.</p>
+        </div>
+
+        <form data-validate novalidate>
+          <!-- Step 1: mobile number -->
+          <div data-step="mobile">
+            <div class="field" style="margin-bottom:20px;">
+              <label for="login-mobile">Mobile Number <span class="required">*</span></label>
+              <input type="tel" id="login-mobile" name="mobile" inputmode="numeric" maxlength="10" placeholder="98XXXXXXXX" data-rule="mobile" required>
+              <span class="hint">Enter the 10-digit mobile number registered with your Samaj profile.</span>
+              <span class="error-text">Please enter a valid 10-digit mobile number.</span>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" data-action="send-otp">
+              <span class="spinner" aria-hidden="true"></span> Send OTP
+            </button>
+          </div>
+
+          <!-- Step 2: OTP verification -->
+          <div data-step="otp" hidden>
+            <div class="form-alert form-alert-warning" data-dev-otp-hint></div>
+            <div class="field" style="margin-bottom:12px;">
+              <label>Enter 6-Digit OTP <span class="required">*</span></label>
+              <div class="otp-inputs">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 1">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
+              </div>
+            </div>
+            <p class="form-alert form-alert-danger" data-otp-error hidden style="margin-top:8px;"></p>
+            <div class="resend-row" style="margin-bottom:16px;">
+              <span class="muted" data-attempts-left>3 attempts left</span>
+              <span>
+                <button type="button" class="btn btn-outline btn-sm" data-action="resend-otp" disabled>Resend OTP</button>
+                <span class="muted" data-resend-timer>Resend OTP in 30s</span>
+              </span>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" data-action="verify-otp">
+              <span class="spinner" aria-hidden="true"></span> Verify &amp; Login
+            </button>
+          </div>
+
+          <!-- Step 3: outcome -->
+          <div data-step="success" hidden class="text-center">
+            <div id="login-found" hidden>
+              <div class="form-alert form-alert-success">Mobile number verified. Redirecting to your member dashboard…</div>
+              <a href="member/dashboard.html" id="continue-to-dashboard" class="btn btn-primary btn-block">Go to Dashboard</a>
+            </div>
+            <div id="login-not-found" hidden>
+              <div class="form-alert form-alert-warning">We couldn't find a Samaj member profile for this mobile number.</div>
+              <a href="register.html" class="btn btn-primary btn-block">Create Your Member Profile</a>
+            </div>
+          </div>
+        </form>
+
+        <p class="text-center muted" style="margin-top:24px;font-size:0.9rem;">New to the Samaj portal? <a href="register.html">Create your member profile</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="contact.html">Need help logging in? Contact the Samaj office</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  (function () {
+    var flow = document.querySelector('[data-otp-flow]');
+    if (!flow) return;
+    flow.addEventListener('kk:otp-verified', function (e) {
+      var mobile = e.detail && e.detail.mobile;
+      var member = KKStore.getMemberByMobile(mobile);
+      var foundBox = document.getElementById('login-found');
+      var notFoundBox = document.getElementById('login-not-found');
+      if (member) {
+        KKSession.loginMember(member.id);
+        foundBox.hidden = false;
+        notFoundBox.hidden = true;
+        setTimeout(function () { window.location.href = 'member/dashboard.html'; }, 1200);
+      } else {
+        foundBox.hidden = true;
+        notFoundBox.hidden = false;
+      }
+    });
+  })();
+</script>
+</body>
+</html>

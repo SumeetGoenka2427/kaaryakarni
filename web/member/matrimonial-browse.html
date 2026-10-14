@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Matrimonial Profiles — Khandelwal Samaj Membership Portal</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../../shared/js/store.js"></script>
+<script src="../../shared/js/session.js"></script>
+<script>var CURRENT_MEMBER = KKSession.requireMember('../login.html');</script>
+<style>
+  .match-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
+  @media (max-width: 1024px) { .match-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px) { .match-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .match-grid { grid-template-columns: 1fr; } }
+  .match-card { cursor: pointer; border: none; text-align: left; padding: 0; font: inherit; color: inherit; background: #fff; width: 100%; }
+  .match-card-media { aspect-ratio: 1/1; background: var(--color-bg-navy-tint); }
+  .match-card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .match-card-media .thumb-fallback {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; font-weight: 700; color: var(--color-navy-800); background: var(--color-bg-navy-tint);
+  }
+  .profile-modal-overlay {
+    position: fixed; inset: 0; background: rgba(10,15,25,0.6); display: none; align-items: center; justify-content: center;
+    z-index: 300; padding: var(--space-5); overflow-y: auto;
+  }
+  .profile-modal-overlay.is-open { display: flex; }
+  .profile-modal-box {
+    background: #fff; max-width: 460px; width: 100%; border-radius: var(--radius-lg); padding: var(--space-6);
+    margin: var(--space-6) 0; position: relative;
+  }
+  .profile-modal-close {
+    position: absolute; top: 14px; right: 14px; background: var(--color-bg-navy-tint); border: none; width: 36px; height: 36px;
+    border-radius: 50%; font-size: 1.1rem; cursor: pointer;
+  }
+  .profile-modal-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; display: block; }
+  .bio-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--color-border); gap: 12px; }
+  .bio-row span:first-child { color: var(--color-text-muted); }
+  .bio-row strong { text-align: right; }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Member Area</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Member">
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li class="nav-dropdown" data-nav-dropdown>
+          <button type="button" class="nav-dropdown-toggle is-active" data-nav-dropdown-toggle aria-haspopup="true" aria-expanded="false">Matrimonial <span class="nav-dropdown-caret" aria-hidden="true">&#9662;</span></button>
+          <ul class="nav-dropdown-menu" data-nav-dropdown-menu hidden>
+            <li><a href="business.html">Business</a></li>
+            <li><a href="matrimonial.html">My Matrimonial Profiles</a></li>
+            <li><a href="matrimonial-browse.html" aria-current="page">Browse Matches</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav-cta">
+        <a href="../index.html" class="btn btn-outline btn-sm">Public Site</a>
+        <button type="button" class="btn btn-primary btn-sm" id="logout-btn">Logout</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" style="padding-top:40px;padding-bottom:16px;">
+    <div class="container">
+      <div class="flex-between" style="flex-wrap:wrap;gap:12px;margin-bottom:8px;">
+        <h1 style="margin:0;">Browse Matrimonial Profiles</h1>
+        <a href="matrimonial.html" class="btn btn-outline btn-sm">&larr; My Matrimonial Profiles</a>
+      </div>
+      <div class="form-alert form-alert-info">
+        Showing basic details only for admin-approved profiles. Contact numbers and full bio data are never shown here —
+        an approved profile's owner controls what is shared further, and that stays a member-to-member conversation
+        outside this page.
+      </div>
+
+      <div class="filters-bar">
+        <div class="field"><label for="mf-gender">Gender</label>
+          <select id="mf-gender"><option value="">Any</option><option value="Male">Male</option><option value="Female">Female</option></select>
+        </div>
+        <div class="field"><label for="mf-age-min">Min Age</label><input type="number" id="mf-age-min" min="18" max="80" placeholder="18"></div>
+        <div class="field"><label for="mf-age-max">Max Age</label><input type="number" id="mf-age-max" min="18" max="80" placeholder="60"></div>
+        <div class="field"><label for="mf-area">Area / Locality</label><select id="mf-area"><option value="">Any Area</option></select></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <p class="muted" id="result-count" style="margin-bottom:16px;"></p>
+      <div class="match-grid" id="match-grid"></div>
+      <div class="state-block" id="match-empty" hidden>
+        <div class="state-icon" aria-hidden="true">💛</div>
+        <h3>No matching approved profiles found</h3>
+        <p>Try clearing a filter, or check back later as more profiles are approved by the Samaj admin.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="profile-modal-overlay" id="profile-modal" role="dialog" aria-modal="true" aria-label="Profile details">
+  <div class="profile-modal-box">
+    <button type="button" class="profile-modal-close" id="profile-modal-close" aria-label="Close">&times;</button>
+    <div id="profile-modal-content"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="dashboard.html">Back to Dashboard</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+  (function () {
+    var member = CURRENT_MEMBER;
+    if (!member) return;
+
+    var areaSelect = document.getElementById('mf-area');
+    KKStore.all('areas').filter(function (a) { return a.active; }).sort(function (a, b) { return a.order - b.order; })
+      .forEach(function (a) { var opt = document.createElement('option'); opt.value = a.name; opt.textContent = a.name; areaSelect.appendChild(opt); });
+
+    function initials(name) {
+      return (name || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+    }
+
+    var all = KKStore.getApprovedMatrimonial().filter(function (m) { return m.memberId !== member.id; });
+
+    function render() {
+      var gender = document.getElementById('mf-gender').value;
+      var ageMin = parseInt(document.getElementById('mf-age-min').value, 10);
+      var ageMax = parseInt(document.getElementById('mf-age-max').value, 10);
+      var area = document.getElementById('mf-area').value;
+
+      var filtered = all.filter(function (m) {
+        if (gender && m.gender !== gender) return false;
+        if (!isNaN(ageMin) && (m.age || 0) < ageMin) return false;
+        if (!isNaN(ageMax) && (m.age || 0) > ageMax) return false;
+        if (area && m.area !== area) return false;
+        return true;
+      });
+
+      document.getElementById('result-count').textContent =
+        filtered.length + (filtered.length === 1 ? ' profile found' : ' profiles found');
+
+      var grid = document.getElementById('match-grid');
+      grid.innerHTML = '';
+      document.getElementById('match-empty').hidden = !!filtered.length;
+
+      filtered.forEach(function (m) {
+        var card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'card match-card';
+        var media = (m.photos && m.photos[0])
+          ? '<img src="' + m.photos[0] + '" alt="">'
+          : '<div class="thumb-fallback">' + initials(m.name) + '</div>';
+        card.innerHTML =
+          '<div class="match-card-media">' + media + '</div>' +
+          '<div class="card-body">' +
+          '<div class="flex-between"><h3 style="margin:0;font-size:1rem;">' + m.name + '</h3><span class="pill pill-success">Approved</span></div>' +
+          '<p class="muted" style="margin:2px 0 0;font-size:0.85rem;">' + (m.age || '—') + ' yrs · ' + (m.gender || '—') + '</p>' +
+          '<p class="muted" style="margin:2px 0 0;font-size:0.82rem;">' + (m.occupation || '—') + ' · ' + (m.education || '—') + '</p>' +
+          '<p class="muted" style="margin:2px 0 0;font-size:0.82rem;">' + (m.area || '—') + ', Jaipur</p>' +
+          '</div>';
+        card.addEventListener('click', function () { openProfileModal(m); });
+        grid.appendChild(card);
+      });
+    }
+
+    function bioRow(label, value) {
+      return '<div class="bio-row"><span>' + label + '</span><strong>' + (value || '—') + '</strong></div>';
+    }
+
+    function openProfileModal(m) {
+      var photo = (m.photos && m.photos[0])
+        ? '<img class="profile-modal-photo" src="' + m.photos[0] + '" alt="">'
+        : '<div class="profile-modal-photo thumb-fallback" style="border-radius:50%;">' + initials(m.name) + '</div>';
+      var pdfHtml = m.bioDataPdf
+        ? '<a href="' + m.bioDataPdf.dataUrl + '" target="_blank" rel="noopener" class="btn btn-outline btn-sm btn-block" style="margin-top:12px;">View Bio Data PDF</a>'
+        : '';
+      document.getElementById('profile-modal-content').innerHTML =
+        photo +
+        '<h2 style="text-align:center;margin-bottom:2px;">' + m.name + '</h2>' +
+        '<p class="muted" style="text-align:center;margin-top:0;">' + (m.area ? m.area + ', Jaipur' : 'Jaipur') + '</p>' +
+        '<div style="margin-top:10px;">' +
+        bioRow('Age', m.age) + bioRow('Gender', m.gender) + bioRow('Height', m.height) +
+        bioRow('Native Place', m.nativePlace) + bioRow("Father's Name", m.fatherName) + bioRow("Mother's Name", m.motherName) +
+        bioRow('Education', m.education) + bioRow('Occupation', m.occupation) +
+        '</div>' +
+        (m.about ? '<p style="margin-top:14px;">' + m.about + '</p>' : '') +
+        pdfHtml +
+        '<p class="muted" style="text-align:center;margin-top:14px;font-size:0.78rem;">Contact details are never shown here.</p>';
+      document.getElementById('profile-modal').classList.add('is-open');
+    }
+    document.getElementById('profile-modal-close').addEventListener('click', function () {
+      document.getElementById('profile-modal').classList.remove('is-open');
+    });
+    document.getElementById('profile-modal').addEventListener('click', function (e) {
+      if (e.target === this) this.classList.remove('is-open');
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') document.getElementById('profile-modal').classList.remove('is-open');
+    });
+
+    ['mf-gender', 'mf-age-min', 'mf-age-max', 'mf-area'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', render);
+      document.getElementById(id).addEventListener('change', render);
+    });
+    render();
+
+    document.getElementById('logout-btn').addEventListener('click', function () {
+      KKSession.logoutMember();
+      window.location.href = '../index.html';
+    });
+  })();
+</script>
+</body>
+</html>

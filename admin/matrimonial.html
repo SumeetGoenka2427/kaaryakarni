@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrimonial — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html" aria-current="page">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Matrimonial</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div><h2>Matrimonial Profile Management</h2><p class="muted">Review, approve and manage private matrimonial profiles. Only approved profiles become visible to eligible, logged-in members.</p></div>
+      </div>
+
+      <div class="form-alert form-alert-warning">
+        <span>&#128274;</span>
+        <span><strong>Private data:</strong> Matrimonial profiles contain sensitive personal information. They must never be publicly browsable and are only shown to approved, logged-in members. Handle every detail on this page with care.</span>
+      </div>
+
+      <div class="tabs" data-tabs="mat">
+        <button type="button" class="tab-btn is-active" data-tab="pending">Pending <span class="count" id="count-pending">0</span></button>
+        <button type="button" class="tab-btn" data-tab="approved">Approved <span class="count" id="count-approved">0</span></button>
+        <button type="button" class="tab-btn" data-tab="rejected">Rejected <span class="count" id="count-rejected">0</span></button>
+        <button type="button" class="tab-btn" data-tab="hidden">Hidden <span class="count" id="count-hidden">0</span></button>
+      </div>
+
+      <div class="filters-bar">
+        <div class="field search-field"><label for="f-search">Search</label><input type="search" id="f-search" placeholder="Search by name or area"></div>
+      </div>
+
+      <div data-tab-panel="pending" data-tabs-group="mat" class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Name</th><th>Age / Gender</th><th>Area</th><th>Submitted</th><th>Actions</th></tr></thead><tbody id="rows-pending"></tbody></table></div></div>
+        <div class="state-block" id="empty-pending" hidden><h3>No pending profiles</h3><p>New matrimonial submissions will appear here for review.</p></div>
+      </div>
+      <div data-tab-panel="approved" data-tabs-group="mat" class="admin-panel" hidden>
+        <div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Name</th><th>Age / Gender</th><th>Area</th><th>Actions</th></tr></thead><tbody id="rows-approved"></tbody></table></div></div>
+        <div class="state-block" id="empty-approved" hidden><h3>No approved profiles</h3><p>Approved profiles will be visible to eligible logged-in members.</p></div>
+      </div>
+      <div data-tab-panel="rejected" data-tabs-group="mat" class="admin-panel" hidden>
+        <div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Name</th><th>Reason</th><th>Actions</th></tr></thead><tbody id="rows-rejected"></tbody></table></div></div>
+        <div class="state-block" id="empty-rejected" hidden><h3>No rejected profiles</h3><p>Profiles you reject will appear here with their reason.</p></div>
+      </div>
+      <div data-tab-panel="hidden" data-tabs-group="mat" class="admin-panel" hidden>
+        <div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Name</th><th>Area</th><th>Actions</th></tr></thead><tbody id="rows-hidden"></tbody></table></div></div>
+        <div class="state-block" id="empty-hidden" hidden><h3>No hidden profiles</h3><p>Profiles hidden from members will appear here.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function memberName(id) { var m = KKStore.findById('members', id); return m ? m.name : 'Unknown member'; }
+    function searchTerm() { return document.getElementById('f-search').value.trim().toLowerCase(); }
+    function matchesSearch(m) {
+      var term = searchTerm();
+      return !term || (m.name + ' ' + (m.area || '')).toLowerCase().indexOf(term) !== -1;
+    }
+
+    function render() {
+      var all = KKStore.all('matrimonial').filter(matchesSearch);
+      var byStatus = { pending: [], approved: [], rejected: [], hidden: [] };
+      all.forEach(function (m) { (byStatus[m.status] || byStatus.pending).push(m); });
+
+      document.getElementById('count-pending').textContent = byStatus.pending.length;
+      document.getElementById('count-approved').textContent = byStatus.approved.length;
+      document.getElementById('count-rejected').textContent = byStatus.rejected.length;
+      document.getElementById('count-hidden').textContent = byStatus.hidden.length;
+
+      renderPending(byStatus.pending);
+      renderApproved(byStatus.approved);
+      renderRejected(byStatus.rejected);
+      renderHidden(byStatus.hidden);
+    }
+
+    function renderPending(list) {
+      var tbody = document.getElementById('rows-pending');
+      tbody.innerHTML = '';
+      document.getElementById('empty-pending').hidden = !!list.length;
+      list.forEach(function (m) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Name">' + m.name + '</td><td data-label="Age / Gender">' + m.age + ' / ' + m.gender + '</td><td data-label="Area">' + (m.area || '—') + '</td>' +
+          '<td data-label="Submitted">' + new Date(m.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions"><button class="btn btn-outline btn-sm" data-view>View</button><button class="btn btn-primary btn-sm" data-approve>Approve</button><button class="btn btn-danger-outline btn-sm" data-reject>Reject</button></div></td>';
+        tr.querySelector('[data-view]').addEventListener('click', function () { viewProfile(m); });
+        tr.querySelector('[data-approve]').addEventListener('click', function () {
+          KKConfirm('Approve the matrimonial profile for "' + m.name + '"? It will become visible to eligible logged-in members only — never publicly.', function () {
+            KKStore.update('matrimonial', m.id, { status: 'approved' });
+            KKStore.add('notifications', { memberId: m.memberId, title: 'Matrimonial Profile Approved', message: 'Your matrimonial profile has been approved and is now visible to eligible logged-in members.', type: 'matrimonial', read: false });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'matrimonial-approve', m.id, m.name);
+            KKToast('Profile approved.', 'success');
+            render();
+          }, { confirmLabel: 'Approve' });
+        });
+        tr.querySelector('[data-reject]').addEventListener('click', function () { rejectProfile(m); });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderApproved(list) {
+      var tbody = document.getElementById('rows-approved');
+      tbody.innerHTML = '';
+      document.getElementById('empty-approved').hidden = !!list.length;
+      list.forEach(function (m) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Name">' + m.name + '</td><td data-label="Age / Gender">' + m.age + ' / ' + m.gender + '</td><td data-label="Area">' + (m.area || '—') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions"><button class="btn btn-outline btn-sm" data-view>View</button><button class="btn btn-danger-outline btn-sm" data-hide>Hide</button></div></td>';
+        tr.querySelector('[data-view]').addEventListener('click', function () { viewProfile(m); });
+        tr.querySelector('[data-hide]').addEventListener('click', function () {
+          KKConfirm('Hide the profile for "' + m.name + '" from eligible members?', function () {
+            KKStore.update('matrimonial', m.id, { status: 'hidden' });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'matrimonial-hide', m.id, m.name);
+            KKToast('Profile hidden.', 'success');
+            render();
+          }, { confirmLabel: 'Hide', danger: true });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderRejected(list) {
+      var tbody = document.getElementById('rows-rejected');
+      tbody.innerHTML = '';
+      document.getElementById('empty-rejected').hidden = !!list.length;
+      list.forEach(function (m) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Name">' + m.name + '</td><td data-label="Reason">' + (m.rejectionReason || '—') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions"><button class="btn btn-outline btn-sm" data-view>View</button><button class="btn btn-danger-outline btn-sm" data-delete>Delete</button></div></td>';
+        tr.querySelector('[data-view]').addEventListener('click', function () { viewProfile(m); });
+        tr.querySelector('[data-delete]').addEventListener('click', function () {
+          KKConfirm('Permanently delete the matrimonial profile for "' + m.name + '"? This cannot be undone.', function () {
+            KKStore.remove('matrimonial', m.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'matrimonial-delete', m.id, m.name);
+            KKToast('Profile deleted.', 'success');
+            render();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Profile' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderHidden(list) {
+      var tbody = document.getElementById('rows-hidden');
+      tbody.innerHTML = '';
+      document.getElementById('empty-hidden').hidden = !!list.length;
+      list.forEach(function (m) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Name">' + m.name + '</td><td data-label="Area">' + (m.area || '—') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions"><button class="btn btn-outline btn-sm" data-view>View</button><button class="btn btn-primary btn-sm" data-unhide>Unhide</button></div></td>';
+        tr.querySelector('[data-view]').addEventListener('click', function () { viewProfile(m); });
+        tr.querySelector('[data-unhide]').addEventListener('click', function () {
+          KKStore.update('matrimonial', m.id, { status: 'approved' });
+          KKStore.addAuditLog(CURRENT_ADMIN.username, 'matrimonial-unhide', m.id, m.name);
+          KKToast('Profile unhidden and approved again.', 'success');
+          render();
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewProfile(m) {
+      var contactVisibility = (m.privacy && typeof m.privacy.showContact !== 'undefined')
+        ? (m.privacy.showContact ? 'Visible to matched members' : 'Hidden from other members')
+        : 'Not configured by member';
+      var photosHtml = (m.photos && m.photos.length)
+        ? '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;">' +
+          m.photos.map(function (p) { return '<img src="' + p + '" alt="" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;border:1px solid var(--color-border);">'; }).join('') + '</div>'
+        : '<p class="muted" style="margin:8px 0;">No photos uploaded.</p>';
+      var pdfHtml = m.bioDataPdf
+        ? '<a href="' + m.bioDataPdf.dataUrl + '" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="margin-top:6px;">View Bio Data PDF (' + m.bioDataPdf.name + ')</a>'
+        : '<p class="muted" style="margin:0;">No bio data PDF uploaded.</p>';
+      KKModal.open({
+        title: m.name,
+        bodyHtml: photosHtml + '<div class="stack">' +
+          row('Relation', m.relation) + row("Father's Name", m.fatherName) + row("Mother's Name", m.motherName) +
+          row('Age', m.age) + row('Gender', m.gender) + row('Height', m.height) + row('Marital Status', m.maritalStatus) +
+          row('Native Place', m.nativePlace) + row('Area', m.area) +
+          row('Education', m.education) + row('Occupation', m.occupation) +
+          row('Contact visibility', contactVisibility) + row('Linked Member', memberName(m.memberId)) +
+          row('Status', m.status) +
+          '<p style="margin-top:8px;">' + (m.about || '') + '</p>' + pdfHtml + '</div>',
+        buttons: [{ label: 'Close', className: 'btn btn-primary' }]
+      });
+      function row(label, value) { return '<div class="flex-between"><span class="muted">' + label + '</span><strong>' + (value || '—') + '</strong></div>'; }
+    }
+
+    function rejectProfile(m) {
+      KKModal.open({
+        title: 'Reject Matrimonial Profile',
+        bodyHtml: '<div class="field"><label for="mat-reject-reason">Reason <span class="required">*</span></label><textarea id="mat-reject-reason" rows="3"></textarea></div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: 'Reject', className: 'btn btn-danger-outline', onClick: function (close) {
+            var reason = document.getElementById('mat-reject-reason').value.trim();
+            if (!reason) return;
+            KKStore.update('matrimonial', m.id, { status: 'rejected', rejectionReason: reason });
+            KKStore.add('notifications', { memberId: m.memberId, title: 'Matrimonial Profile Rejected', message: 'Reason: ' + reason, type: 'matrimonial', read: false });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'matrimonial-reject', m.id, m.name + ' — ' + reason);
+            KKToast('Profile rejected.', 'success');
+            close();
+            render();
+          } }
+        ]
+      });
+    }
+
+    document.getElementById('f-search').addEventListener('input', render);
+    render();
+
+    var qp = new URLSearchParams(window.location.search);
+    if (qp.get('status') && document.querySelector('[data-tab="' + qp.get('status') + '"]')) {
+      document.querySelector('[data-tab="' + qp.get('status') + '"]').click();
+    }
+  })();
+</script>
+</body>
+</html>

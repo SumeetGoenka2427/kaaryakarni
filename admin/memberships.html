@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memberships — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html" aria-current="page">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Memberships</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Lifetime Membership Management</h2>
+          <p class="muted">Membership is a one-time payment with lifetime validity — there is no renewal, no expiry date and no recurring fee. Manage the membership fee and verify submitted membership payments below.</p>
+        </div>
+      </div>
+
+      <div class="admin-stats-grid" id="stats-grid"></div>
+
+      <div class="admin-panel" style="margin-bottom:20px;">
+        <div class="admin-panel-head"><h3>Membership Fee Settings</h3></div>
+        <div class="admin-panel-body">
+          <div class="form-grid" style="max-width:320px;">
+            <div class="field">
+              <label for="fee-input">One-time Lifetime Membership Fee (&#8377;)</label>
+              <input type="number" id="fee-input" min="0" step="1">
+            </div>
+            <button type="button" class="btn btn-primary" id="save-fee-btn" style="align-self:flex-start;">Save Fee</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:20px;">
+        <div class="admin-panel-head">
+          <h3>All Members — Membership Status</h3>
+          <a href="members.html" class="btn btn-outline btn-sm">Manage in Members</a>
+        </div>
+        <div class="admin-panel-body" style="padding-bottom:0;">
+          <div class="filters-bar" style="margin-bottom:0;">
+            <div class="field"><label for="f-status">Status</label>
+              <select id="f-status">
+                <option value="">All Statuses</option>
+                <option>Payment Pending</option><option>Payment Submitted</option><option>Under Verification</option>
+                <option>Lifetime Member</option><option>Rejected</option><option>Suspended</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Membership ID</th><th>Name</th><th>Status</th><th>Verified</th></tr></thead>
+              <tbody id="member-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="member-empty" hidden><h3>No members found</h3><p>Try clearing the status filter.</p></div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h3>Membership Payments Awaiting Verification</h3></div>
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Member</th><th>Amount</th><th>Mode</th><th>Reference</th><th>Submitted</th><th>Actions</th></tr></thead>
+              <tbody id="payment-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="payment-empty" hidden><h3>No payments awaiting verification</h3><p>All submitted membership payments have been verified.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    var statusOrder = ['Payment Pending', 'Payment Submitted', 'Under Verification', 'Lifetime Member', 'Rejected', 'Suspended'];
+    var statusPill = { 'Lifetime Member': 'pill-success', 'Under Verification': 'pill-warning', 'Payment Pending': 'pill-warning', 'Payment Submitted': 'pill-warning', 'Rejected': 'pill-danger', 'Suspended': 'pill-danger' };
+
+    function renderStats() {
+      var members = KKStore.all('members');
+      var grid = document.getElementById('stats-grid');
+      grid.innerHTML = '';
+      statusOrder.forEach(function (s) {
+        var count = members.filter(function (m) { return m.status === s; }).length;
+        var el = document.createElement('div');
+        el.className = 'admin-stat-card';
+        el.innerHTML = '<div class="label">' + s + '</div><div class="value">' + count + '</div>';
+        grid.appendChild(el);
+      });
+    }
+
+    function loadFee() {
+      document.getElementById('fee-input').value = KKStore.getSettings().membershipFee;
+    }
+    document.getElementById('save-fee-btn').addEventListener('click', function () {
+      var val = parseInt(document.getElementById('fee-input').value, 10);
+      if (isNaN(val) || val < 0) { KKToast('Enter a valid fee amount.', 'danger'); return; }
+      KKStore.updateSettings({ membershipFee: val });
+      KKStore.addAuditLog(CURRENT_ADMIN.username, 'membership-fee-update', 'settings', 'Membership fee set to ₹' + val.toLocaleString('en-IN'));
+      KKToast('Membership fee updated.', 'success');
+    });
+
+    function renderMembers() {
+      var status = document.getElementById('f-status').value;
+      var rows = KKStore.all('members').filter(function (m) { return !status || m.status === status; });
+      var tbody = document.getElementById('member-rows');
+      tbody.innerHTML = '';
+      document.getElementById('member-empty').hidden = !!rows.length;
+      rows.forEach(function (m) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Membership ID">' + m.membershipId + '</td>' +
+          '<td data-label="Name">' + m.name + '</td>' +
+          '<td data-label="Status"><span class="pill ' + (statusPill[m.status] || 'pill-neutral') + '">' + m.status + '</span></td>' +
+          '<td data-label="Verified">' + (m.verified ? '<span class="pill pill-success">Verified</span>' : '<span class="pill pill-neutral">No</span>') + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderPayments() {
+      var rows = KKStore.all('payments').filter(function (p) { return p.purpose === 'membership' && p.status === 'submitted'; });
+      var tbody = document.getElementById('payment-rows');
+      tbody.innerHTML = '';
+      document.getElementById('payment-empty').hidden = !!rows.length;
+      rows.forEach(function (p) {
+        var member = KKStore.findById('members', p.memberId);
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Member">' + (member ? member.name : 'Unknown member') + '</td>' +
+          '<td data-label="Amount">₹' + Number(p.amount).toLocaleString('en-IN') + '</td>' +
+          '<td data-label="Mode"><span class="pill pill-neutral">' + p.mode + '</span></td>' +
+          '<td data-label="Reference">' + (p.providerRef || '—') + '</td>' +
+          '<td data-label="Submitted">' + new Date(p.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions"><button class="btn btn-primary btn-sm" data-verify>Verify Payment</button></td>';
+        tr.querySelector('[data-verify]').addEventListener('click', function () {
+          KKConfirm('Verify this membership payment of ₹' + Number(p.amount).toLocaleString('en-IN') + ' for "' + (member ? member.name : 'this member') + '"? This will activate Lifetime Membership.', function () {
+            KKStore.update('payments', p.id, { status: 'successful' });
+            if (member) {
+              KKStore.update('members', member.id, { status: 'Lifetime Member', verified: true });
+              KKStore.add('notifications', { memberId: member.id, title: 'Membership Payment Verified', message: 'Your one-time lifetime membership payment has been verified. Welcome as a Lifetime Member!', type: 'membership', read: false });
+            }
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'membership-payment-verify', p.id, (member ? member.name : p.memberId) + ' — ₹' + p.amount);
+            KKToast('Payment verified and Lifetime Membership activated.', 'success');
+            renderStats(); renderMembers(); renderPayments();
+          }, { confirmLabel: 'Verify' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('f-status').addEventListener('change', renderMembers);
+
+    loadFee();
+    renderStats();
+    renderMembers();
+    renderPayments();
+  })();
+</script>
+</body>
+</html>

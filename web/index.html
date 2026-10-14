@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khandelwal Samaj Membership Portal — Jaipur</title>
+<meta name="description" content="Official membership portal of the Khandelwal Samaj, Jaipur. Become a lifetime member, support Samaj donation campaigns, discover community businesses and events.">
+<meta property="og:title" content="Khandelwal Samaj Membership Portal">
+<meta property="og:description" content="Connect with your Samaj community in Jaipur — membership, donations, business directory and more.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-contacts">
+      <span class="topbar-tag">Khandelwal Samaj, Jaipur</span>
+      <a href="tel:+911411234567">+91 141 123 4567</a>
+      <a href="mailto:info@khandelwalsamajjaipur.org">info@khandelwalsamajjaipur.org</a>
+    </div>
+    <div class="topbar-contacts">
+      <a href="contact.html">Samaj Bhawan, Jaipur</a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text">
+        <strong>Khandelwal Samaj</strong>
+        <span>Jaipur Membership Portal</span>
+      </span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html" aria-current="page">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html">Business Directory</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="donations.html">Donations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta" id="nav-cta-slot">
+        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+        <a href="register.html" class="btn btn-gold btn-sm">Become a Member</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===== Top 3-column banner: left campaign panel / center carousel / right ad ===== -->
+  <section class="top-banner" aria-label="Featured announcements and campaign information">
+    <div class="container">
+      <div class="banner-grid">
+
+        <!-- LEFT: active campaign panel (admin-configured) -->
+        <aside class="donation-panel" id="left-campaign-panel" aria-label="Active campaign"></aside>
+
+        <!-- CENTER: admin-controlled image carousel -->
+        <div class="banner-carousel" data-carousel data-autoplay="5500" aria-roledescription="carousel" aria-label="Samaj announcements">
+          <div class="carousel-track" id="carousel-track"></div>
+          <div class="carousel-controls">
+            <button type="button" class="carousel-arrow" data-carousel-prev aria-label="Previous slide">&#8249;</button>
+            <button type="button" class="carousel-arrow" data-carousel-next aria-label="Next slide">&#8250;</button>
+          </div>
+          <div class="carousel-dots" data-carousel-dots role="tablist" aria-label="Slide selection"></div>
+        </div>
+
+        <!-- RIGHT: advertisement placeholder -->
+        <aside class="donation-panel ad-panel" aria-label="Advertisement">
+          <span class="panel-label">Advertisement</span>
+          <a href="contact.html" class="ad-creative">
+            <img src="assets/images/new/5.jpg" alt="Advertisement placeholder">
+            <span class="ad-tag">Ad</span>
+          </a>
+          <p class="muted" style="font-size:0.78rem;margin:0;">Interested in advertising here? <a href="contact.html">Contact the Samaj office</a>.</p>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About Samaj brief ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2" style="align-items:center;">
+        <div>
+          <div class="card-media" style="border-radius:var(--radius-lg);background:url('assets/images/new/1.jpg') center/cover;position:relative;">
+          </div>
+        </div>
+        <div>
+          <h2>A Community Rooted in Trust and Tradition</h2>
+          <p>The Khandelwal Samaj, Jaipur has long served as a home for our community — supporting members through
+            education, welfare, business collaboration and shared cultural life. The membership portal brings these
+            services online while keeping the values of trust, service and belonging at the center.</p>
+          <a href="about.html" class="btn btn-outline">Read Our Story</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Key statistics ===== -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Samaj at a Glance</span>
+        <h2>Growing Together, Rooted in Jaipur</h2>
+      </div>
+      <div class="grid grid-3" id="stats-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===== Membership CTA ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="card" style="background:linear-gradient(135deg,var(--color-navy-900),var(--color-navy-700)); border:none;">
+        <div class="card-body" style="flex-direction:row; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px;">
+          <div style="max-width:560px;">
+            <h2 style="color:#fff;">Become a Lifetime Member</h2>
+            <p style="color:rgba(255,255,255,0.82);">A single, one-time registration secures your lifetime membership with the Khandelwal Samaj —
+              no renewals, no recurring fees, no expiry.</p>
+          </div>
+          <a href="register.html" class="btn btn-gold">Start Registration</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Donation campaigns ===== -->
+  <section class="section section-alt" id="donations">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Support the Samaj</span>
+        <h2>Active Donation Campaigns</h2>
+        <p>Every contribution supports community welfare, events and Samaj institutions in Jaipur.</p>
+      </div>
+      <div class="grid grid-3" id="home-campaigns-grid"></div>
+      <div class="text-center" style="margin-top:32px;"><a href="donations.html" class="btn btn-outline">View All Campaigns</a></div>
+    </div>
+  </section>
+
+  <!-- ===== Business highlights ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Within the Community</span>
+        <h2>Featured Businesses &amp; Professionals</h2>
+      </div>
+      <div class="grid grid-4" id="home-business-grid"></div>
+      <div class="text-center" style="margin-top:32px;"><a href="business-directory.html" class="btn btn-outline">Explore Approved Businesses</a></div>
+    </div>
+  </section>
+
+  <!-- ===== Announcements ===== -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Stay Informed</span>
+        <h2>Community Events &amp; Announcements</h2>
+      </div>
+      <div class="grid grid-3">
+        <div class="card">
+          <div class="card-body">
+            <span class="pill pill-warning">Upcoming</span>
+            <h3>Samaj Annual General Meeting</h3>
+            <p>All lifetime members are invited to the AGM at Samaj Bhawan. Details to follow via SMS notification.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <span class="pill pill-warning">Upcoming</span>
+            <h3>Diwali Utsav Celebration</h3>
+            <p>Community Diwali gathering with cultural programs, sponsored through the Diwali Utsav Donation fund.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <span class="pill pill-neutral">Notice</span>
+            <h3>Business Directory Now Open for Submissions</h3>
+            <p>Members can now submit their business or professional profile for admin approval and public listing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Gallery preview ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Moments From the Samaj</span>
+        <h2>Gallery</h2>
+      </div>
+      <div class="gallery-grid" id="home-gallery-grid"></div>
+      <div class="state-block" id="home-gallery-empty" hidden>
+        <div class="state-icon" aria-hidden="true">🖼️</div>
+        <h3>No gallery albums are currently available</h3>
+      </div>
+      <div class="text-center" style="margin-top:32px;"><a href="gallery.html" class="btn btn-outline">View Full Gallery</a></div>
+    </div>
+  </section>
+
+  <!-- ===== Important links ===== -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Quick Access</span>
+        <h2>Important Links</h2>
+      </div>
+      <div class="grid grid-4">
+        <a href="membership.html" class="card" style="text-decoration:none;color:inherit;"><div class="card-body"><h3>Membership Details</h3><p class="muted" style="margin:0;">One-time lifetime membership process and fees.</p></div></a>
+        <a href="business-directory.html" class="card" style="text-decoration:none;color:inherit;"><div class="card-body"><h3>Business Directory</h3><p class="muted" style="margin:0;">Browse admin-approved Samaj businesses.</p></div></a>
+        <a href="donations.html" class="card" style="text-decoration:none;color:inherit;"><div class="card-body"><h3>Donation Campaigns</h3><p class="muted" style="margin:0;">Support ongoing and permanent Samaj causes.</p></div></a>
+        <a href="contact.html" class="card" style="text-decoration:none;color:inherit;"><div class="card-body"><h3>Contact Samaj Office</h3><p class="muted" style="margin:0;">Reach the Samaj Bhawan office in Jaipur.</p></div></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Lightbox overlay -->
+<div class="lightbox-overlay" data-lightbox role="dialog" aria-modal="true" aria-label="Gallery image preview">
+  <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close preview">&times;</button>
+  <div class="lightbox-box">
+    <div class="placeholder-media">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="width:52px;height:52px;"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4-3-3-4 4"/></svg>
+    </div>
+    <h3 data-lightbox-title style="color:#fff;margin-top:16px;"></h3>
+    <p data-lightbox-desc style="color:rgba(255,255,255,0.75);"></p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="brand" style="color:#fff;margin-bottom:12px;">
+          <span class="brand-mark" aria-hidden="true">KS</span>
+          <span class="brand-text"><strong style="color:#fff;">Khandelwal Samaj</strong><span style="color:var(--color-gold-400);">Jaipur Membership Portal</span></span>
+        </a>
+        <p>Serving the Khandelwal community of Jaipur through membership, welfare, business collaboration and cultural life.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Samaj</a></li>
+          <li><a href="membership.html">Membership</a></li>
+          <li><a href="business-directory.html">Business Directory</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul class="footer-links">
+          <li><a href="login.html">Member Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="donations.html">Donate</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Samaj Bhawan Office</h4>
+        <ul class="footer-links">
+          <li>Chandpole, Jaipur, Rajasthan</li>
+          <li><a href="tel:+911411234567">+91 141 123 4567</a></li>
+          <li><a href="mailto:info@khandelwalsamajjaipur.org">info@khandelwalsamajjaipur.org</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span>Built for the Khandelwal Samaj community — Jaipur.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  (function () {
+    /* Left campaign panel — admin-configured via bannerConfig.campaignPanelId
+       (falls back to the older leftCampaignId/rightCampaignId shape for a
+       browser that saved bannerConfig before this field was renamed). */
+    var bannerConfig = KKStore.db().bannerConfig || {};
+    var campaignPanel = KKStore.findById('campaigns', bannerConfig.campaignPanelId)
+      || KKStore.findById('campaigns', bannerConfig.rightCampaignId)
+      || KKStore.findById('campaigns', bannerConfig.leftCampaignId)
+      || KKStore.getActiveCampaigns()[0];
+
+    if (campaignPanel) {
+      document.getElementById('left-campaign-panel').innerHTML =
+        '<span class="panel-label">Active Campaign</span>' +
+        '<h3>' + campaignPanel.name + '</h3>' +
+        '<p class="muted" style="margin:0;font-size:0.85rem;">' + (campaignPanel.description || '') + '</p>' +
+        '<div class="meta-row"><span>' + campaignPanel.donorCount + ' contributors so far</span></div>' +
+        '<a href="donations.html?campaign=' + campaignPanel.id + '" class="btn btn-primary btn-sm btn-block">Donate Now</a>';
+    }
+
+    /* Center carousel — admin-managed banners. Each slide shows a themed photo
+       with the admin's title/subtitle/CTA overlaid on a gradient scrim. */
+    var banners = KKStore.getActiveBanners();
+    var track = document.getElementById('carousel-track');
+
+    var slideThemeSeeds = {
+      community: 'samaj-lifetime-membership',
+      diya: 'samaj-diwali-utsav',
+      business: 'samaj-business-directory'
+    };
+    function slideImageUrl(b) {
+      if (b.image) return b.image;
+      var seed = slideThemeSeeds[b.icon] || ('samaj-banner-' + b.id);
+      return photoFor(seed);
+    }
+    banners.forEach(function (b, i) {
+      var isLink = !!b.ctaUrl;
+      var slide = document.createElement(isLink ? 'a' : 'div');
+      if (isLink) slide.href = b.ctaUrl;
+      slide.className = 'carousel-slide' + (i === 0 ? ' is-active' : '');
+      slide.setAttribute('role', 'img');
+      slide.setAttribute('aria-label', b.title + (b.subtitle ? ' — ' + b.subtitle : ''));
+      slide.style.backgroundImage = 'url(' + slideImageUrl(b) + ')';
+      slide.innerHTML =
+        '<span class="carousel-slide-scrim" aria-hidden="true"></span>' +
+        '<span class="carousel-slide-content">' +
+        '<span class="carousel-slide-title">' + b.title + '</span>' +
+        (b.subtitle ? '<span class="carousel-slide-subtitle">' + b.subtitle + '</span>' : '') +
+        (b.ctaLabel ? '<span class="carousel-slide-cta">' + b.ctaLabel + '</span>' : '') +
+        '</span>';
+      track.appendChild(slide);
+    });
+
+    /* Stats */
+    var stats = KKStore.computeDashboardStats();
+    var statsGrid = document.getElementById('stats-grid');
+    [
+      [stats.lifetimeMembers.toLocaleString('en-IN'), 'Lifetime Members'],
+      [KKStore.all('areas').filter(function (a) { return a.active; }).length, 'Jaipur Areas Covered'],
+      [stats.approvedBusinesses, 'Approved Businesses']
+    ].forEach(function (s) {
+      var card = document.createElement('div');
+      card.className = 'card stat-card';
+      card.innerHTML = '<div class="stat-value">' + s[0] + '</div><div class="stat-label">' + s[1] + '</div>';
+      statsGrid.appendChild(card);
+    });
+
+    /* Donation campaigns */
+    var campGrid = document.getElementById('home-campaigns-grid');
+    KKStore.getActiveCampaigns().slice(0, 3).forEach(function (c) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div class="card-media" style="background:url(\'' + photoFor(c.id) + '\') center/cover;"></div>' +
+        '<div class="card-body"><span class="pill ' + (c.permanent ? 'pill-neutral' : 'pill-warning') + '">' + (c.permanent ? 'Permanent Campaign' : 'Active') + '</span>' +
+        '<h3>' + c.name + '</h3><p>' + c.description + '</p>' +
+        '<div class="flex gap-3" style="margin-top:auto;">' +
+        '<a href="donations.html?campaign=' + c.id + '" class="btn btn-primary" style="flex:1;">Donate Now</a>' +
+        (c.hasTickets ? '<a href="donations.html?campaign=' + c.id + '&purpose=ticket" class="btn btn-outline" style="flex:1;">Purchase Ticket</a>' : '') +
+        '</div></div>';
+      campGrid.appendChild(card);
+    });
+
+    /* Business highlights */
+    var bizGrid = document.getElementById('home-business-grid');
+    KKStore.getApprovedBusinesses().sort(function (a, b) { return (b.featured ? 1 : 0) - (a.featured ? 1 : 0); }).slice(0, 4).forEach(function (b) {
+      var a = document.createElement('a');
+      a.href = 'business-detail.html?id=' + b.id;
+      a.className = 'card';
+      a.style.textDecoration = 'none'; a.style.color = 'inherit';
+      a.innerHTML = '<div class="card-media" style="background:url(\'' + photoFor(b.id) + '\') center/cover;"></div>' +
+        '<div class="card-body"><span class="pill ' + (b.featured ? 'pill-success' : 'pill-neutral') + '">' + (b.featured ? 'Featured' : 'Approved') + '</span>' +
+        '<h3>' + b.name + '</h3><p class="muted" style="margin:0;font-size:0.85rem;">' + b.category + ' · ' + b.area + '</p></div>';
+      bizGrid.appendChild(a);
+    });
+
+    /* Gallery preview — first image of up to 4 active albums */
+    var galleryGrid = document.getElementById('home-gallery-grid');
+    var albums = KKStore.getActiveGalleryAlbums();
+    if (!albums.length) {
+      document.getElementById('home-gallery-empty').hidden = false;
+    } else {
+      albums.slice(0, 4).forEach(function (album) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gallery-tile';
+        btn.setAttribute('data-gallery-tile', '');
+        btn.setAttribute('data-title', album.title);
+        btn.setAttribute('data-desc', album.title);
+        btn.setAttribute('data-img', photoFor(album.id));
+        btn.innerHTML = '<div style="width:100%;height:100%;background:url(\'' + photoFor(album.id) + '\') center/cover;"></div><figcaption>' + album.title + '</figcaption>';
+        galleryGrid.appendChild(btn);
+      });
+    }
+  })();
+</script>
+</body>
+</html>

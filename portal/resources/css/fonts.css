@@ -1,0 +1,24 @@
+/* Self-hosted Hindi (Devanagari) fonts — no third-party requests.
+   Only the Devanagari subset is registered, so English text keeps the
+   original design fonts (Georgia / system sans) and these files are
+   downloaded only on pages that actually contain Hindi text. */
+@font-face {
+  font-family: 'Mukta'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('../../node_modules/@fontsource/mukta/files/mukta-devanagari-400-normal.woff2') format('woff2');
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B09;
+}
+@font-face {
+  font-family: 'Mukta'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('../../node_modules/@fontsource/mukta/files/mukta-devanagari-600-normal.woff2') format('woff2');
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B09;
+}
+@font-face {
+  font-family: 'Mukta'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('../../node_modules/@fontsource/mukta/files/mukta-devanagari-700-normal.woff2') format('woff2');
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B09;
+}
+@font-face {
+  font-family: 'Tiro Devanagari Hindi'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('../../node_modules/@fontsource/tiro-devanagari-hindi/files/tiro-devanagari-hindi-devanagari-400-normal.woff2') format('woff2');
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B09;
+}

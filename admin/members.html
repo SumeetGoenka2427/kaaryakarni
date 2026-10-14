@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Members — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html" aria-current="page">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Members</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div><h2>Member Management</h2><p class="muted">Search, verify, reject or suspend Samaj member profiles.</p></div>
+        <button type="button" class="btn btn-outline" id="export-btn">Export CSV</button>
+      </div>
+
+      <div class="filters-bar">
+        <div class="field search-field"><label for="f-search">Search</label><input type="search" id="f-search" placeholder="Search by name, mobile or membership ID"></div>
+        <div class="field"><label for="f-area">Area</label><select id="f-area"><option value="">All Areas</option></select></div>
+        <div class="field"><label for="f-status">Status</label>
+          <select id="f-status">
+            <option value="">All Statuses</option>
+            <option>Payment Pending</option><option>Payment Submitted</option><option>Under Verification</option>
+            <option>Lifetime Member</option><option>Rejected</option><option>Suspended</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Membership ID</th><th>Name</th><th>Mobile</th><th>Area</th><th>Status</th><th>Verified</th><th>Actions</th></tr></thead>
+              <tbody id="member-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="state-block" id="member-empty" hidden><h3>No members found</h3><p>Try clearing a filter or search term.</p></div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    var areaSelect = document.getElementById('f-area');
+    KKStore.all('areas').forEach(function (a) {
+      var opt = document.createElement('option'); opt.value = a.name; opt.textContent = a.name; areaSelect.appendChild(opt);
+    });
+    var qp = new URLSearchParams(window.location.search);
+    if (qp.get('status') === 'pending') document.getElementById('f-status').value = 'Under Verification';
+
+    var statusPill = { 'Lifetime Member': 'pill-success', 'Under Verification': 'pill-warning', 'Payment Pending': 'pill-warning', 'Payment Submitted': 'pill-warning', 'Rejected': 'pill-danger', 'Suspended': 'pill-danger' };
+
+    function currentFilters() {
+      return {
+        search: document.getElementById('f-search').value.trim().toLowerCase(),
+        area: document.getElementById('f-area').value,
+        status: document.getElementById('f-status').value
+      };
+    }
+
+    function filtered() {
+      var f = currentFilters();
+      return KKStore.all('members').filter(function (m) {
+        var matchesSearch = !f.search || (m.name + ' ' + m.mobile + ' ' + m.membershipId).toLowerCase().indexOf(f.search) !== -1;
+        var matchesArea = !f.area || m.area === f.area;
+        var matchesStatus = !f.status || m.status === f.status;
+        return matchesSearch && matchesArea && matchesStatus;
+      });
+    }
+
+    function render() {
+      var rows = filtered();
+      var tbody = document.getElementById('member-rows');
+      tbody.innerHTML = '';
+      document.getElementById('member-empty').hidden = !!rows.length;
+      rows.forEach(function (m) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td data-label="Membership ID">' + m.membershipId + '</td>' +
+          '<td data-label="Name">' + m.name + '</td>' +
+          '<td data-label="Mobile">' + m.mobile + '</td>' +
+          '<td data-label="Area">' + (m.area || '—') + '</td>' +
+          '<td data-label="Status"><span class="pill ' + (statusPill[m.status] || 'pill-neutral') + '">' + m.status + '</span></td>' +
+          '<td data-label="Verified">' + (m.verified ? '<span class="pill pill-success">Verified</span>' : '<span class="pill pill-neutral">No</span>') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions">' +
+            '<button class="btn btn-outline btn-sm" data-view>View</button>' +
+            '<button class="btn btn-outline btn-sm" data-edit>Edit</button>' +
+            (m.status !== 'Lifetime Member' ? '<button class="btn btn-primary btn-sm" data-verify>Verify</button>' : '') +
+            (m.status !== 'Rejected' && m.status !== 'Lifetime Member' ? '<button class="btn btn-danger-outline btn-sm" data-reject>Reject</button>' : '') +
+            (m.status === 'Suspended' ? '<button class="btn btn-outline btn-sm" data-reactivate>Reactivate</button>' : '<button class="btn btn-danger-outline btn-sm" data-suspend>Suspend</button>') +
+          '</div></td>';
+
+        tr.querySelector('[data-view]').addEventListener('click', function () { viewMember(m); });
+        tr.querySelector('[data-edit]').addEventListener('click', function () { editMember(m); });
+        var verifyBtn = tr.querySelector('[data-verify]');
+        if (verifyBtn) verifyBtn.addEventListener('click', function () {
+          KKConfirm('Verify "' + m.name + '" as a Lifetime Member?', function () {
+            KKStore.update('members', m.id, { status: 'Lifetime Member', verified: true });
+            KKStore.add('notifications', { memberId: m.id, title: 'Membership Approved', message: 'Your Lifetime Membership has been verified and approved.', type: 'membership', read: false });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'member-verify', m.id, m.name);
+            KKToast('Member verified as Lifetime Member.', 'success');
+            render();
+          }, { confirmLabel: 'Verify' });
+        });
+        var rejectBtn = tr.querySelector('[data-reject]');
+        if (rejectBtn) rejectBtn.addEventListener('click', function () { rejectMember(m); });
+        var suspendBtn = tr.querySelector('[data-suspend]');
+        if (suspendBtn) suspendBtn.addEventListener('click', function () {
+          KKConfirm('Suspend member "' + m.name + '"? They will lose member access until reactivated.', function () {
+            KKStore.update('members', m.id, { status: 'Suspended', statusBeforeSuspend: m.status });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'member-suspend', m.id, m.name);
+            KKToast('Member suspended.', 'success');
+            render();
+          }, { confirmLabel: 'Suspend', danger: true, title: 'Suspend Member' });
+        });
+        var reactivateBtn = tr.querySelector('[data-reactivate]');
+        if (reactivateBtn) reactivateBtn.addEventListener('click', function () {
+          KKStore.update('members', m.id, { status: m.statusBeforeSuspend || 'Under Verification' });
+          KKStore.addAuditLog(CURRENT_ADMIN.username, 'member-reactivate', m.id, m.name);
+          KKToast('Member reactivated.', 'success');
+          render();
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewMember(m) {
+      KKModal.open({
+        title: m.name,
+        bodyHtml:
+          '<div class="stack">' +
+          row('Membership ID', m.membershipId) + row('Mobile', m.mobile) + row('Email', m.email || '—') +
+          row('Date of Birth', m.dob || '—') + row('Gender', m.gender || '—') + row('Area', m.area || '—') +
+          row('Address', m.address || '—') + row('Status', m.status) + row('Verified', m.verified ? 'Yes' : 'No') +
+          '</div>',
+        buttons: [{ label: 'Close', className: 'btn btn-primary' }]
+      });
+      function row(label, value) { return '<div class="flex-between"><span class="muted">' + label + '</span><strong>' + value + '</strong></div>'; }
+    }
+
+    function editMember(m) {
+      var areaOptions = KKStore.all('areas').map(function (a) { return '<option ' + (a.name === m.area ? 'selected' : '') + '>' + a.name + '</option>'; }).join('');
+      KKModal.open({
+        title: 'Edit Member',
+        bodyHtml:
+          '<div class="form-grid">' +
+          '<div class="field"><label>Full Name</label><input type="text" id="em-name" value="' + m.name + '"></div>' +
+          '<div class="field"><label>Email</label><input type="email" id="em-email" value="' + (m.email || '') + '"></div>' +
+          '<div class="field"><label>Area</label><select id="em-area">' + areaOptions + '</select></div>' +
+          '<div class="field"><label>Address</label><textarea id="em-address" rows="2">' + (m.address || '') + '</textarea></div>' +
+          '</div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: 'Save Changes', className: 'btn btn-primary', onClick: function (close) {
+            KKStore.update('members', m.id, {
+              name: document.getElementById('em-name').value.trim(),
+              email: document.getElementById('em-email').value.trim(),
+              area: document.getElementById('em-area').value,
+              address: document.getElementById('em-address').value.trim()
+            });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'member-edit', m.id, m.name);
+            KKToast('Member updated.', 'success');
+            close();
+            render();
+          } }
+        ]
+      });
+    }
+
+    function rejectMember(m) {
+      KKModal.open({
+        title: 'Reject Member',
+        bodyHtml: '<div class="field"><label for="reject-reason">Reason for rejection <span class="required">*</span></label><textarea id="reject-reason" rows="3"></textarea></div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: 'Reject', className: 'btn btn-danger-outline', onClick: function (close) {
+            var reason = document.getElementById('reject-reason').value.trim();
+            if (!reason) return;
+            KKStore.update('members', m.id, { status: 'Rejected', rejectionReason: reason });
+            KKStore.add('notifications', { memberId: m.id, title: 'Membership Rejected', message: 'Reason: ' + reason, type: 'membership', read: false });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'member-reject', m.id, m.name + ' — ' + reason);
+            KKToast('Member rejected.', 'success');
+            close();
+            render();
+          } }
+        ]
+      });
+    }
+
+    document.getElementById('export-btn').addEventListener('click', function () {
+      var rows = filtered();
+      var header = ['Membership ID', 'Name', 'Mobile', 'Area', 'Status', 'Verified'];
+      var lines = [header.join(',')].concat(rows.map(function (m) {
+        return [m.membershipId, m.name, m.mobile, m.area || '', m.status, m.verified ? 'Yes' : 'No'].map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+      }));
+      var blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'samaj-members.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+      KKToast('CSV exported.', 'success');
+    });
+
+    ['f-search', 'f-area', 'f-status'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', render);
+      document.getElementById(id).addEventListener('change', render);
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

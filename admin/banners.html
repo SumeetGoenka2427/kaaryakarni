@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homepage Banners — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html" aria-current="page">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Homepage Banners</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Homepage Top Banner Management</h2>
+          <p class="muted">Controls the public homepage's three-column top banner: the admin-managed center carousel, and the left/right live donation panels.</p>
+        </div>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:24px;">
+        <div class="admin-panel-head">
+          <h3>Center Carousel Slides</h3>
+          <button type="button" class="btn btn-primary" id="add-slide-btn">+ Add Slide</button>
+        </div>
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Title</th><th>Order</th><th>Active</th><th>Actions</th></tr></thead>
+              <tbody id="slide-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="state-block" id="slide-empty" hidden><h3>No carousel slides configured</h3><p>Add the first slide for the homepage center carousel.</p></div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h3>Homepage Campaign Panel Configuration</h3></div>
+        <div class="admin-panel-body">
+          <p class="muted" style="margin-top:0;">This controls which donation campaign the homepage banner's left panel promotes. The right panel is a fixed advertisement placement and is not campaign-driven.</p>
+          <div class="form-grid grid-2">
+            <div class="field"><label for="campaign-panel">Campaign Panel Campaign</label><select id="campaign-panel"></select></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="save-config-btn" style="margin-top:8px;">Save Panel Configuration</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function render() {
+      var slides = KKStore.all('banners').sort(function (a, b) { return a.order - b.order; });
+      var tbody = document.getElementById('slide-rows');
+      tbody.innerHTML = '';
+      document.getElementById('slide-empty').hidden = !!slides.length;
+      slides.forEach(function (s) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td data-label="Title">' + s.title + '</td>' +
+          '<td data-label="Order">' + s.order + '</td>' +
+          '<td data-label="Active">' + (s.active ? '<span class="pill pill-success">Active</span>' : '<span class="pill pill-neutral">Inactive</span>') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions">' +
+            '<button class="btn btn-outline btn-sm" data-preview>Preview</button>' +
+            '<button class="btn btn-outline btn-sm" data-edit>Edit</button>' +
+            '<button class="btn btn-outline btn-sm" data-toggle>' + (s.active ? 'Deactivate' : 'Activate') + '</button>' +
+            '<button class="btn btn-danger-outline btn-sm" data-delete>Delete</button>' +
+          '</div></td>';
+        tr.querySelector('[data-preview]').addEventListener('click', function () { previewSlide(s); });
+        tr.querySelector('[data-edit]').addEventListener('click', function () { openSlideModal(s); });
+        tr.querySelector('[data-toggle]').addEventListener('click', function () {
+          KKConfirm('Are you sure you want to ' + (s.active ? 'deactivate' : 'activate') + ' "' + s.title + '"?', function () {
+            KKStore.update('banners', s.id, { active: !s.active });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, s.active ? 'banner-deactivate' : 'banner-activate', s.id, s.title);
+            KKToast('Slide ' + (s.active ? 'deactivated' : 'activated') + '.', 'success');
+            render();
+          }, { confirmLabel: s.active ? 'Deactivate' : 'Activate' });
+        });
+        tr.querySelector('[data-delete]').addEventListener('click', function () {
+          KKConfirm('Delete slide "' + s.title + '"? This cannot be undone.', function () {
+            KKStore.remove('banners', s.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'banner-delete', s.id, s.title);
+            KKToast('Slide deleted.', 'success');
+            render();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Slide' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function previewSlide(s) {
+      var tone = s.tone === 'gold' ? 'linear-gradient(135deg,#7a5c00,#c9962e)' : 'linear-gradient(135deg,#0b1830,#1c3766)';
+      KKModal.open({
+        title: 'Preview — ' + s.title,
+        bodyHtml:
+          '<div style="border-radius:16px;padding:36px 28px;background:' + tone + ';color:#fff;">' +
+            '<span style="display:inline-block;background:rgba(255,255,255,0.15);color:#f2c94c;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:14px;">Khandelwal Samaj</span>' +
+            '<h2 style="color:#fff;margin:0 0 10px;font-size:1.5rem;">' + s.title + '</h2>' +
+            '<p style="color:rgba(255,255,255,0.85);margin:0 0 18px;max-width:480px;">' + (s.subtitle || '') + '</p>' +
+            (s.ctaLabel ? '<span style="display:inline-block;background:#f2c94c;color:#0b1830;font-weight:700;padding:9px 18px;border-radius:8px;font-size:0.9rem;">' + s.ctaLabel + '</span>' : '') +
+          '</div>',
+        buttons: [{ label: 'Close', className: 'btn btn-primary' }]
+      });
+    }
+
+    function openSlideModal(slide) {
+      var isEdit = !!slide;
+      KKModal.open({
+        title: isEdit ? 'Edit Slide' : 'Add Slide',
+        bodyHtml:
+          '<div class="form-grid">' +
+          '<div class="field"><label for="s-title">Title <span class="required">*</span></label><input type="text" id="s-title" value="' + (slide ? slide.title : '') + '"></div>' +
+          '<div class="field"><label for="s-subtitle">Subtitle / Description</label><textarea id="s-subtitle" rows="2">' + (slide ? (slide.subtitle || '') : '') + '</textarea></div>' +
+          '<div class="grid grid-2">' +
+            '<div class="field"><label for="s-cta-label">CTA Label</label><input type="text" id="s-cta-label" value="' + (slide ? (slide.ctaLabel || '') : '') + '"></div>' +
+            '<div class="field"><label for="s-cta-url">CTA URL</label><input type="text" id="s-cta-url" value="' + (slide ? (slide.ctaUrl || '') : '') + '"></div>' +
+          '</div>' +
+          '<div class="grid grid-2">' +
+            '<div class="field"><label for="s-tone">Tone</label><select id="s-tone">' +
+              '<option value="navy"' + (slide && slide.tone === 'navy' ? ' selected' : '') + '>Navy</option>' +
+              '<option value="gold"' + (slide && slide.tone === 'gold' ? ' selected' : '') + '>Gold</option>' +
+            '</select></div>' +
+            '<div class="field"><label for="s-order">Display Order</label><input type="number" id="s-order" min="1" value="' + (slide ? slide.order : (KKStore.all('banners').reduce(function (m, b) { return Math.max(m, b.order || 0); }, 0) + 1)) + '"></div>' +
+          '</div>' +
+          '<div class="field"><label><input type="checkbox" id="s-active" ' + (!slide || slide.active ? 'checked' : '') + '> Active (visible in homepage carousel)</label></div>' +
+          '</div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: isEdit ? 'Save Changes' : 'Add Slide', className: 'btn btn-primary', onClick: function (close) {
+            var title = document.getElementById('s-title').value.trim();
+            if (!title) return;
+            var patch = {
+              title: title,
+              subtitle: document.getElementById('s-subtitle').value.trim(),
+              ctaLabel: document.getElementById('s-cta-label').value.trim(),
+              ctaUrl: document.getElementById('s-cta-url').value.trim(),
+              tone: document.getElementById('s-tone').value,
+              order: Number(document.getElementById('s-order').value) || 1,
+              active: document.getElementById('s-active').checked
+            };
+            if (isEdit) {
+              KKStore.update('banners', slide.id, patch);
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'banner-edit', slide.id, title);
+              KKToast('Slide updated.', 'success');
+            } else {
+              patch.startDate = null; patch.endDate = null;
+              var created = KKStore.add('banners', patch);
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'banner-add', created.id, title);
+              KKToast('Slide added.', 'success');
+            }
+            close();
+            render();
+          } }
+        ]
+      });
+    }
+
+    function populateCampaignSelects() {
+      var campaigns = KKStore.getActiveCampaigns();
+      var config = KKStore.db().bannerConfig || {};
+      var sel = document.getElementById('campaign-panel');
+      sel.innerHTML = '';
+      campaigns.forEach(function (c) {
+        var opt = document.createElement('option');
+        opt.value = c.id; opt.textContent = c.name;
+        sel.appendChild(opt);
+      });
+      sel.value = config.campaignPanelId || config.rightCampaignId || config.leftCampaignId || '';
+    }
+
+    document.getElementById('save-config-btn').addEventListener('click', function () {
+      var campaignPanelId = document.getElementById('campaign-panel').value;
+      KKStore.db().bannerConfig = { campaignPanelId: campaignPanelId };
+      KKStore.save();
+      KKStore.addAuditLog(CURRENT_ADMIN.username, 'banner-config-save', 'bannerConfig', 'Campaign panel: ' + campaignPanelId);
+      KKToast('Campaign panel configuration saved.', 'success');
+    });
+
+    document.getElementById('add-slide-btn').addEventListener('click', function () { openSlideModal(null); });
+    render();
+    populateCampaignSelects();
+  })();
+</script>
+</body>
+</html>

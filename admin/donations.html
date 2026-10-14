@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donations — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html" aria-current="page">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Donations</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div><h2>Donation Campaigns &amp; Records</h2><p class="muted">Manage the permanent Samaj Donation fund, create additional campaigns, and verify online and offline donations.</p></div>
+        <button type="button" class="btn btn-primary" id="add-campaign-btn">+ Add Campaign</button>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:24px;">
+        <div class="admin-panel-head"><h3>Donation Campaigns</h3></div>
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Campaign</th><th>Target</th><th>Raised</th><th>Donors</th><th>Tickets</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="campaign-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="campaign-empty" hidden><h3>No donation campaigns yet</h3><p>Add the first campaign to start collecting donations.</p></div>
+      </div>
+
+      <div class="admin-page-head" style="margin-bottom:12px;">
+        <div><h2 style="font-size:1.1rem;">Donation Records</h2><p class="muted">All online and offline donations across every campaign.</p></div>
+      </div>
+      <div class="filters-bar">
+        <div class="field"><label for="f-mode">Mode</label><select id="f-mode"><option value="">All Modes</option><option value="online">Online</option><option value="offline">Offline</option></select></div>
+        <div class="field"><label for="f-status">Status</label>
+          <select id="f-status">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option><option value="submitted">Submitted</option>
+            <option value="verified">Verified</option><option value="successful">Successful</option>
+            <option value="failed">Failed</option><option value="refunded">Refunded</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Donor</th><th>Campaign</th><th>Purpose</th><th>Amount</th><th>Mode</th><th>Status</th><th>Reference</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="donation-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="donation-empty" hidden><h3>No donations found</h3><p>Try clearing a filter.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function campaignName(id) { var c = KKStore.findById('campaigns', id); return c ? c.name : 'Unknown campaign'; }
+    function slugify(name) { return (name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'campaign'; }
+
+    function renderCampaigns() {
+      var campaigns = KKStore.all('campaigns').sort(function (a, b) { return a.order - b.order; });
+      var tbody = document.getElementById('campaign-rows');
+      tbody.innerHTML = '';
+      document.getElementById('campaign-empty').hidden = !!campaigns.length;
+      campaigns.forEach(function (c) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td data-label="Campaign">' + c.name + (c.permanent ? ' <span class="pill pill-success">Permanent</span>' : '') + '</td>' +
+          '<td data-label="Target">₹' + Number(c.target).toLocaleString('en-IN') + '</td>' +
+          '<td data-label="Raised">₹' + Number(c.raised || 0).toLocaleString('en-IN') + '</td>' +
+          '<td data-label="Donors">' + (c.donorCount || 0) + '</td>' +
+          '<td data-label="Tickets">' + (c.hasTickets ? '<span class="pill pill-neutral">₹' + Number(c.ticketPrice || 0).toLocaleString('en-IN') + '</span>' : '—') + '</td>' +
+          '<td data-label="Order">' + c.order + '</td>' +
+          '<td data-label="Status"><span class="pill ' + (c.active ? 'pill-success' : 'pill-neutral') + '">' + (c.active ? 'Active' : 'Inactive') + '</span></td>' +
+          '<td data-label="Actions"><div class="row-actions">' +
+            '<button class="btn btn-outline btn-sm" data-edit>Edit</button>' +
+            '<button class="btn btn-outline btn-sm" data-toggle>' + (c.active ? 'Deactivate' : 'Activate') + '</button>' +
+            (c.permanent ? '' : '<button class="btn btn-danger-outline btn-sm" data-delete>Delete</button>') +
+          '</div></td>';
+        tr.querySelector('[data-edit]').addEventListener('click', function () { openCampaignModal(c); });
+        tr.querySelector('[data-toggle]').addEventListener('click', function () {
+          KKConfirm('Are you sure you want to ' + (c.active ? 'deactivate' : 'activate') + ' "' + c.name + '"?', function () {
+            KKStore.update('campaigns', c.id, { active: !c.active });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, c.active ? 'campaign-deactivate' : 'campaign-activate', c.id, c.name);
+            KKToast('Campaign ' + (c.active ? 'deactivated' : 'activated') + '.', 'success');
+            renderCampaigns(); renderDonations();
+          }, { confirmLabel: c.active ? 'Deactivate' : 'Activate' });
+        });
+        var deleteBtn = tr.querySelector('[data-delete]');
+        if (deleteBtn) deleteBtn.addEventListener('click', function () {
+          KKConfirm('Permanently delete the campaign "' + c.name + '"? This cannot be undone.', function () {
+            KKStore.remove('campaigns', c.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'campaign-delete', c.id, c.name);
+            KKToast('Campaign deleted.', 'success');
+            renderCampaigns(); renderDonations();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Campaign' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openCampaignModal(campaign) {
+      var isEdit = !!campaign;
+      KKModal.open({
+        title: isEdit ? 'Edit Campaign' : 'Add Campaign',
+        bodyHtml: '<div class="form-grid">' +
+          '<div class="field"><label for="cm-name">Campaign Name <span class="required">*</span></label><input type="text" id="cm-name" value="' + (campaign ? campaign.name : '') + '"></div>' +
+          '<div class="field"><label for="cm-desc">Description</label><textarea id="cm-desc" rows="3">' + (campaign ? (campaign.description || '') : '') + '</textarea></div>' +
+          '<div class="field"><label for="cm-target">Target Amount (₹) <span class="required">*</span></label><input type="number" id="cm-target" min="0" value="' + (campaign ? campaign.target : '') + '"></div>' +
+          '<div class="field"><label for="cm-order">Display Order</label><input type="number" id="cm-order" min="1" value="' + (campaign ? campaign.order : (KKStore.all('campaigns').length + 1)) + '"></div>' +
+          '<div class="field"><label><input type="checkbox" id="cm-active" ' + (!campaign || campaign.active ? 'checked' : '') + '> Active</label></div>' +
+          '<div class="field"><label><input type="checkbox" id="cm-has-tickets" ' + (campaign && campaign.hasTickets ? 'checked' : '') + '> This campaign also sells event tickets (public site shows a "Purchase Ticket" button alongside "Donate Now")</label></div>' +
+          '<div class="form-row">' +
+          '<div class="field"><label for="cm-ticket-label">Ticket Label</label><input type="text" id="cm-ticket-label" placeholder="e.g. Diwali Utsav Entry Pass" value="' + (campaign ? (campaign.ticketLabel || '') : '') + '"></div>' +
+          '<div class="field"><label for="cm-ticket-price">Ticket Price (₹)</label><input type="number" id="cm-ticket-price" min="0" value="' + (campaign ? (campaign.ticketPrice || '') : '') + '"></div>' +
+          '</div>' +
+          '</div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: isEdit ? 'Save Changes' : 'Add Campaign', className: 'btn btn-primary', onClick: function (close) {
+            var name = document.getElementById('cm-name').value.trim();
+            var target = parseInt(document.getElementById('cm-target').value, 10);
+            var order = parseInt(document.getElementById('cm-order').value, 10) || 1;
+            var description = document.getElementById('cm-desc').value.trim();
+            var active = document.getElementById('cm-active').checked;
+            var hasTickets = document.getElementById('cm-has-tickets').checked;
+            var ticketLabel = document.getElementById('cm-ticket-label').value.trim();
+            var ticketPrice = parseInt(document.getElementById('cm-ticket-price').value, 10) || 0;
+            if (!name || isNaN(target) || target <= 0) { KKToast('Enter a valid campaign name and target amount.', 'danger'); return; }
+            if (hasTickets && (!ticketLabel || ticketPrice <= 0)) { KKToast('Enter a ticket label and a ticket price greater than 0.', 'danger'); return; }
+            if (isEdit) {
+              KKStore.update('campaigns', campaign.id, { name: name, description: description, target: target, order: order, active: active, hasTickets: hasTickets, ticketLabel: hasTickets ? ticketLabel : '', ticketPrice: hasTickets ? ticketPrice : 0 });
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'campaign-edit', campaign.id, name);
+              KKToast('Campaign updated.', 'success');
+            } else {
+              var created = KKStore.add('campaigns', { name: name, slug: slugify(name), description: description, target: target, order: order, active: active, permanent: false, raised: 0, donorCount: 0, startDate: null, endDate: null, hasTickets: hasTickets, ticketLabel: hasTickets ? ticketLabel : '', ticketPrice: hasTickets ? ticketPrice : 0 });
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'campaign-add', created.id, name);
+              KKToast('Campaign created.', 'success');
+            }
+            close();
+            renderCampaigns(); renderDonations();
+          } }
+        ]
+      });
+    }
+
+    var donStatusPill = { successful: 'pill-success', verified: 'pill-success', submitted: 'pill-warning', pending: 'pill-warning', failed: 'pill-danger', refunded: 'pill-neutral' };
+
+    function renderDonations() {
+      var mode = document.getElementById('f-mode').value;
+      var status = document.getElementById('f-status').value;
+      var rows = KKStore.all('donations').filter(function (d) {
+        return (!mode || d.mode === mode) && (!status || d.status === status);
+      });
+      var tbody = document.getElementById('donation-rows');
+      tbody.innerHTML = '';
+      document.getElementById('donation-empty').hidden = !!rows.length;
+      rows.forEach(function (d) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Donor">' + d.donorName + '</td>' +
+          '<td data-label="Campaign">' + campaignName(d.campaignId) + '</td>' +
+          '<td data-label="Purpose"><span class="pill ' + (d.purpose === 'ticket' ? 'pill-warning' : 'pill-neutral') + '">' + (d.purpose === 'ticket' ? 'Ticket' : 'Donation') + '</span></td>' +
+          '<td data-label="Amount">₹' + Number(d.amount).toLocaleString('en-IN') + '</td>' +
+          '<td data-label="Mode"><span class="pill pill-neutral">' + d.mode + '</span></td>' +
+          '<td data-label="Status"><span class="pill ' + (donStatusPill[d.status] || 'pill-neutral') + '">' + d.status + '</span></td>' +
+          '<td data-label="Reference">' + (d.refNumber || '—') + '</td>' +
+          '<td data-label="Date">' + new Date(d.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions">' +
+            (d.mode === 'offline' && d.status === 'submitted' ? '<button class="btn btn-primary btn-sm" data-verify>Verify</button>' : '') +
+            ((d.status === 'pending' || d.status === 'submitted') ? '<button class="btn btn-danger-outline btn-sm" data-fail>Mark Failed</button>' : '') +
+          '</div></td>';
+        var verifyBtn = tr.querySelector('[data-verify]');
+        if (verifyBtn) verifyBtn.addEventListener('click', function () {
+          KKConfirm('Verify this offline donation of ₹' + Number(d.amount).toLocaleString('en-IN') + ' from "' + d.donorName + '"?', function () {
+            KKStore.update('donations', d.id, { status: 'verified' });
+            var campaign = KKStore.findById('campaigns', d.campaignId);
+            if (campaign) KKStore.update('campaigns', campaign.id, { raised: (campaign.raised || 0) + Number(d.amount), donorCount: (campaign.donorCount || 0) + 1 });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'donation-verify', d.id, d.donorName + ' — ₹' + d.amount);
+            KKToast('Offline donation verified.', 'success');
+            renderCampaigns(); renderDonations();
+          }, { confirmLabel: 'Verify' });
+        });
+        var failBtn = tr.querySelector('[data-fail]');
+        if (failBtn) failBtn.addEventListener('click', function () {
+          KKConfirm('Mark this donation from "' + d.donorName + '" as failed?', function () {
+            KKStore.update('donations', d.id, { status: 'failed' });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'donation-mark-failed', d.id, d.donorName);
+            KKToast('Donation marked as failed.', 'success');
+            renderDonations();
+          }, { confirmLabel: 'Mark Failed', danger: true });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('add-campaign-btn').addEventListener('click', function () { openCampaignModal(null); });
+    ['f-mode', 'f-status'].forEach(function (id) { document.getElementById(id).addEventListener('change', renderDonations); });
+
+    var qp = new URLSearchParams(window.location.search);
+    if (qp.get('mode')) document.getElementById('f-mode').value = qp.get('mode');
+    if (qp.get('status')) document.getElementById('f-status').value = qp.get('status');
+
+    renderCampaigns();
+    renderDonations();
+  })();
+</script>
+</body>
+</html>

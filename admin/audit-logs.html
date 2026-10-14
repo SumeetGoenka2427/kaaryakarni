@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Logs — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html" aria-current="page">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Audit Logs</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div><h2>Admin Audit Log</h2><p class="muted">Read-only record of administrative actions performed across the portal, newest first.</p></div>
+      </div>
+
+      <div class="filters-bar">
+        <div class="field search-field"><label for="f-search">Search</label><input type="search" id="f-search" placeholder="Search by actor or action"></div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Actor</th><th>Action</th><th>Target</th><th>Details</th><th>Date</th></tr></thead>
+              <tbody id="log-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="log-empty" hidden><h3>No audit log entries found</h3><p>Try clearing the search term.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function render() {
+      var term = document.getElementById('f-search').value.trim().toLowerCase();
+      var rows = KKStore.all('auditLogs')
+        .filter(function (l) { return !term || (l.actor + ' ' + l.action).toLowerCase().indexOf(term) !== -1; })
+        .sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+      var tbody = document.getElementById('log-rows');
+      tbody.innerHTML = '';
+      document.getElementById('log-empty').hidden = !!rows.length;
+      rows.forEach(function (l) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Actor">' + l.actor + '</td>' +
+          '<td data-label="Action">' + l.action + '</td>' +
+          '<td data-label="Target">' + (l.target || '—') + '</td>' +
+          '<td data-label="Details">' + (l.details || '—') + '</td>' +
+          '<td data-label="Date">' + new Date(l.createdAt).toLocaleString('en-IN') + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+    document.getElementById('f-search').addEventListener('input', render);
+    render();
+  })();
+</script>
+</body>
+</html>

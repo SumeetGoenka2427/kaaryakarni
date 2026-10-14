@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html" aria-current="page">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Settings</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Samaj Portal Settings</h2>
+          <p class="muted">Organization identity, the one-time lifetime membership fee, and donor-privacy display preferences used across the public site.</p>
+        </div>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:24px;max-width:640px;">
+        <div class="admin-panel-body">
+          <div class="form-grid">
+            <div class="field"><label for="s-org-name">Organization Name</label><input type="text" id="s-org-name"></div>
+            <div class="field"><label for="s-fee">Lifetime Membership Fee (₹)</label><input type="number" id="s-fee" min="0" step="1"></div>
+            <div class="field"><label><input type="checkbox" id="s-donor-public"> Show donor names publicly on the homepage and donations pages</label></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="save-settings-btn" style="margin-top:8px;">Save Settings</button>
+        </div>
+      </div>
+
+      <div class="admin-panel" style="max-width:640px;border-color:var(--color-danger);">
+        <div class="admin-panel-head"><h3 style="color:var(--color-danger);">Danger Zone</h3></div>
+        <div class="admin-panel-body">
+          <p class="muted" style="margin-top:0;">This reset button exists only during this demo / no-backend phase, so the localStorage mock database can be restored to its original sample state. It will not exist once a real backend is in place.</p>
+          <button type="button" class="btn btn-danger-outline" id="reset-demo-btn">Reset Demo Data</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function loadForm() {
+      var settings = KKStore.getSettings();
+      document.getElementById('s-org-name').value = settings.orgName || '';
+      document.getElementById('s-fee').value = settings.membershipFee != null ? settings.membershipFee : '';
+      document.getElementById('s-donor-public').checked = !!settings.donorNamesPublic;
+    }
+
+    document.getElementById('save-settings-btn').addEventListener('click', function () {
+      var orgName = document.getElementById('s-org-name').value.trim();
+      if (!orgName) { KKToast('Organization name is required.', 'danger'); return; }
+      var fee = Number(document.getElementById('s-fee').value);
+      if (!(fee >= 0)) { KKToast('Enter a valid membership fee.', 'danger'); return; }
+      KKStore.updateSettings({
+        orgName: orgName,
+        membershipFee: fee,
+        donorNamesPublic: document.getElementById('s-donor-public').checked
+      });
+      KKStore.addAuditLog(CURRENT_ADMIN.username, 'settings-update', 'settings', 'Org: ' + orgName + ', Fee: ₹' + fee);
+      KKToast('Settings saved.', 'success');
+    });
+
+    document.getElementById('reset-demo-btn').addEventListener('click', function () {
+      KKConfirm('This will erase all demo members, businesses, donations, payments etc. and reseed fresh sample data. This cannot be undone.', function () {
+        KKStore.addAuditLog(CURRENT_ADMIN.username, 'demo-data-reset', 'database', 'Demo data reset and reseeded.');
+        KKStore.resetDemoData();
+        KKToast('Demo data reset. Reloading...', 'success');
+        setTimeout(function () { window.location.reload(); }, 600);
+      }, { confirmLabel: 'Reset Demo Data', danger: true, title: 'Reset Demo Data' });
+    });
+
+    loadForm();
+  })();
+</script>
+</body>
+</html>

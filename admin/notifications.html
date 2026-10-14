@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html" aria-current="page">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Notifications</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div><h2>Notification Management</h2><p class="muted">Broadcast Samaj-wide announcements or review member-specific notifications sent by the system.</p></div>
+        <button type="button" class="btn btn-primary" id="add-announcement-btn">+ New Announcement</button>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:24px;">
+        <div class="admin-panel-head"><h3>Broadcast Announcements</h3></div>
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Title</th><th>Message</th><th>Type</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="broadcast-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="broadcast-empty" hidden><h3>No announcements yet</h3><p>Publish your first Samaj-wide announcement.</p></div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h3>Member-Specific Notifications</h3></div>
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Member</th><th>Title</th><th>Message</th><th>Type</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="member-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="member-empty" hidden><h3>No member-specific notifications</h3><p>System notifications sent to individual members will appear here.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function memberName(id) { var m = KKStore.findById('members', id); return m ? m.name : 'Unknown member'; }
+    var typePill = { announcement: 'pill-neutral', membership: 'pill-success', business: 'pill-warning', payment: 'pill-warning', donation: 'pill-success', matrimonial: 'pill-neutral' };
+
+    function renderBroadcast() {
+      var list = KKStore.all('notifications').filter(function (n) { return n.memberId === null; })
+        .sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+      var tbody = document.getElementById('broadcast-rows');
+      tbody.innerHTML = '';
+      document.getElementById('broadcast-empty').hidden = !!list.length;
+      list.forEach(function (n) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Title">' + n.title + '</td>' +
+          '<td data-label="Message">' + n.message + '</td>' +
+          '<td data-label="Type"><span class="pill ' + (typePill[n.type] || 'pill-neutral') + '">' + n.type + '</span></td>' +
+          '<td data-label="Date">' + new Date(n.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions"><button class="btn btn-danger-outline btn-sm" data-delete>Delete</button></td>';
+        tr.querySelector('[data-delete]').addEventListener('click', function () {
+          KKConfirm('Delete the announcement "' + n.title + '"?', function () {
+            KKStore.remove('notifications', n.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'announcement-delete', n.id, n.title);
+            KKToast('Announcement deleted.', 'success');
+            renderBroadcast();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Announcement' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderMemberSpecific() {
+      var list = KKStore.all('notifications').filter(function (n) { return n.memberId !== null; })
+        .sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+      var tbody = document.getElementById('member-rows');
+      tbody.innerHTML = '';
+      document.getElementById('member-empty').hidden = !!list.length;
+      list.forEach(function (n) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Member">' + memberName(n.memberId) + '</td>' +
+          '<td data-label="Title">' + n.title + '</td>' +
+          '<td data-label="Message">' + n.message + '</td>' +
+          '<td data-label="Type"><span class="pill ' + (typePill[n.type] || 'pill-neutral') + '">' + n.type + '</span></td>' +
+          '<td data-label="Date">' + new Date(n.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions"><button class="btn btn-danger-outline btn-sm" data-delete>Delete</button></td>';
+        tr.querySelector('[data-delete]').addEventListener('click', function () {
+          KKConfirm('Delete this notification for "' + memberName(n.memberId) + '"?', function () {
+            KKStore.remove('notifications', n.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'notification-delete', n.id, n.title);
+            KKToast('Notification deleted.', 'success');
+            renderMemberSpecific();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Notification' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openAnnouncementModal() {
+      KKModal.open({
+        title: 'New Announcement',
+        bodyHtml: '<div class="form-grid">' +
+          '<div class="field"><label for="an-title">Title <span class="required">*</span></label><input type="text" id="an-title"></div>' +
+          '<div class="field"><label for="an-message">Message <span class="required">*</span></label><textarea id="an-message" rows="3"></textarea></div>' +
+          '<div class="field"><label for="an-type">Type</label><select id="an-type"><option value="announcement">Announcement</option><option value="membership">Membership</option><option value="business">Business</option><option value="payment">Payment</option><option value="donation">Donation</option></select></div>' +
+          '</div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: 'Publish Announcement', className: 'btn btn-primary', onClick: function (close) {
+            var title = document.getElementById('an-title').value.trim();
+            var message = document.getElementById('an-message').value.trim();
+            var type = document.getElementById('an-type').value;
+            if (!title || !message) { KKToast('Enter a title and message.', 'danger'); return; }
+            var created = KKStore.add('notifications', { memberId: null, title: title, message: message, type: type, read: false });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'announcement-create', created.id, title);
+            KKToast('Announcement published.', 'success');
+            close();
+            renderBroadcast();
+          } }
+        ]
+      });
+    }
+
+    document.getElementById('add-announcement-btn').addEventListener('click', openAnnouncementModal);
+    renderBroadcast();
+    renderMemberSpecific();
+  })();
+</script>
+</body>
+</html>

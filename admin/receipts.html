@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receipts — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html" aria-current="page">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Receipts</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Receipts</h2>
+          <p class="muted">Successful membership payments and verified donations, ready to view or print. In production this should generate a real PDF (server-side or a PDF library) — the Print button here is a demo stand-in using the browser's print dialog.</p>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button type="button" class="tab-btn is-active" data-filter="all">All</button>
+        <button type="button" class="tab-btn" data-filter="payments">Membership Payments</button>
+        <button type="button" class="tab-btn" data-filter="donations">Donations</button>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Name</th><th>Amount</th><th>Purpose / Campaign</th><th>Mode</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="receipt-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="state-block" id="receipt-empty" hidden><h3>No receipts available</h3><p>Receipts appear here once a membership payment succeeds or a donation is verified.</p></div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    var currentFilter = 'all';
+
+    function buildRecords() {
+      var records = [];
+      KKStore.all('payments').filter(function (p) { return p.status === 'successful'; }).forEach(function (p) {
+        var member = KKStore.findById('members', p.memberId);
+        records.push({
+          type: 'payment', id: p.id, name: member ? member.name : 'Unknown member', amount: p.amount,
+          purpose: p.purpose === 'membership' ? 'Lifetime Membership Fee' : p.purpose, mode: p.mode,
+          createdAt: p.createdAt, reference: p.providerRef || '—', raw: p
+        });
+      });
+      KKStore.all('donations').filter(function (d) { return d.status === 'verified'; }).forEach(function (d) {
+        var campaign = KKStore.findById('campaigns', d.campaignId);
+        records.push({
+          type: 'donation', id: d.id, name: d.donorName, amount: d.amount,
+          purpose: campaign ? campaign.name : 'Donation', mode: d.mode,
+          createdAt: d.createdAt, reference: d.refNumber || '—', raw: d
+        });
+      });
+      records.sort(function (a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+      return records;
+    }
+
+    function filtered() {
+      var records = buildRecords();
+      if (currentFilter === 'payments') return records.filter(function (r) { return r.type === 'payment'; });
+      if (currentFilter === 'donations') return records.filter(function (r) { return r.type === 'donation'; });
+      return records;
+    }
+
+    function render() {
+      var rows = filtered();
+      var tbody = document.getElementById('receipt-rows');
+      tbody.innerHTML = '';
+      document.getElementById('receipt-empty').hidden = !!rows.length;
+      rows.forEach(function (r) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td data-label="Name">' + r.name + '</td>' +
+          '<td data-label="Amount">₹' + Number(r.amount).toLocaleString('en-IN') + '</td>' +
+          '<td data-label="Purpose / Campaign">' + r.purpose + '</td>' +
+          '<td data-label="Mode">' + (r.mode === 'online' ? 'Online' : 'Offline') + '</td>' +
+          '<td data-label="Date">' + new Date(r.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions"><button class="btn btn-outline btn-sm" data-view>View / Print Receipt</button></td>';
+        tr.querySelector('[data-view]').addEventListener('click', function () { openReceiptModal(r); });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openReceiptModal(r) {
+      var settings = KKStore.getSettings();
+      KKModal.open({
+        title: 'Receipt',
+        bodyHtml:
+          '<div id="printable-receipt" style="position:relative;overflow:hidden;border:1px solid var(--color-border);border-radius:12px;padding:22px;">' +
+            '<div aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">' +
+              '<div style="transform:rotate(-28deg);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0.07;">' +
+                '<span style="font-family:var(--font-heading);font-weight:700;font-size:5.5rem;line-height:1;color:var(--color-navy-900);">KS</span>' +
+                '<span style="font-family:var(--font-heading);font-size:1.1rem;white-space:nowrap;color:var(--color-navy-900);">' + settings.orgName + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div style="position:relative;z-index:1;">' +
+            '<div style="text-align:center;margin-bottom:16px;">' +
+              '<span class="brand-mark" aria-hidden="true" style="display:inline-flex;">KS</span>' +
+              '<div style="font-family:var(--font-heading);font-size:1.2rem;color:var(--color-navy-900);margin-top:8px;">' + settings.orgName + '</div>' +
+              '<div class="muted" style="font-size:0.82rem;">Official Payment Receipt</div>' +
+            '</div>' +
+            row('Receipt No.', r.id) +
+            row('Date', new Date(r.createdAt).toLocaleDateString('en-IN')) +
+            row(r.type === 'donation' ? 'Donor Name' : 'Member Name', r.name) +
+            row('Amount', '₹' + Number(r.amount).toLocaleString('en-IN')) +
+            row('Payment Mode', r.mode === 'online' ? 'Online' : 'Offline') +
+            row('Purpose / Campaign', r.purpose) +
+            row('Reference No.', r.reference) +
+            '<p class="muted" style="text-align:center;margin-top:16px;font-size:0.78rem;">This is a system-generated receipt issued by ' + settings.orgName + '.</p>' +
+            '</div>' +
+          '</div>',
+        buttons: [
+          { label: 'Close', className: 'btn btn-outline' },
+          { label: 'Print', className: 'btn btn-primary', onClick: function () { window.print(); } }
+        ]
+      });
+      function row(label, value) { return '<div class="flex-between" style="padding:6px 0;border-bottom:1px solid var(--color-border);"><span class="muted">' + label + '</span><strong>' + value + '</strong></div>'; }
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+        currentFilter = btn.getAttribute('data-filter');
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>
+</body>
+</html>

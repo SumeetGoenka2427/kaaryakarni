@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — Khandelwal Samaj Membership Portal</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../../shared/js/store.js"></script>
+<script src="../../shared/js/session.js"></script>
+<script>var CURRENT_MEMBER = KKSession.requireMember('../login.html');</script>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Member Area</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Member">
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="profile.html" aria-current="page">Profile</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li class="nav-dropdown" data-nav-dropdown>
+          <button type="button" class="nav-dropdown-toggle" data-nav-dropdown-toggle aria-haspopup="true" aria-expanded="false">More <span class="nav-dropdown-caret" aria-hidden="true">&#9662;</span></button>
+          <ul class="nav-dropdown-menu" data-nav-dropdown-menu hidden>
+            <li><a href="business.html">Business</a></li>
+            <li><a href="matrimonial.html">My Matrimonial Profiles</a></li>
+            <li><a href="matrimonial-browse.html">Browse Matches</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav-cta">
+        <a href="../index.html" class="btn btn-outline btn-sm">Public Site</a>
+        <button type="button" class="btn btn-primary btn-sm" id="logout-btn">Logout</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" style="padding-top:40px;">
+    <div class="container" style="max-width:720px;">
+      <h1>My Profile</h1>
+      <p class="muted">Keep your Samaj member profile accurate. Your mobile number is your login identifier and cannot be changed here.</p>
+
+      <div class="form-alert form-alert-success" id="save-success" hidden>Your profile has been updated.</div>
+
+      <form id="profile-form" class="form-grid">
+        <div class="form-row">
+          <div class="field">
+            <label for="p-name">Full Name <span class="required">*</span></label>
+            <input type="text" id="p-name" data-rule="required" required>
+          </div>
+          <div class="field">
+            <label for="p-mobile">Mobile Number</label>
+            <input type="text" id="p-mobile" disabled>
+            <span class="hint">Contact the Samaj office to change your registered mobile number.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="p-dob">Date of Birth</label>
+            <input type="date" id="p-dob">
+          </div>
+          <div class="field">
+            <label for="p-gender">Gender</label>
+            <select id="p-gender">
+              <option value="">Select</option><option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="p-email">Email</label>
+          <input type="email" id="p-email" data-rule="email" placeholder="you@example.com">
+          <span class="error-text">Please enter a valid email address.</span>
+        </div>
+        <div class="field">
+          <label for="p-area">Area / Locality <span class="required">*</span></label>
+          <select id="p-area" required></select>
+        </div>
+        <div class="field">
+          <label for="p-address">Address</label>
+          <textarea id="p-address" rows="2"></textarea>
+        </div>
+        <div class="field">
+          <label for="p-photo">Profile Photo</label>
+          <input type="file" id="p-photo" accept="image/png,image/jpeg">
+          <span class="hint">JPG or PNG, up to 2MB. (Demo: file is not actually uploaded/stored.)</span>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Membership Status</label>
+            <div id="p-status-pill"></div>
+          </div>
+          <div class="field">
+            <label>Verification Status</label>
+            <div id="p-verify-pill"></div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="dashboard.html">Back to Dashboard</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+  (function () {
+    var member = CURRENT_MEMBER;
+    if (!member) return;
+
+    var areaSelect = document.getElementById('p-area');
+    KKStore.all('areas').filter(function (a) { return a.active; }).sort(function (a, b) { return a.order - b.order; })
+      .forEach(function (a) {
+        var opt = document.createElement('option');
+        opt.value = a.name; opt.textContent = a.name;
+        if (a.name === member.area) opt.selected = true;
+        areaSelect.appendChild(opt);
+      });
+
+    document.getElementById('p-name').value = member.name || '';
+    document.getElementById('p-mobile').value = member.mobile || '';
+    document.getElementById('p-dob').value = member.dob || '';
+    document.getElementById('p-gender').value = member.gender || '';
+    document.getElementById('p-email').value = member.email || '';
+    document.getElementById('p-address').value = member.address || '';
+
+    var pillClass = { 'Lifetime Member': 'pill-success', 'Under Verification': 'pill-warning', 'Payment Pending': 'pill-warning', 'Payment Submitted': 'pill-warning', 'Rejected': 'pill-danger', 'Suspended': 'pill-danger' }[member.status] || 'pill-neutral';
+    document.getElementById('p-status-pill').innerHTML = '<span class="pill ' + pillClass + '">' + member.status + '</span>';
+    document.getElementById('p-verify-pill').innerHTML = member.verified
+      ? '<span class="pill pill-success">Verified</span>'
+      : '<span class="pill pill-warning">Pending Verification</span>';
+
+    document.getElementById('profile-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var emailField = document.getElementById('p-email');
+      if (emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value.trim())) {
+        emailField.closest('.field').classList.add('has-error');
+        return;
+      }
+      KKStore.update('members', member.id, {
+        name: document.getElementById('p-name').value.trim(),
+        dob: document.getElementById('p-dob').value,
+        gender: document.getElementById('p-gender').value,
+        email: emailField.value.trim(),
+        area: areaSelect.value,
+        address: document.getElementById('p-address').value.trim()
+      });
+      document.getElementById('save-success').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', function () {
+      KKSession.logoutMember();
+      window.location.href = '../index.html';
+    });
+  })();
+</script>
+</body>
+</html>

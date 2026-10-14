@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Directory — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html" aria-current="page">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Business Directory</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div><h2>Business &amp; Professional Directory</h2><p class="muted">Approve, reject, feature or hide member business submissions. Only approved businesses appear publicly.</p></div>
+      </div>
+
+      <div class="tabs" data-tabs="biz">
+        <button type="button" class="tab-btn is-active" data-tab="pending">Pending <span class="count" id="count-pending">0</span></button>
+        <button type="button" class="tab-btn" data-tab="approved">Approved <span class="count" id="count-approved">0</span></button>
+        <button type="button" class="tab-btn" data-tab="rejected">Rejected <span class="count" id="count-rejected">0</span></button>
+        <button type="button" class="tab-btn" data-tab="hidden">Hidden <span class="count" id="count-hidden">0</span></button>
+      </div>
+
+      <div class="filters-bar">
+        <div class="field search-field"><label for="f-search">Search</label><input type="search" id="f-search" placeholder="Search by name, category or area"></div>
+      </div>
+
+      <div data-tab-panel="pending" data-tabs-group="biz" class="admin-panel"><div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Business</th><th>Category</th><th>Area</th><th>Owner</th><th>Submitted</th><th>Actions</th></tr></thead><tbody id="rows-pending"></tbody></table></div></div></div>
+      <div data-tab-panel="approved" data-tabs-group="biz" class="admin-panel" hidden><div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Business</th><th>Category</th><th>Area</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="rows-approved"></tbody></table></div></div></div>
+      <div data-tab-panel="rejected" data-tabs-group="biz" class="admin-panel" hidden><div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Business</th><th>Category</th><th>Reason</th><th>Actions</th></tr></thead><tbody id="rows-rejected"></tbody></table></div></div></div>
+      <div data-tab-panel="hidden" data-tabs-group="biz" class="admin-panel" hidden><div class="admin-panel-body" style="padding:0;"><div class="data-table-wrap" style="border:none;"><table class="data-table"><thead><tr><th>Business</th><th>Category</th><th>Area</th><th>Actions</th></tr></thead><tbody id="rows-hidden"></tbody></table></div></div></div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    var qp = new URLSearchParams(window.location.search);
+    function memberName(id) { var m = KKStore.findById('members', id); return m ? m.name : 'Unknown member'; }
+
+    function searchTerm() { return document.getElementById('f-search').value.trim().toLowerCase(); }
+    function matchesSearch(b) {
+      var term = searchTerm();
+      return !term || (b.name + ' ' + b.category + ' ' + b.area).toLowerCase().indexOf(term) !== -1;
+    }
+
+    function render() {
+      var all = KKStore.all('businesses').filter(matchesSearch);
+      var byStatus = { pending: [], approved: [], rejected: [], hidden: [] };
+      all.forEach(function (b) { (byStatus[b.status] || byStatus.pending).push(b); });
+
+      document.getElementById('count-pending').textContent = byStatus.pending.length;
+      document.getElementById('count-approved').textContent = byStatus.approved.length;
+      document.getElementById('count-rejected').textContent = byStatus.rejected.length;
+      document.getElementById('count-hidden').textContent = byStatus.hidden.length;
+
+      renderPending(byStatus.pending);
+      renderApproved(byStatus.approved);
+      renderRejected(byStatus.rejected);
+      renderHidden(byStatus.hidden);
+    }
+
+    function renderPending(list) {
+      var tbody = document.getElementById('rows-pending');
+      tbody.innerHTML = '';
+      list.forEach(function (b) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Business">' + b.name + '</td><td data-label="Category">' + b.category + '</td><td data-label="Area">' + (b.area || '—') + '</td>' +
+          '<td data-label="Owner">' + memberName(b.memberId) + '</td><td data-label="Submitted">' + new Date(b.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions"><button class="btn btn-outline btn-sm" data-view>View</button><button class="btn btn-primary btn-sm" data-approve>Approve</button><button class="btn btn-danger-outline btn-sm" data-reject>Reject</button></div></td>';
+        tr.querySelector('[data-view]').addEventListener('click', function () { viewBusiness(b); });
+        tr.querySelector('[data-approve]').addEventListener('click', function () {
+          KKConfirm('Approve "' + b.name + '" for public listing in the Business Directory?', function () {
+            KKStore.update('businesses', b.id, { status: 'approved' });
+            KKStore.add('notifications', { memberId: b.memberId, title: 'Business Approved', message: '"' + b.name + '" is now live in the Business Directory.', type: 'business', read: false });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'business-approve', b.id, b.name);
+            KKToast('Business approved.', 'success');
+            render();
+          }, { confirmLabel: 'Approve' });
+        });
+        tr.querySelector('[data-reject]').addEventListener('click', function () { rejectBusiness(b); });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderApproved(list) {
+      var tbody = document.getElementById('rows-approved');
+      tbody.innerHTML = '';
+      list.forEach(function (b) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Business">' + b.name + '</td><td data-label="Category">' + b.category + '</td><td data-label="Area">' + (b.area || '—') + '</td>' +
+          '<td data-label="Featured">' + (b.featured ? '<span class="pill pill-success">Featured</span>' : '<span class="pill pill-neutral">No</span>') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions"><button class="btn btn-outline btn-sm" data-view>View</button><button class="btn btn-outline btn-sm" data-feature>' + (b.featured ? 'Unfeature' : 'Feature') + '</button><button class="btn btn-danger-outline btn-sm" data-hide>Hide</button></div></td>';
+        tr.querySelector('[data-view]').addEventListener('click', function () { viewBusiness(b); });
+        tr.querySelector('[data-feature]').addEventListener('click', function () {
+          KKStore.update('businesses', b.id, { featured: !b.featured });
+          KKStore.addAuditLog(CURRENT_ADMIN.username, b.featured ? 'business-unfeature' : 'business-feature', b.id, b.name);
+          KKToast(b.featured ? 'Removed from featured.' : 'Marked as featured.', 'success');
+          render();
+        });
+        tr.querySelector('[data-hide]').addEventListener('click', function () {
+          KKConfirm('Hide "' + b.name + '" from the public directory?', function () {
+            KKStore.update('businesses', b.id, { status: 'hidden' });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'business-hide', b.id, b.name);
+            KKToast('Business hidden.', 'success');
+            render();
+          }, { confirmLabel: 'Hide', danger: true });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderRejected(list) {
+      var tbody = document.getElementById('rows-rejected');
+      tbody.innerHTML = '';
+      list.forEach(function (b) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Business">' + b.name + '</td><td data-label="Category">' + b.category + '</td><td data-label="Reason">' + (b.rejectionReason || '—') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions"><button class="btn btn-outline btn-sm" data-reconsider>Move to Pending</button><button class="btn btn-danger-outline btn-sm" data-delete>Delete</button></div></td>';
+        tr.querySelector('[data-reconsider]').addEventListener('click', function () {
+          KKStore.update('businesses', b.id, { status: 'pending' });
+          KKStore.addAuditLog(CURRENT_ADMIN.username, 'business-reconsider', b.id, b.name);
+          render();
+        });
+        tr.querySelector('[data-delete]').addEventListener('click', function () {
+          KKConfirm('Permanently delete "' + b.name + '"?', function () {
+            KKStore.remove('businesses', b.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'business-delete', b.id, b.name);
+            KKToast('Business deleted.', 'success');
+            render();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Business' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderHidden(list) {
+      var tbody = document.getElementById('rows-hidden');
+      tbody.innerHTML = '';
+      list.forEach(function (b) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Business">' + b.name + '</td><td data-label="Category">' + b.category + '</td><td data-label="Area">' + (b.area || '—') + '</td>' +
+          '<td data-label="Actions"><button class="btn btn-primary btn-sm" data-unhide>Unhide (Approve)</button></td>';
+        tr.querySelector('[data-unhide]').addEventListener('click', function () {
+          KKStore.update('businesses', b.id, { status: 'approved' });
+          KKStore.addAuditLog(CURRENT_ADMIN.username, 'business-unhide', b.id, b.name);
+          render();
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewBusiness(b) {
+      KKModal.open({
+        title: b.name,
+        bodyHtml: '<div class="stack">' +
+          row('Category', b.category) + row('Area', b.area) + row('Owner', memberName(b.memberId)) +
+          row('Phone', b.phone || '—') + row('Address', b.address || '—') + row('Website', b.website || '—') +
+          '<p style="margin-top:8px;">' + (b.description || '') + '</p></div>',
+        buttons: [{ label: 'Close', className: 'btn btn-primary' }]
+      });
+      function row(label, value) { return '<div class="flex-between"><span class="muted">' + label + '</span><strong>' + (value || '—') + '</strong></div>'; }
+    }
+
+    function rejectBusiness(b) {
+      KKModal.open({
+        title: 'Reject Business',
+        bodyHtml: '<div class="field"><label for="biz-reject-reason">Reason <span class="required">*</span></label><textarea id="biz-reject-reason" rows="3"></textarea></div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: 'Reject', className: 'btn btn-danger-outline', onClick: function (close) {
+            var reason = document.getElementById('biz-reject-reason').value.trim();
+            if (!reason) return;
+            KKStore.update('businesses', b.id, { status: 'rejected', rejectionReason: reason });
+            KKStore.add('notifications', { memberId: b.memberId, title: 'Business Rejected', message: 'Reason: ' + reason, type: 'business', read: false });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'business-reject', b.id, b.name + ' — ' + reason);
+            KKToast('Business rejected.', 'success');
+            close();
+            render();
+          } }
+        ]
+      });
+    }
+
+    document.getElementById('f-search').addEventListener('input', render);
+    render();
+
+    if (qp.get('status') && document.querySelector('[data-tab="' + qp.get('status') + '"]')) {
+      document.querySelector('[data-tab="' + qp.get('status') + '"]').click();
+    }
+  })();
+</script>
+</body>
+</html>

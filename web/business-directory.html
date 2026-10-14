@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Directory — Khandelwal Samaj Membership Portal</title>
+<meta name="description" content="Browse admin-approved businesses and professionals from the Khandelwal Samaj community in Jaipur.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Jaipur Membership Portal</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html" aria-current="page">Business Directory</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="donations.html">Donations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+        <a href="register.html" class="btn btn-gold btn-sm">Become a Member</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Home</a> / Business Directory</div>
+      <h1>Business Directory</h1>
+      <p>Discover admin-approved businesses and professionals from the Khandelwal Samaj community in Jaipur.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="filters-bar" data-filter-list>
+        <div class="field search-field">
+          <label for="biz-search">Search</label>
+          <input type="search" id="biz-search" data-filter-search placeholder="Search by business name or keyword">
+        </div>
+        <div class="field">
+          <label for="biz-category">Category</label>
+          <select id="biz-category" data-filter-select="category"><option value="">All Categories</option></select>
+        </div>
+        <div class="field">
+          <label for="biz-area">Area</label>
+          <select id="biz-area" data-filter-select="area"><option value="">All Areas</option></select>
+        </div>
+        <a href="login.html" class="btn btn-outline btn-sm" id="list-business-link">List Your Business</a>
+
+        <div class="grid grid-3" style="grid-column:1 / -1;margin-top:8px;" id="biz-grid"></div>
+
+        <div class="state-block" data-filter-empty hidden style="grid-column:1 / -1;width:100%;">
+          <div class="state-icon" aria-hidden="true">🔍</div>
+          <h3>No approved businesses found</h3>
+          <p>No approved businesses found for the selected filters. Try clearing a filter or searching a different term.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="contact.html">Want to list your business? Contact the Samaj office</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  (function () {
+    var businesses = KKStore.getApprovedBusinesses().sort(function (a, b) { return (b.featured ? 1 : 0) - (a.featured ? 1 : 0); });
+
+    var categories = Array.from(new Set(businesses.map(function (b) { return b.category; }))).sort();
+    var catSelect = document.getElementById('biz-category');
+    categories.forEach(function (c) { var o = document.createElement('option'); o.value = c; o.textContent = c; catSelect.appendChild(o); });
+
+    var areas = Array.from(new Set(businesses.map(function (b) { return b.area; }))).sort();
+    var areaSelect = document.getElementById('biz-area');
+    areas.forEach(function (a) { var o = document.createElement('option'); o.value = a; o.textContent = a; areaSelect.appendChild(o); });
+
+    var grid = document.getElementById('biz-grid');
+    businesses.forEach(function (b) {
+      var card = document.createElement('a');
+      card.href = 'business-detail.html?id=' + b.id;
+      card.className = 'card';
+      card.style.textDecoration = 'none';
+      card.style.color = 'inherit';
+      card.setAttribute('data-filter-item', '');
+      card.setAttribute('data-category', b.category);
+      card.setAttribute('data-area', b.area);
+      card.setAttribute('data-search-text', (b.name + ' ' + b.category + ' ' + b.area + ' ' + b.description).toLowerCase());
+      card.innerHTML =
+        '<div class="card-media" style="background:url(\'' + photoFor(b.id) + '\') center/cover;"></div>' +
+        '<div class="card-body"><span class="pill ' + (b.featured ? 'pill-success' : 'pill-neutral') + '">' + (b.featured ? 'Featured' : 'Approved') + '</span>' +
+        '<h3>' + b.name + '</h3><p class="muted" style="margin:0;font-size:0.85rem;">' + b.category + ' · ' + b.area + '</p></div>';
+      grid.appendChild(card);
+    });
+
+    var member = KKSession.getMember();
+    if (member) document.getElementById('list-business-link').href = 'member/business.html';
+  })();
+</script>
+</body>
+</html>

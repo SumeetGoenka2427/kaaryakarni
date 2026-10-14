@@ -1,0 +1,6 @@
+/* Admin panel bundle: same tokens + shared components, plus admin chrome */
+@import './fonts.css';
+@import './tokens.css';
+@import './base.css';
+@import './components.css';
+@import './admin-shell.css';

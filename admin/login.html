@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — Khandelwal Samaj Membership Portal</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-body">
+<div class="admin-login-shell">
+  <div class="admin-login-card">
+    <div class="text-center" style="margin-bottom:24px;">
+      <span class="brand-mark" aria-hidden="true" style="margin:0 auto 12px;display:flex;">KS</span>
+      <h1 style="font-size:1.4rem;margin-bottom:4px;">Samaj Admin Panel</h1>
+      <p class="muted" style="margin:0;">Khandelwal Samaj Membership Portal</p>
+    </div>
+
+    <div class="form-alert form-alert-warning">
+      <strong>Demo credentials:</strong> username <code>admin</code>, password <code>admin123</code>. Replace with real
+      server-verified admin authentication before production use.
+    </div>
+    <div class="form-alert form-alert-danger" id="login-error" hidden>Invalid username or password.</div>
+
+    <form id="admin-login-form" class="form-grid">
+      <div class="field">
+        <label for="au-username">Username</label>
+        <input type="text" id="au-username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="au-password">Password</label>
+        <input type="password" id="au-password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">
+        <span class="spinner" aria-hidden="true"></span> Login to Admin Panel
+      </button>
+    </form>
+
+    <p class="text-center muted" style="margin-top:20px;font-size:0.85rem;"><a href="../web/index.html">&larr; Back to Public Site</a></p>
+  </div>
+</div>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>
+  document.getElementById('admin-login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var username = document.getElementById('au-username').value.trim();
+    var password = document.getElementById('au-password').value;
+    var errorBox = document.getElementById('login-error');
+    var match = KKStore.all('adminUsers').filter(function (a) { return a.username === username && a.password === password; })[0];
+    if (match) {
+      errorBox.hidden = true;
+      KKSession.loginAdmin(match);
+      KKStore.addAuditLog(username, 'admin-login', 'admin', 'Admin logged in.');
+      window.location.href = 'index.html';
+    } else {
+      errorBox.hidden = false;
+    }
+  });
+</script>
+</body>
+</html>

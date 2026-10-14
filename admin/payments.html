@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payments — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html" aria-current="page">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Payments</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div><h2>Payment Records</h2><p class="muted">All online and offline payments made for memberships and donations.</p></div>
+      </div>
+
+      <div class="form-alert form-alert-info">
+        <span>&#8505;</span>
+        <span>Online payment success must always be confirmed server-side via the payment gateway's webhook in production. Never trust a frontend redirect or query parameter alone.</span>
+      </div>
+
+      <div class="filters-bar">
+        <div class="field"><label for="f-mode">Mode</label><select id="f-mode"><option value="">All Modes</option><option value="online">Online</option><option value="offline">Offline</option></select></div>
+        <div class="field"><label for="f-status">Status</label>
+          <select id="f-status">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option><option value="submitted">Submitted</option>
+            <option value="successful">Successful</option><option value="failed">Failed</option><option value="refunded">Refunded</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Member</th><th>Purpose</th><th>Amount</th><th>Mode</th><th>Provider</th><th>Reference</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="payment-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="state-block" id="payment-empty" hidden><h3>No payments found</h3><p>Try clearing a filter.</p></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function memberName(id) { var m = KKStore.findById('members', id); return m ? m.name : 'Unknown member'; }
+    var statusPill = { successful: 'pill-success', submitted: 'pill-warning', pending: 'pill-warning', failed: 'pill-danger', refunded: 'pill-neutral' };
+
+    function render() {
+      var mode = document.getElementById('f-mode').value;
+      var status = document.getElementById('f-status').value;
+      var rows = KKStore.all('payments').filter(function (p) { return (!mode || p.mode === mode) && (!status || p.status === status); });
+      var tbody = document.getElementById('payment-rows');
+      tbody.innerHTML = '';
+      document.getElementById('payment-empty').hidden = !!rows.length;
+      rows.forEach(function (p) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td data-label="Member">' + memberName(p.memberId) + '</td>' +
+          '<td data-label="Purpose">' + (p.purpose === 'membership' ? 'Membership' : 'Donation') + '</td>' +
+          '<td data-label="Amount">₹' + Number(p.amount).toLocaleString('en-IN') + '</td>' +
+          '<td data-label="Mode"><span class="pill pill-neutral">' + p.mode + '</span></td>' +
+          '<td data-label="Provider">' + (p.provider || '—') + '</td>' +
+          '<td data-label="Reference">' + (p.providerRef || '—') + '</td>' +
+          '<td data-label="Status"><span class="pill ' + (statusPill[p.status] || 'pill-neutral') + '">' + p.status + '</span></td>' +
+          '<td data-label="Date">' + new Date(p.createdAt).toLocaleDateString('en-IN') + '</td>' +
+          '<td data-label="Actions">' + (p.mode === 'offline' && p.status === 'submitted' ? '<button class="btn btn-primary btn-sm" data-verify>Verify</button>' : '—') + '</td>';
+        var verifyBtn = tr.querySelector('[data-verify]');
+        if (verifyBtn) verifyBtn.addEventListener('click', function () {
+          KKConfirm('Verify this offline ' + p.purpose + ' payment of ₹' + Number(p.amount).toLocaleString('en-IN') + ' from "' + memberName(p.memberId) + '"?', function () {
+            KKStore.update('payments', p.id, { status: 'successful' });
+            if (p.purpose === 'membership') {
+              var member = KKStore.findById('members', p.memberId);
+              if (member) {
+                KKStore.update('members', member.id, { status: 'Lifetime Member', verified: true });
+                KKStore.add('notifications', { memberId: member.id, title: 'Membership Payment Verified', message: 'Your one-time lifetime membership payment has been verified. Welcome as a Lifetime Member!', type: 'membership', read: false });
+              }
+            }
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'payment-verify', p.id, memberName(p.memberId) + ' — ₹' + p.amount);
+            KKToast('Payment verified.', 'success');
+            render();
+          }, { confirmLabel: 'Verify' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    ['f-mode', 'f-status'].forEach(function (id) { document.getElementById(id).addEventListener('change', render); });
+    render();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+/* ==========================================================================
+   Khandelwal Samaj Membership Portal — ADMIN design system
+   Functional, information-dense, professional. Distinct chrome from the
+   public site (dark sidebar) but shares tokens/buttons/forms/pills from
+   ../../web/assets/css/style.css which every admin page also links.
+   ========================================================================== */
+
+body.admin-body {
+  background: var(--color-bg-alt);
+  min-height: 100vh;
+}
+
+/* ---------- Shell layout ---------- */
+.admin-shell { display: flex; min-height: 100vh; }
+
+.admin-sidebar {
+  width: 260px; flex-shrink: 0; background: var(--color-navy-900); color: rgba(255,255,255,0.85);
+  display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  transition: transform 0.25s ease; z-index: 50;
+}
+.admin-sidebar .sidebar-brand {
+  display: flex; align-items: center; gap: 10px; padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.admin-sidebar .sidebar-brand strong { color: #fff; font-family: var(--font-heading); font-size: 1rem; display: block; }
+.admin-sidebar .sidebar-brand span { color: var(--color-gold-400); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.admin-nav { list-style: none; padding: 12px 10px; flex: 1; }
+.admin-nav .nav-group-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.45); padding: 14px 12px 6px; }
+.admin-nav a {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm);
+  color: rgba(255,255,255,0.78); font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;
+}
+.admin-nav a:hover { background: rgba(255,255,255,0.08); text-decoration: none; }
+.admin-nav a[aria-current="page"] { background: var(--color-gold-500); color: var(--color-navy-900); }
+.admin-nav .nav-icon { width: 18px; text-align: center; flex-shrink: 0; }
+.admin-sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.82rem; }
+
+.admin-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.admin-topbar {
+  height: 64px; background: #fff; border-bottom: 1px solid var(--color-border); display: flex; align-items: center;
+  justify-content: space-between; padding: 0 20px; position: sticky; top: 0; z-index: 40; gap: 16px;
+}
+.admin-topbar .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.admin-topbar h1 { font-size: 1.05rem; margin: 0; font-family: var(--font-body); font-weight: 700; color: var(--color-navy-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-toggle {
+  display: none; width: 38px; height: 38px; border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  background: #fff; cursor: pointer; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+}
+.admin-user-chip { display: flex; align-items: center; gap: 10px; }
+.admin-user-chip .avatar {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--color-navy-800); color: var(--color-gold-400);
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+}
+.admin-content { padding: 24px; flex: 1; }
+
+.admin-page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.admin-page-head h2 { margin: 0 0 4px; }
+.admin-page-head p { margin: 0; max-width: 620px; }
+
+@media (max-width: 1024px) {
+  .admin-sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); box-shadow: var(--shadow-lg); }
+  .admin-sidebar.is-open { transform: translateX(0); }
+  .sidebar-toggle { display: flex; }
+  .admin-scrim { position: fixed; inset: 0; background: rgba(10,15,25,0.5); z-index: 45; display: none; }
+  .admin-scrim.is-open { display: block; }
+}
+
+/* ---------- Stat cards ---------- */
+.admin-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+@media (max-width: 1100px) { .admin-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .admin-stats-grid { grid-template-columns: 1fr; } }
+.admin-stat-card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.admin-stat-card .label { font-size: 0.78rem; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.admin-stat-card .value { font-family: var(--font-heading); font-size: 1.7rem; color: var(--color-navy-900); margin-top: 4px; }
+.admin-stat-card .delta { font-size: 0.78rem; color: var(--color-text-muted); }
+
+/* Admin two-panel rows (e.g. side-by-side data tables on the dashboard) need
+   much more room per panel than the public site's text/image .grid-2. Rather
+   than guess a fixed breakpoint, let each panel claim at least 540px and
+   auto-fit to however many columns actually fit — 1 column on laptops, 2 on
+   wide desktop monitors, with no per-table horizontal scrolling either way. */
+.admin-content .grid-2 { grid-template-columns: repeat(auto-fit, minmax(540px, 1fr)); }
+
+/* ---------- Panels / tabs ---------- */
+.admin-panel { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.admin-panel-head { padding: 16px 18px; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.admin-panel-head h3 { margin: 0; font-size: 1rem; }
+.admin-panel-body { padding: 18px; }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--color-border); margin-bottom: 16px; overflow-x: auto; }
+.tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 600; font-size: 0.88rem; color: var(--color-text-muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+.tab-btn.is-active { color: var(--color-navy-900); border-color: var(--color-gold-500); }
+.tab-btn .count { background: var(--color-bg-alt); border-radius: 999px; padding: 1px 8px; font-size: 0.75rem; margin-left: 6px; }
+
+/* ---------- Row action menu ---------- */
+.row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ---------- Modal ---------- */
+.admin-modal-overlay { position: fixed; inset: 0; background: rgba(10,15,25,0.5); display: none; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+.admin-modal-overlay.is-open { display: flex; }
+.admin-modal { background: #fff; border-radius: var(--radius-lg); max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.admin-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--color-border); }
+.admin-modal-head h3 { margin: 0; }
+.admin-modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--color-text-muted); line-height: 1; }
+.admin-modal-body { padding: 20px; }
+.admin-modal-foot { padding: 16px 20px; border-top: 1px solid var(--color-border); display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ---------- Print (receipt) ---------- */
+@media print {
+  body.admin-body > *:not(.admin-modal-overlay) { display: none !important; }
+  .admin-modal-overlay { position: static; background: none; padding: 0; display: block !important; }
+  .admin-modal { max-width: none; max-height: none; overflow: visible; box-shadow: none; }
+  .admin-modal-head, .admin-modal-foot { display: none !important; }
+  .admin-modal-body { padding: 0; }
+}
+
+/* ---------- Toasts ---------- */
+.toast-stack { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 400; max-width: 340px; }
+.toast { background: var(--color-navy-900); color: #fff; padding: 12px 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); font-size: 0.88rem; display: flex; align-items: center; gap: 10px; animation: toast-in 0.2s ease; }
+.toast.toast-success { background: var(--color-success); }
+.toast.toast-danger { background: var(--color-danger); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---------- Login screen ---------- */
+.admin-login-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, var(--color-navy-900), var(--color-navy-700)); padding: 20px; }
+.admin-login-card { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 36px 32px; max-width: 400px; width: 100%; }
+
+/* ---------- Misc table helpers ---------- */
+.mobile-hide { }
+@media (max-width: 720px) {
+  table.data-table thead { display: none; }
+  table.data-table, table.data-table tbody, table.data-table tr, table.data-table td { display: block; width: 100%; }
+  table.data-table tr { border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 12px; padding: 8px 4px; }
+  table.data-table td { border-bottom: none; padding: 6px 10px; }
+  table.data-table td::before { content: attr(data-label); display: block; font-size: 0.72rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; margin-bottom: 2px; }
+  .data-table-wrap { border: none; }
+}

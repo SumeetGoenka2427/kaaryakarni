@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span>
+    </div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html" aria-current="page">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer">
+      <a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button>
+        <h1>Dashboard</h1>
+      </div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Samaj Overview</h2>
+          <p class="muted">Live snapshot of members, businesses, matrimonial approvals and donations.</p>
+        </div>
+      </div>
+
+      <div class="admin-stats-grid" id="stats-grid"></div>
+
+      <div class="grid grid-2" style="align-items:start;">
+        <div class="admin-panel">
+          <div class="admin-panel-head"><h3>Recent Members</h3><a href="members.html" class="btn btn-outline btn-sm">View All</a></div>
+          <div class="admin-panel-body" style="padding:0;">
+            <div class="data-table-wrap" style="border:none;">
+              <table class="data-table">
+                <thead><tr><th>Membership ID</th><th>Name</th><th>Area</th><th>Status</th></tr></thead>
+                <tbody id="recent-members-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="admin-panel">
+          <div class="admin-panel-head"><h3>Recent Donations</h3><a href="donations.html" class="btn btn-outline btn-sm">View All</a></div>
+          <div class="admin-panel-body" style="padding:0;">
+            <div class="data-table-wrap" style="border:none;">
+              <table class="data-table">
+                <thead><tr><th>Donor</th><th>Campaign</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody id="recent-donations-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="align-items:start;margin-top:20px;">
+        <div class="admin-panel">
+          <div class="admin-panel-head"><h3>Pending Approvals</h3></div>
+          <div class="admin-panel-body stack">
+            <div class="flex-between"><span>Business submissions</span><a href="businesses.html?status=pending" class="pill pill-warning" style="text-decoration:none;" id="pending-biz-pill">0 pending</a></div>
+            <div class="flex-between"><span>Matrimonial profiles</span><a href="matrimonial.html?status=pending" class="pill pill-warning" style="text-decoration:none;" id="pending-mat-pill">0 pending</a></div>
+            <div class="flex-between"><span>Members under verification</span><a href="members.html?status=pending" class="pill pill-warning" style="text-decoration:none;" id="pending-mem-pill">0 pending</a></div>
+            <div class="flex-between"><span>Offline donations to verify</span><a href="donations.html?mode=offline&amp;status=submitted" class="pill pill-warning" style="text-decoration:none;" id="pending-don-pill">0 pending</a></div>
+          </div>
+        </div>
+        <div class="admin-panel">
+          <div class="admin-panel-head"><h3>Recent Admin Actions</h3><a href="audit-logs.html" class="btn btn-outline btn-sm">View All</a></div>
+          <div class="admin-panel-body stack" id="recent-audit-list"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    var stats = KKStore.computeDashboardStats();
+    var grid = document.getElementById('stats-grid');
+    var cards = [
+      ['Total Members', stats.totalMembers],
+      ['Lifetime Members', stats.lifetimeMembers],
+      ['Pending Member Verification', stats.pendingMembers],
+      ['Approved Businesses', stats.approvedBusinesses],
+      ['Pending Business Approvals', stats.pendingBusinesses],
+      ['Pending Matrimonial Approvals', stats.pendingMatrimonial],
+      ['Total Donations Collected', '₹' + stats.totalDonations.toLocaleString('en-IN')],
+      ['Offline Donations to Verify', stats.pendingOfflineDonations]
+    ];
+    cards.forEach(function (c) {
+      var el = document.createElement('div');
+      el.className = 'admin-stat-card';
+      el.innerHTML = '<div class="label">' + c[0] + '</div><div class="value">' + c[1] + '</div>';
+      grid.appendChild(el);
+    });
+
+    document.getElementById('pending-biz-pill').textContent = stats.pendingBusinesses + ' pending';
+    document.getElementById('pending-mat-pill').textContent = stats.pendingMatrimonial + ' pending';
+    document.getElementById('pending-mem-pill').textContent = stats.pendingMembers + ' pending';
+    document.getElementById('pending-don-pill').textContent = stats.pendingOfflineDonations + ' pending';
+
+    var statusPill = { 'Lifetime Member': 'pill-success', 'Under Verification': 'pill-warning', 'Payment Pending': 'pill-warning', 'Payment Submitted': 'pill-warning', 'Rejected': 'pill-danger', 'Suspended': 'pill-danger' };
+    var memRows = document.getElementById('recent-members-rows');
+    KKStore.all('members').slice(-6).reverse().forEach(function (m) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td data-label="Membership ID">' + m.membershipId + '</td><td data-label="Name">' + m.name + '</td><td data-label="Area">' + (m.area || '—') + '</td>' +
+        '<td data-label="Status"><span class="pill ' + (statusPill[m.status] || 'pill-neutral') + '">' + m.status + '</span></td>';
+      memRows.appendChild(tr);
+    });
+
+    var donRows = document.getElementById('recent-donations-rows');
+    var donStatusPill = { successful: 'pill-success', verified: 'pill-success', submitted: 'pill-warning', pending: 'pill-warning', failed: 'pill-danger' };
+    KKStore.all('donations').slice(-6).reverse().forEach(function (d) {
+      var campaign = KKStore.findById('campaigns', d.campaignId);
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td data-label="Donor">' + d.donorName + '</td><td data-label="Campaign">' + (campaign ? campaign.name : '—') + '</td>' +
+        '<td data-label="Amount">₹' + Number(d.amount).toLocaleString('en-IN') + '</td>' +
+        '<td data-label="Status"><span class="pill ' + (donStatusPill[d.status] || 'pill-neutral') + '">' + d.status + '</span></td>';
+      donRows.appendChild(tr);
+    });
+
+    var auditList = document.getElementById('recent-audit-list');
+    KKStore.all('auditLogs').slice(-6).reverse().forEach(function (l) {
+      var el = document.createElement('div');
+      el.className = 'flex-between';
+      el.innerHTML = '<span class="muted" style="font-size:0.85rem;">' + l.action + ' — ' + (l.details || '') + '</span><span class="muted" style="font-size:0.78rem;">' + new Date(l.createdAt).toLocaleDateString('en-IN') + '</span>';
+      auditList.appendChild(el);
+    });
+    if (!KKStore.all('auditLogs').length) auditList.innerHTML = '<p class="muted">No admin actions recorded yet.</p>';
+  })();
+</script>
+</body>
+</html>

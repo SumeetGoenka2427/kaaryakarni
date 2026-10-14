@@ -1,0 +1,72 @@
+/* ==========================================================================
+   Base: reset, typography, layout helpers, focus, a11y
+   Ported 1:1 from the final HTML design. Values come from tokens.css only.
+   ========================================================================== */
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; }
+/* The [hidden] attribute must always win over a class that sets its own
+   display (e.g. .form-alert{display:flex}, .banner-grid{display:grid}) —
+   otherwise elements meant to start hidden render visible on load. */
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--color-navy-700); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--color-navy-900); margin: 0 0 var(--space-3); line-height: 1.25; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+h3 { font-size: 1.25rem; }
+p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
+ul { margin: 0; padding: 0; }
+button { font-family: inherit; }
+
+:focus-visible {
+  outline: 3px solid var(--color-saffron-500);
+  outline-offset: 2px;
+}
+
+/* Layout helpers */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+.section { padding: var(--space-8) 0; }
+.section-alt { background: var(--color-bg-alt); }
+.section-head { max-width: 720px; margin: 0 auto var(--space-6); text-align: center; }
+.section-head .eyebrow {
+  display: inline-block; color: var(--color-gold-600); font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.78rem; margin-bottom: var(--space-2);
+}
+.grid { display: grid; gap: var(--space-5); }
+.grid > * { min-width: 0; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.skip-link {
+  position: absolute; left: -999px; top: 0; background: var(--color-navy-900); color: var(--color-white);
+  padding: var(--space-3) var(--space-4); z-index: 200; border-radius: 0 0 var(--radius-sm) 0;
+}
+.skip-link:focus { left: 0; }

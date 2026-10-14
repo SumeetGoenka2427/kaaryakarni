@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html" aria-current="page">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Reports</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Reports &amp; Exports</h2>
+          <p class="muted">Generate CSV exports (opens directly in Excel) for each report below. PDF export is available only for individual receipts on the Receipts page.</p>
+        </div>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:20px;">
+        <div class="admin-panel-body">
+          <div class="filters-bar" style="margin-bottom:0;">
+            <div class="field"><label for="date-from">From Date</label><input type="date" id="date-from"></div>
+            <div class="field"><label for="date-to">To Date</label><input type="date" id="date-to"></div>
+          </div>
+          <p class="muted" style="margin:10px 0 0;font-size:0.82rem;">When both dates are set, every report below is limited to records created within that range.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2" id="report-cards-grid" style="align-items:start;"></div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function dateRange() {
+      var from = document.getElementById('date-from').value;
+      var to = document.getElementById('date-to').value;
+      if (!from || !to) return null;
+      return { from: new Date(from + 'T00:00:00'), to: new Date(to + 'T23:59:59') };
+    }
+
+    function inRange(createdAt) {
+      var range = dateRange();
+      if (!range) return true;
+      var d = new Date(createdAt);
+      return d >= range.from && d <= range.to;
+    }
+
+    function toCsv(header, rows) {
+      var lines = [header.join(',')].concat(rows.map(function (r) {
+        return r.map(function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }).join(',');
+      }));
+      return lines.join('\n');
+    }
+
+    function download(filename, csv) {
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      KKToast('CSV exported.', 'success');
+      KKStore.addAuditLog(CURRENT_ADMIN.username, 'report-export', filename, 'Exported ' + filename);
+    }
+
+    var reports = [
+      {
+        key: 'member', title: 'Member Report', desc: 'All members with area, status and verification.',
+        run: function () {
+          var rows = KKStore.all('members').filter(function (m) { return inRange(m.createdAt); });
+          var csv = toCsv(['Membership ID', 'Name', 'Mobile', 'Area', 'Status', 'Verified', 'Created At'], rows.map(function (m) {
+            return [m.membershipId, m.name, m.mobile, m.area || '', m.status, m.verified ? 'Yes' : 'No', m.createdAt];
+          }));
+          download('member-report.csv', csv);
+        }
+      },
+      {
+        key: 'membership', title: 'Membership Report', desc: 'Count of members by membership status.',
+        run: function () {
+          var members = KKStore.all('members').filter(function (m) { return inRange(m.createdAt); });
+          var counts = {};
+          members.forEach(function (m) { counts[m.status] = (counts[m.status] || 0) + 1; });
+          var rows = Object.keys(counts).map(function (status) { return [status, counts[status]]; });
+          download('membership-report.csv', toCsv(['Status', 'Count'], rows));
+        }
+      },
+      {
+        key: 'business', title: 'Business Report', desc: 'All business directory submissions and their status.',
+        run: function () {
+          var rows = KKStore.all('businesses').filter(function (b) { return inRange(b.createdAt); });
+          var csv = toCsv(['Business', 'Category', 'Area', 'Status', 'Featured', 'Created At'], rows.map(function (b) {
+            return [b.name, b.category, b.area || '', b.status, b.featured ? 'Yes' : 'No', b.createdAt];
+          }));
+          download('business-report.csv', csv);
+        }
+      },
+      {
+        key: 'matrimonial', title: 'Matrimonial Approval Report', desc: 'Matrimonial profile submissions and approval status.',
+        run: function () {
+          var rows = KKStore.all('matrimonial').filter(function (m) { return inRange(m.createdAt); });
+          var csv = toCsv(['Name', 'Age', 'Gender', 'Area', 'Status', 'Created At'], rows.map(function (m) {
+            return [m.name, m.age, m.gender, m.area || '', m.status, m.createdAt];
+          }));
+          download('matrimonial-approval-report.csv', csv);
+        }
+      },
+      {
+        key: 'donation', title: 'Donation Report', desc: 'Donations with campaign, amount, mode and status.',
+        run: function () {
+          var rows = KKStore.all('donations').filter(function (d) { return inRange(d.createdAt); });
+          var csv = toCsv(['Donor', 'Campaign', 'Amount', 'Mode', 'Status', 'Reference', 'Created At'], rows.map(function (d) {
+            var campaign = KKStore.findById('campaigns', d.campaignId);
+            return [d.donorName, campaign ? campaign.name : '', d.amount, d.mode, d.status, d.refNumber || '', d.createdAt];
+          }));
+          download('donation-report.csv', csv);
+        }
+      },
+      {
+        key: 'payment', title: 'Payment Report', desc: 'Membership and other payments with mode and status.',
+        run: function () {
+          var rows = KKStore.all('payments').filter(function (p) { return inRange(p.createdAt); });
+          var csv = toCsv(['Member', 'Purpose', 'Amount', 'Mode', 'Provider', 'Reference', 'Status', 'Created At'], rows.map(function (p) {
+            var member = KKStore.findById('members', p.memberId);
+            return [member ? member.name : '', p.purpose, p.amount, p.mode, p.provider || '', p.providerRef || '', p.status, p.createdAt];
+          }));
+          download('payment-report.csv', csv);
+        }
+      },
+      {
+        key: 'area', title: 'Area-wise Member Report', desc: 'Member counts grouped by Jaipur area/locality.',
+        run: function () {
+          var members = KKStore.all('members').filter(function (m) { return inRange(m.createdAt); });
+          var counts = {};
+          members.forEach(function (m) { var area = m.area || 'Unspecified'; counts[area] = (counts[area] || 0) + 1; });
+          var rows = Object.keys(counts).map(function (area) { return [area, counts[area]]; });
+          download('area-wise-member-report.csv', toCsv(['Area', 'Member Count'], rows));
+        }
+      }
+    ];
+
+    var grid = document.getElementById('report-cards-grid');
+    reports.forEach(function (r) {
+      var card = document.createElement('div');
+      card.className = 'admin-panel';
+      card.innerHTML =
+        '<div class="admin-panel-body">' +
+          '<h3 style="margin:0 0 6px;">' + r.title + '</h3>' +
+          '<p class="muted" style="margin:0 0 14px;">' + r.desc + '</p>' +
+          '<button type="button" class="btn btn-primary btn-sm">Generate CSV</button>' +
+        '</div>';
+      card.querySelector('button').addEventListener('click', r.run);
+      grid.appendChild(card);
+    });
+  })();
+</script>
+</body>
+</html>

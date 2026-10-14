@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donations — Khandelwal Samaj Membership Portal</title>
+<meta name="description" content="Support Samaj Donation and other active donation campaigns of the Khandelwal Samaj, Jaipur.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Jaipur Membership Portal</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html">Business Directory</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="donations.html" aria-current="page">Donations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+        <a href="register.html" class="btn btn-gold btn-sm">Become a Member</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Home</a> / Donations</div>
+      <h1>Support the Samaj</h1>
+      <p>Contribute to the permanent Samaj Donation fund or an active community campaign.</p>
+    </div>
+  </section>
+
+  <section class="section" id="samaj-donation">
+    <div class="container" id="permanent-campaign-slot"></div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Active Campaigns</span><h2>Other Ways to Contribute</h2></div>
+      <div class="grid grid-3" id="other-campaigns-grid"></div>
+      <div class="state-block" id="campaigns-empty" hidden>
+        <div class="state-icon" aria-hidden="true">🕮</div>
+        <h3>No additional campaigns are active right now</h3>
+        <p>Please check back later, or support the permanent Samaj Donation above.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="donate-form">
+    <div class="container" style="max-width:640px;">
+      <div class="section-head"><span class="eyebrow">Make a Contribution</span><h2>Donate to a Campaign</h2></div>
+      <form id="donate-form-el" novalidate>
+        <div class="form-alert form-alert-success" id="donate-success" hidden>Thank you! Your donation request has been recorded. A receipt will be issued once payment is confirmed.</div>
+        <div class="form-alert form-alert-danger" id="donate-error" hidden>Please fill in all required fields correctly.</div>
+        <div class="field" style="margin-bottom:16px;">
+          <label for="campaign">Select Campaign <span class="required">*</span></label>
+          <select id="campaign"></select>
+        </div>
+        <div class="form-row" style="margin-bottom:16px;">
+          <div class="field">
+            <label for="donor-name">Full Name <span class="required">*</span></label>
+            <input type="text" id="donor-name" data-rule="required" placeholder="Your name">
+            <span class="error-text">Please enter your name.</span>
+          </div>
+          <div class="field">
+            <label for="donor-mobile">Mobile Number <span class="required">*</span></label>
+            <input type="tel" id="donor-mobile" data-rule="mobile" maxlength="10" placeholder="98XXXXXXXX">
+            <span class="error-text">Please enter a valid 10-digit mobile number.</span>
+          </div>
+        </div>
+        <div class="form-alert form-alert-info" id="ticket-note" hidden></div>
+        <input type="hidden" id="donate-purpose" value="donation">
+        <div class="field" style="margin-bottom:16px;">
+          <label for="amount" id="amount-label">Donation Amount (₹) <span class="required">*</span></label>
+          <input type="number" id="amount" min="1" data-rule="required" placeholder="e.g. 1001">
+          <span class="error-text">Please enter a donation amount.</span>
+        </div>
+
+        <div class="field" style="margin-bottom:12px;">
+          <label>Payment Mode</label>
+          <div class="flex gap-3" data-payment-toggle>
+            <button type="button" class="btn btn-primary btn-sm" data-mode="online" aria-pressed="true">Online Payment</button>
+            <button type="button" class="btn btn-outline btn-sm" data-mode="offline" aria-pressed="false">Offline Payment</button>
+          </div>
+        </div>
+
+        <div data-mode-panel="online" class="form-alert form-alert-info">You will be redirected to a secure payment gateway to complete your online donation. Payment status is verified server-side, never from redirect parameters alone.</div>
+        <div data-mode-panel="offline" class="form-alert form-alert-info" hidden>
+          Please deposit/transfer the amount and enter the reference details below. Your offline donation will be marked <strong>Submitted</strong> until an admin verifies it, after which it becomes <strong>Verified</strong> and a receipt is generated.
+        </div>
+        <div class="field" style="margin-bottom:20px;" data-mode-panel="offline" hidden>
+          <label for="ref-number">Transaction / Reference Number</label>
+          <input type="text" id="ref-number" placeholder="e.g. UTR / Cheque number">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <span class="spinner" aria-hidden="true"></span> Submit Donation
+        </button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="contact.html">Questions about a donation? Contact the Samaj office</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  (function () {
+    var campaigns = KKStore.getActiveCampaigns();
+    var permanent = campaigns.filter(function (c) { return c.permanent; })[0];
+    var others = campaigns.filter(function (c) { return !c.permanent; });
+
+    function ticketButtonHtml(c) {
+      if (!c.hasTickets) return '';
+      return '<a href="#donate-form" class="btn btn-outline" style="flex:1;" data-preselect-campaign="' + c.id + '" data-preselect-purpose="ticket" data-preselect-amount="' + c.ticketPrice + '" data-ticket-label="' + c.ticketLabel + '">Purchase Ticket</a>';
+    }
+
+    if (permanent) {
+      document.getElementById('permanent-campaign-slot').innerHTML =
+        '<div class="card" style="border:2px solid var(--color-gold-500);">' +
+        '<div class="card-body" style="flex-direction:row;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;">' +
+        '<div style="flex:2;min-width:260px;">' +
+        '<span class="pill pill-neutral" style="margin-bottom:8px;">Permanent Campaign — cannot be removed</span>' +
+        '<h2 style="margin-bottom:6px;">' + permanent.name + '</h2>' +
+        '<p style="margin-bottom:0;">' + permanent.description + '</p></div>' +
+        '<div class="flex gap-3 flex-wrap">' +
+        '<a href="#donate-form" class="btn btn-primary" data-preselect-campaign="' + permanent.id + '" data-preselect-purpose="donation">Donate Now</a>' +
+        ticketButtonHtml(permanent) +
+        '</div></div></div>';
+    }
+
+    var grid = document.getElementById('other-campaigns-grid');
+    if (!others.length) {
+      document.getElementById('campaigns-empty').hidden = false;
+    } else {
+      others.forEach(function (c) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML =
+          '<div class="card-body"><span class="pill pill-warning">Active</span><h3>' + c.name + '</h3><p>' + c.description + '</p>' +
+          '<div class="flex gap-3" style="margin-top:auto;">' +
+          '<a href="#donate-form" class="btn btn-primary" style="flex:1;" data-preselect-campaign="' + c.id + '" data-preselect-purpose="donation">Donate Now</a>' +
+          ticketButtonHtml(c) +
+          '</div></div>';
+        grid.appendChild(card);
+      });
+    }
+
+    var campaignSelect = document.getElementById('campaign');
+    campaigns.forEach(function (c) {
+      var opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name + (c.permanent ? ' (Permanent)' : '');
+      campaignSelect.appendChild(opt);
+    });
+
+    var purposeInput = document.getElementById('donate-purpose');
+    var amountInput = document.getElementById('amount');
+    var amountLabel = document.getElementById('amount-label');
+    var ticketNote = document.getElementById('ticket-note');
+
+    function applyPreselect(campaignId, purpose, amount, ticketLabel) {
+      if (campaignId) campaignSelect.value = campaignId;
+      purposeInput.value = purpose || 'donation';
+      if (purpose === 'ticket') {
+        amountInput.value = amount || '';
+        amountLabel.innerHTML = 'Ticket Amount (₹) <span class="required">*</span>';
+        ticketNote.hidden = false;
+        ticketNote.textContent = 'You are purchasing: ' + (ticketLabel || 'Event Ticket') + '. The amount is fixed by the Samaj admin.';
+      } else {
+        amountLabel.innerHTML = 'Donation Amount (₹) <span class="required">*</span>';
+        ticketNote.hidden = true;
+      }
+    }
+
+    document.querySelectorAll('[data-preselect-campaign]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        applyPreselect(
+          btn.getAttribute('data-preselect-campaign'),
+          btn.getAttribute('data-preselect-purpose'),
+          btn.getAttribute('data-preselect-amount'),
+          btn.getAttribute('data-ticket-label')
+        );
+      });
+    });
+
+    /* Preselect from a link on another page, e.g. donations.html?campaign=camp_diwali&purpose=ticket */
+    var qp = new URLSearchParams(window.location.search);
+    if (qp.get('campaign')) {
+      var qCampaign = KKStore.findById('campaigns', qp.get('campaign'));
+      if (qCampaign) {
+        var qPurpose = qp.get('purpose') === 'ticket' && qCampaign.hasTickets ? 'ticket' : 'donation';
+        applyPreselect(qCampaign.id, qPurpose, qPurpose === 'ticket' ? qCampaign.ticketPrice : '', qCampaign.ticketLabel);
+      }
+    }
+
+    document.getElementById('donate-form-el').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = document.getElementById('donor-name').value.trim();
+      var mobile = document.getElementById('donor-mobile').value.trim();
+      var amount = parseFloat(document.getElementById('amount').value);
+      var errorBox = document.getElementById('donate-error');
+      var successBox = document.getElementById('donate-success');
+
+      if (!name || !/^[6-9]\d{9}$/.test(mobile) || !amount || amount <= 0) {
+        errorBox.hidden = false;
+        successBox.hidden = true;
+        return;
+      }
+      errorBox.hidden = true;
+
+      var mode = document.querySelector('[data-payment-toggle] [aria-pressed="true"]').getAttribute('data-mode');
+      var campaignId = campaignSelect.value;
+      var refNumber = document.getElementById('ref-number').value.trim();
+      var purpose = purposeInput.value === 'ticket' ? 'ticket' : 'donation';
+
+      if (mode === 'online') {
+        var donation = KKStore.add('donations', { campaignId: campaignId, donorName: name, donorMobile: mobile, amount: amount, mode: 'online', status: 'successful', purpose: purpose, refNumber: 'PAYDEMO' + Date.now() });
+        var campaign = KKStore.findById('campaigns', campaignId);
+        if (campaign) KKStore.update('campaigns', campaignId, { raised: campaign.raised + amount, donorCount: campaign.donorCount + 1 });
+        KKStore.addAuditLog('donor:public', purpose === 'ticket' ? 'ticket-purchase-online' : 'donation-online', donation.id, name + (purpose === 'ticket' ? ' purchased a ticket for ₹' : ' donated ₹') + amount + ' (demo online, marked successful).');
+      } else {
+        var donationOffline = KKStore.add('donations', { campaignId: campaignId, donorName: name, donorMobile: mobile, amount: amount, mode: 'offline', status: 'submitted', purpose: purpose, refNumber: refNumber || 'N/A' });
+        KKStore.addAuditLog('donor:public', purpose === 'ticket' ? 'ticket-purchase-offline' : 'donation-offline', donationOffline.id, name + (purpose === 'ticket' ? ' submitted an offline ticket payment of ₹' : ' submitted an offline donation of ₹') + amount + ', pending admin verification.');
+      }
+
+      successBox.hidden = false;
+      this.reset();
+      applyPreselect(campaignId, 'donation');
+      window.scrollTo({ top: document.getElementById('donate-form-el').getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
+    });
+  })();
+</script>
+</body>
+</html>

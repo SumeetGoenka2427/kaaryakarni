@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay Membership Fee — Khandelwal Samaj Membership Portal</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../../shared/js/store.js"></script>
+<script src="../../shared/js/session.js"></script>
+<script>var CURRENT_MEMBER = KKSession.requireMember('../login.html');</script>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Member Area</span></span>
+    </a>
+    <nav class="main-nav" data-main-nav aria-label="Member" style="position:static;transform:none;">
+      <div class="nav-cta"><a href="membership.html" class="btn btn-outline btn-sm">Cancel</a></div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" style="padding-top:40px;">
+    <div class="container" style="max-width:560px;">
+      <h1>Pay Membership Fee</h1>
+      <p class="muted">Complete your one-time lifetime membership payment. There is no renewal — this is paid only once.</p>
+
+      <div id="pay-step">
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-body">
+            <div class="flex-between"><span class="muted">Member</span><strong id="pm-name"></strong></div>
+            <div class="flex-between"><span class="muted">Membership ID</span><strong id="pm-id"></strong></div>
+            <div class="flex-between"><span class="muted">Amount Payable</span><strong id="pm-amount" class="donation-amount"></strong></div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-bottom:16px;">
+          <label>Payment Mode</label>
+          <div class="flex gap-3" data-payment-toggle>
+            <button type="button" class="btn btn-primary btn-sm" data-mode="online" aria-pressed="true">Online Payment</button>
+            <button type="button" class="btn btn-outline btn-sm" data-mode="offline" aria-pressed="false">Offline Payment</button>
+          </div>
+        </div>
+
+        <div data-mode-panel="online" class="form-alert form-alert-info">You will be redirected to a secure payment gateway. Your membership becomes Lifetime immediately once the gateway confirms payment server-side.</div>
+        <div data-mode-panel="offline" class="form-alert form-alert-info" hidden>Submit your transaction reference below. Your status will show <strong>Payment Submitted</strong> until an admin verifies it, after which you become a <strong>Lifetime Member</strong>.</div>
+        <div class="field" data-mode-panel="offline" hidden style="margin-bottom:16px;">
+          <label for="ref-number">Transaction / Reference Number</label>
+          <input type="text" id="ref-number" placeholder="e.g. UTR / Cheque number">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" id="pay-btn"><span class="spinner" aria-hidden="true"></span> Pay Now</button>
+        <p class="muted" style="font-size:0.78rem;text-align:center;margin-top:10px;">🔒 Demo payment simulation — no real transaction occurs. A production build verifies payment via the gateway's server-side webhook, never from the browser alone.</p>
+      </div>
+
+      <div id="result-step" hidden class="text-center">
+        <div id="result-online" hidden>
+          <div class="form-alert form-alert-success">Payment successful! You are now a Lifetime Member of Khandelwal Samaj.</div>
+        </div>
+        <div id="result-offline" hidden>
+          <div class="form-alert form-alert-warning">Payment details submitted. Your membership will be activated once the Samaj admin verifies the payment.</div>
+        </div>
+        <a href="dashboard.html" class="btn btn-primary btn-block">Go to Dashboard</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+  (function () {
+    var member = CURRENT_MEMBER;
+    if (!member) return;
+    var settings = KKStore.getSettings();
+
+    document.getElementById('pm-name').textContent = member.name;
+    document.getElementById('pm-id').textContent = member.membershipId;
+    document.getElementById('pm-amount').textContent = '₹' + settings.membershipFee.toLocaleString('en-IN');
+
+    document.getElementById('pay-btn').addEventListener('click', function () {
+      var btn = this;
+      var mode = document.querySelector('[data-payment-toggle] [aria-pressed="true"]').getAttribute('data-mode');
+      btn.classList.add('is-loading');
+      btn.disabled = true;
+      setTimeout(function () {
+        btn.classList.remove('is-loading');
+        btn.disabled = false;
+        document.getElementById('pay-step').hidden = true;
+        document.getElementById('result-step').hidden = false;
+
+        if (mode === 'online') {
+          KKStore.add('payments', { memberId: member.id, purpose: 'membership', amount: settings.membershipFee, mode: 'online', provider: 'demo-gateway', providerRef: 'PAYDEMO' + Date.now(), status: 'successful' });
+          KKStore.update('members', member.id, { status: 'Lifetime Member', verified: true });
+          KKStore.add('notifications', { memberId: member.id, title: 'Membership Activated', message: 'Your online payment was successful. You are now a Lifetime Member.', type: 'membership', read: false });
+          KKStore.addAuditLog('member:self', 'membership-payment-online', member.id, 'Online membership payment marked successful (demo).');
+          document.getElementById('result-online').hidden = false;
+        } else {
+          var ref = document.getElementById('ref-number').value.trim() || 'N/A';
+          KKStore.add('payments', { memberId: member.id, purpose: 'membership', amount: settings.membershipFee, mode: 'offline', provider: 'offline', providerRef: ref, status: 'submitted' });
+          KKStore.update('members', member.id, { status: 'Payment Submitted' });
+          KKStore.add('notifications', { memberId: member.id, title: 'Payment Submitted', message: 'Your offline membership payment was received and is awaiting admin verification.', type: 'payment', read: false });
+          KKStore.addAuditLog('member:self', 'membership-payment-offline', member.id, 'Offline membership payment submitted, ref ' + ref + '.');
+          document.getElementById('result-offline').hidden = false;
+        }
+      }, 1200);
+    });
+  })();
+</script>
+</body>
+</html>

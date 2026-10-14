@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Profile — Khandelwal Samaj Membership Portal</title>
+<meta name="description" content="Business profile detail page in the Khandelwal Samaj Business Directory.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Jaipur Membership Portal</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html" aria-current="page">Business Directory</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="donations.html">Donations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+        <a href="register.html" class="btn btn-gold btn-sm">Become a Member</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div id="not-found-state" class="state-block" hidden>
+    <div class="state-icon" aria-hidden="true">🔍</div>
+    <h3>Business not found</h3>
+    <p>This business profile may have been removed or is no longer approved.</p>
+    <a href="business-directory.html" class="btn btn-primary" style="margin-top:12px;">Back to Business Directory</a>
+  </div>
+
+  <div id="detail-content" hidden>
+    <section class="section" style="padding-bottom:24px;">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Home</a> / <a href="business-directory.html">Business Directory</a> / <span id="breadcrumb-name"></span></div>
+
+        <div class="grid grid-2" style="align-items:start;">
+          <div class="card-media" id="biz-photo" style="border-radius:var(--radius-lg);min-height:280px;position:relative;">
+          </div>
+          <div>
+            <span class="pill pill-success" id="status-pill" style="margin-bottom:10px;"></span>
+            <h1 id="biz-name"></h1>
+            <p class="muted" id="biz-category"></p>
+            <div class="stack" style="margin-bottom:20px;">
+              <div class="flex" style="gap:10px;"><strong>Category:</strong><span class="muted" id="row-category"></span></div>
+              <div class="flex" style="gap:10px;"><strong>Area:</strong><span class="muted" id="row-area"></span></div>
+              <div class="flex" style="gap:10px;"><strong>Address:</strong><span class="muted" id="row-address"></span></div>
+            </div>
+            <div class="flex gap-3 flex-wrap">
+              <a href="#" class="btn btn-primary" id="call-link">Call Business</a>
+              <a href="#" class="btn btn-outline" id="website-link" hidden>Visit Website</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container" style="max-width:820px;">
+        <h2>About the Business</h2>
+        <p id="biz-description"></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container" style="max-width:820px;">
+        <h2>Location</h2>
+        <p class="muted" id="map-address-line"></p>
+        <div class="map-embed">
+          <iframe id="biz-map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            title="Map showing the business location" allowfullscreen></iframe>
+        </div>
+        <a href="#" id="directions-link" target="_blank" rel="noopener" class="btn btn-outline" style="margin-top:16px;">Get Directions</a>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head"><span class="eyebrow">More From the Directory</span><h2>Other Approved Businesses</h2></div>
+        <div class="grid grid-3" id="related-grid"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="business-directory.html">Back to Business Directory</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  (function () {
+    var id = new URLSearchParams(window.location.search).get('id');
+    var biz = id ? KKStore.findById('businesses', id) : null;
+    if (!biz || biz.status !== 'approved') {
+      document.getElementById('not-found-state').hidden = false;
+      return;
+    }
+    document.getElementById('detail-content').hidden = false;
+    document.title = biz.name + ' — Business Directory — Khandelwal Samaj';
+    document.getElementById('breadcrumb-name').textContent = biz.name;
+    document.getElementById('biz-name').textContent = biz.name;
+    document.getElementById('biz-category').textContent = biz.category;
+    document.getElementById('row-category').textContent = biz.category;
+    document.getElementById('row-area').textContent = biz.area + ', Jaipur';
+    document.getElementById('row-address').textContent = biz.address || '—';
+    document.getElementById('biz-description').textContent = biz.description || '';
+    document.getElementById('status-pill').className = 'pill ' + (biz.featured ? 'pill-success' : 'pill-neutral');
+    document.getElementById('status-pill').textContent = biz.featured ? 'Featured · Approved' : 'Approved';
+
+    var callLink = document.getElementById('call-link');
+    if (biz.phone) { callLink.href = 'tel:+91' + biz.phone; } else { callLink.hidden = true; }
+    var websiteLink = document.getElementById('website-link');
+    if (biz.website) { websiteLink.href = biz.website; websiteLink.hidden = false; }
+
+    document.getElementById('biz-photo').style.background = "url('" + photoFor(biz.id) + "') center/cover";
+
+    var fullAddress = (biz.address ? biz.address + ', ' : '') + biz.area + ', Jaipur, Rajasthan';
+    document.getElementById('map-address-line').textContent = fullAddress;
+    document.getElementById('biz-map-frame').src = 'https://www.google.com/maps?q=' + encodeURIComponent(fullAddress) + '&output=embed';
+    document.getElementById('directions-link').href = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(fullAddress);
+
+    var related = KKStore.getApprovedBusinesses().filter(function (b) { return b.id !== biz.id; }).slice(0, 3);
+    var grid = document.getElementById('related-grid');
+    related.forEach(function (b) {
+      var a = document.createElement('a');
+      a.href = 'business-detail.html?id=' + b.id;
+      a.className = 'card';
+      a.style.textDecoration = 'none'; a.style.color = 'inherit';
+      a.innerHTML = '<div class="card-media" style="background:url(\'' + photoFor(b.id) + '\') center/cover;"></div>' +
+        '<div class="card-body"><h3 style="font-size:1rem;">' + b.name + '</h3><p class="muted" style="margin:0;font-size:0.85rem;">' + b.category + ' · ' + b.area + '</p></div>';
+      grid.appendChild(a);
+    });
+  })();
+</script>
+</body>
+</html>

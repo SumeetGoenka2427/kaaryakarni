@@ -1,0 +1,5 @@
+# Laravel app has its own portal/.gitignore (vendor, node_modules, .env, ...)
+.DS_Store
+Thumbs.db
+/.vscode
+/.idea

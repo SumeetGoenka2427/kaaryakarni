@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Khandelwal Samaj Membership Portal</title>
+<meta name="description" content="Photo gallery of Khandelwal Samaj events, celebrations and community activities in Jaipur.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Jaipur Membership Portal</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html">Business Directory</a></li>
+        <li><a href="gallery.html" aria-current="page">Gallery</a></li>
+        <li><a href="donations.html">Donations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+        <a href="register.html" class="btn btn-gold btn-sm">Become a Member</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Home</a> / Gallery</div>
+      <h1>Gallery</h1>
+      <p>Moments from Samaj events, celebrations and community initiatives across Jaipur.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div id="albums-wrap"></div>
+      <div class="state-block" id="albums-empty" hidden>
+        <div class="state-icon" aria-hidden="true">🖼️</div>
+        <h3>No gallery albums are currently available</h3>
+        <p>Please check back later for photos from Samaj events and activities.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="lightbox-overlay" data-lightbox role="dialog" aria-modal="true" aria-label="Gallery image preview">
+  <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close preview">&times;</button>
+  <div class="lightbox-box">
+    <div class="placeholder-media">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="width:52px;height:52px;"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-4 4-3-3-4 4"/></svg>
+    </div>
+    <h3 data-lightbox-title style="color:#fff;margin-top:16px;"></h3>
+    <p data-lightbox-desc style="color:rgba(255,255,255,0.75);"></p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="contact.html">Have photos to share? Contact the Samaj office</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  (function () {
+    var albums = KKStore.getActiveGalleryAlbums();
+    var wrap = document.getElementById('albums-wrap');
+    if (!albums.length) {
+      document.getElementById('albums-empty').hidden = false;
+      return;
+    }
+    albums.forEach(function (album, albumIdx) {
+      var section = document.createElement('div');
+      section.style.marginBottom = '48px';
+      var heading = document.createElement('h2');
+      heading.textContent = album.title;
+      section.appendChild(heading);
+      if (album.description) {
+        var desc = document.createElement('p');
+        desc.className = 'muted';
+        desc.textContent = album.description;
+        section.appendChild(desc);
+      }
+      var grid = document.createElement('div');
+      grid.className = 'gallery-grid';
+      (album.images || []).forEach(function (img, i) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gallery-tile';
+        btn.setAttribute('data-gallery-tile', '');
+        btn.setAttribute('data-title', album.title + ' — ' + img.title);
+        btn.setAttribute('data-desc', album.title);
+        btn.setAttribute('data-img', photoFor(album.id + '-' + img.id));
+        btn.innerHTML = '<div style="width:100%;height:100%;background:url(\'' + photoFor(album.id + '-' + img.id) + '\') center/cover;"></div><figcaption>' + img.title + '</figcaption>';
+        grid.appendChild(btn);
+      });
+      section.appendChild(grid);
+      wrap.appendChild(section);
+    });
+  })();
+</script>
+</body>
+</html>

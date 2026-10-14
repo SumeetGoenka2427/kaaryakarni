@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Business Profile — Khandelwal Samaj Membership Portal</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../../shared/js/store.js"></script>
+<script src="../../shared/js/session.js"></script>
+<script>var CURRENT_MEMBER = KKSession.requireMember('../login.html');</script>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Member Area</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Member">
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li class="nav-dropdown" data-nav-dropdown>
+          <button type="button" class="nav-dropdown-toggle is-active" data-nav-dropdown-toggle aria-haspopup="true" aria-expanded="false">Business <span class="nav-dropdown-caret" aria-hidden="true">&#9662;</span></button>
+          <ul class="nav-dropdown-menu" data-nav-dropdown-menu hidden>
+            <li><a href="business.html" aria-current="page">Business</a></li>
+            <li><a href="matrimonial.html">My Matrimonial Profiles</a></li>
+            <li><a href="matrimonial-browse.html">Browse Matches</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav-cta">
+        <a href="../index.html" class="btn btn-outline btn-sm">Public Site</a>
+        <button type="button" class="btn btn-primary btn-sm" id="logout-btn">Logout</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" style="padding-top:40px;">
+    <div class="container" style="max-width:720px;">
+      <h1>My Business Profile</h1>
+      <p class="muted">Submit your business or professional profile for Samaj admin approval. Only approved profiles appear publicly in the Business Directory.</p>
+
+      <div id="status-row" class="flex-between" style="margin-bottom:20px;" hidden>
+        <span>Current status:</span>
+        <span id="biz-status-pill"></span>
+      </div>
+      <div id="rejected-reason" class="form-alert form-alert-danger" hidden></div>
+      <div class="form-alert form-alert-success" id="save-success" hidden>Your business profile has been saved and submitted for admin approval.</div>
+
+      <form id="biz-form" class="form-grid">
+        <div class="form-row">
+          <div class="field">
+            <label for="b-name">Business / Professional Name <span class="required">*</span></label>
+            <input type="text" id="b-name" data-rule="required" required>
+          </div>
+          <div class="field">
+            <label for="b-category">Category <span class="required">*</span></label>
+            <select id="b-category" required>
+              <option value="">Select category</option>
+              <option>Textiles</option><option>Healthcare</option><option>Jewellery</option>
+              <option>Real Estate</option><option>Education</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="b-description">Description <span class="required">*</span></label>
+          <textarea id="b-description" rows="3" data-rule="required" required></textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="b-area">Area / Locality <span class="required">*</span></label>
+            <select id="b-area" required></select>
+          </div>
+          <div class="field">
+            <label for="b-phone">Contact Phone</label>
+            <input type="tel" id="b-phone" maxlength="10">
+          </div>
+        </div>
+        <div class="field">
+          <label for="b-address">Business Address</label>
+          <textarea id="b-address" rows="2"></textarea>
+        </div>
+        <div class="field">
+          <label for="b-website">Website / Social Link (optional)</label>
+          <input type="url" id="b-website" placeholder="https://">
+        </div>
+        <div class="field">
+          <label for="b-logo">Business Logo / Photo</label>
+          <input type="file" id="b-logo" accept="image/png,image/jpeg">
+          <span class="hint">(Demo: file is not actually uploaded/stored.)</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="biz-submit-btn">Submit for Approval</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="dashboard.html">Back to Dashboard</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+  (function () {
+    var member = CURRENT_MEMBER;
+    if (!member) return;
+
+    var areaSelect = document.getElementById('b-area');
+    KKStore.all('areas').filter(function (a) { return a.active; }).sort(function (a, b) { return a.order - b.order; })
+      .forEach(function (a) {
+        var opt = document.createElement('option'); opt.value = a.name; opt.textContent = a.name;
+        areaSelect.appendChild(opt);
+      });
+
+    var existing = KKStore.all('businesses').filter(function (b) { return b.memberId === member.id; })[0] || null;
+    var pillMap = { pending: 'pill-warning', approved: 'pill-success', rejected: 'pill-danger', hidden: 'pill-neutral' };
+
+    function renderStatus() {
+      if (!existing) { document.getElementById('status-row').hidden = true; return; }
+      document.getElementById('status-row').hidden = false;
+      document.getElementById('biz-status-pill').innerHTML = '<span class="pill ' + (pillMap[existing.status] || 'pill-neutral') + '">' + existing.status + (existing.featured ? ' · Featured' : '') + '</span>';
+      var reasonBox = document.getElementById('rejected-reason');
+      if (existing.status === 'rejected' && existing.rejectionReason) {
+        reasonBox.hidden = false;
+        reasonBox.textContent = 'Rejected by admin: ' + existing.rejectionReason;
+      } else {
+        reasonBox.hidden = true;
+      }
+    }
+
+    if (existing) {
+      document.getElementById('b-name').value = existing.name || '';
+      document.getElementById('b-category').value = existing.category || '';
+      document.getElementById('b-description').value = existing.description || '';
+      areaSelect.value = existing.area || '';
+      document.getElementById('b-phone').value = existing.phone || '';
+      document.getElementById('b-address').value = existing.address || '';
+      document.getElementById('b-website').value = existing.website || '';
+      document.getElementById('biz-submit-btn').textContent = 'Save Changes (re-submits for approval)';
+    }
+    renderStatus();
+
+    document.getElementById('biz-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var payload = {
+        memberId: member.id,
+        name: document.getElementById('b-name').value.trim(),
+        category: document.getElementById('b-category').value,
+        description: document.getElementById('b-description').value.trim(),
+        area: areaSelect.value,
+        phone: document.getElementById('b-phone').value.trim(),
+        address: document.getElementById('b-address').value.trim(),
+        website: document.getElementById('b-website').value.trim(),
+        logo: null,
+        status: 'pending'
+      };
+      if (existing) {
+        existing = KKStore.update('businesses', existing.id, payload);
+      } else {
+        existing = KKStore.add('businesses', Object.assign({ featured: false }, payload));
+      }
+      KKStore.addAuditLog('member:self', 'business-submit', existing.id, 'Business profile submitted/updated, pending admin approval.');
+      document.getElementById('save-success').hidden = false;
+      document.getElementById('biz-submit-btn').textContent = 'Save Changes (re-submits for approval)';
+      renderStatus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', function () {
+      KKSession.logoutMember();
+      window.location.href = '../index.html';
+    });
+  })();
+</script>
+</body>
+</html>

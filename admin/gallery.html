@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Samaj Admin Panel</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../web/assets/css/style.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script>var CURRENT_ADMIN = KKSession.requireAdmin('login.html');</script>
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <div class="admin-scrim" data-admin-scrim></div>
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">KS</span><span><strong>Samaj Admin</strong><span>Khandelwal Samaj, Jaipur</span></span></div>
+    <ul class="admin-nav">
+      <li class="nav-group-label">Overview</li>
+      <li><a href="index.html">Dashboard</a></li>
+      <li class="nav-group-label">Members</li>
+      <li><a href="members.html">Members</a></li>
+      <li><a href="areas.html">Jaipur Areas</a></li>
+      <li><a href="memberships.html">Memberships</a></li>
+      <li class="nav-group-label">Community Content</li>
+      <li><a href="businesses.html">Business Directory</a></li>
+      <li><a href="matrimonial.html">Matrimonial</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="banners.html">Homepage Banners</a></li>
+      <li><a href="gallery.html" aria-current="page">Gallery</a></li>
+      <li class="nav-group-label">Finance</li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="receipts.html">Receipts</a></li>
+      <li class="nav-group-label">System</li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="audit-logs.html">Audit Logs</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="admin-sidebar-footer"><a href="../web/index.html" style="color:rgba(255,255,255,0.75);">&larr; View Public Site</a></div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left"><button class="sidebar-toggle" data-sidebar-toggle aria-label="Toggle admin menu">&#9776;</button><h1>Gallery</h1></div>
+      <div class="admin-user-chip">
+        <span data-admin-name style="font-weight:600;font-size:0.9rem;"></span>
+        <span class="avatar" data-admin-avatar aria-hidden="true"></span>
+        <button type="button" class="btn btn-outline btn-sm" data-admin-logout>Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <div class="admin-page-head">
+        <div>
+          <h2>Gallery Album Management</h2>
+          <p class="muted">Create albums, manage their images and control which albums and titles appear on the public Gallery page.</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="add-album-btn">+ Add Album</button>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-body" style="padding:0;">
+          <div class="data-table-wrap" style="border:none;">
+            <table class="data-table">
+              <thead><tr><th>Title</th><th>Description</th><th>Images</th><th>Active</th><th>Actions</th></tr></thead>
+              <tbody id="album-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="state-block" id="album-empty" hidden><h3>No gallery albums are currently available</h3><p>Add the first album to feature it on the homepage and Gallery page.</p></div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+  (function () {
+    function render() {
+      var albums = KKStore.all('gallery').sort(function (a, b) { return a.order - b.order; });
+      var tbody = document.getElementById('album-rows');
+      tbody.innerHTML = '';
+      document.getElementById('album-empty').hidden = !!albums.length;
+      albums.forEach(function (album) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td data-label="Title">' + album.title + '</td>' +
+          '<td data-label="Description">' + (album.description || '—') + '</td>' +
+          '<td data-label="Images">' + (album.images || []).length + '</td>' +
+          '<td data-label="Active">' + (album.active ? '<span class="pill pill-success">Active</span>' : '<span class="pill pill-neutral">Inactive</span>') + '</td>' +
+          '<td data-label="Actions"><div class="row-actions">' +
+            '<button class="btn btn-outline btn-sm" data-images>Manage Images</button>' +
+            '<button class="btn btn-outline btn-sm" data-edit>Edit</button>' +
+            '<button class="btn btn-outline btn-sm" data-toggle>' + (album.active ? 'Deactivate' : 'Activate') + '</button>' +
+            '<button class="btn btn-danger-outline btn-sm" data-delete>Delete</button>' +
+          '</div></td>';
+        tr.querySelector('[data-images]').addEventListener('click', function () { openImagesModal(album.id); });
+        tr.querySelector('[data-edit]').addEventListener('click', function () { openAlbumModal(album); });
+        tr.querySelector('[data-toggle]').addEventListener('click', function () {
+          KKConfirm('Are you sure you want to ' + (album.active ? 'deactivate' : 'activate') + ' "' + album.title + '"?', function () {
+            KKStore.update('gallery', album.id, { active: !album.active });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, album.active ? 'gallery-deactivate' : 'gallery-activate', album.id, album.title);
+            KKToast('Album ' + (album.active ? 'deactivated' : 'activated') + '.', 'success');
+            render();
+          }, { confirmLabel: album.active ? 'Deactivate' : 'Activate' });
+        });
+        tr.querySelector('[data-delete]').addEventListener('click', function () {
+          KKConfirm('Delete album "' + album.title + '" and all its images? This cannot be undone.', function () {
+            KKStore.remove('gallery', album.id);
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'gallery-delete', album.id, album.title);
+            KKToast('Album deleted.', 'success');
+            render();
+          }, { confirmLabel: 'Delete', danger: true, title: 'Delete Album' });
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openAlbumModal(album) {
+      var isEdit = !!album;
+      KKModal.open({
+        title: isEdit ? 'Edit Album' : 'Add Album',
+        bodyHtml:
+          '<div class="form-grid">' +
+          '<div class="field"><label for="al-title">Album Title <span class="required">*</span></label><input type="text" id="al-title" value="' + (album ? album.title : '') + '"></div>' +
+          '<div class="field"><label for="al-desc">Description</label><textarea id="al-desc" rows="2">' + (album ? (album.description || '') : '') + '</textarea></div>' +
+          '<div class="field"><label><input type="checkbox" id="al-active" ' + (!album || album.active ? 'checked' : '') + '> Active (visible on public site)</label></div>' +
+          '</div>',
+        buttons: [
+          { label: 'Cancel', className: 'btn btn-outline' },
+          { label: isEdit ? 'Save Changes' : 'Add Album', className: 'btn btn-primary', onClick: function (close) {
+            var title = document.getElementById('al-title').value.trim();
+            if (!title) return;
+            var patch = { title: title, description: document.getElementById('al-desc').value.trim(), active: document.getElementById('al-active').checked };
+            if (isEdit) {
+              KKStore.update('gallery', album.id, patch);
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'gallery-album-edit', album.id, title);
+              KKToast('Album updated.', 'success');
+            } else {
+              patch.images = [];
+              patch.order = KKStore.all('gallery').reduce(function (m, a) { return Math.max(m, a.order || 0); }, 0) + 1;
+              var created = KKStore.add('gallery', patch);
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'gallery-album-add', created.id, title);
+              KKToast('Album added.', 'success');
+            }
+            close();
+            render();
+          } }
+        ]
+      });
+    }
+
+    function imagesModalBodyHtml(album) {
+      var images = album.images || [];
+      if (!images.length) {
+        return '<p class="muted" id="img-empty-msg">No images in this album yet. Use "+ Add Image" below.</p><button type="button" class="btn btn-primary btn-sm" id="img-add-btn">+ Add Image</button>';
+      }
+      var rows = images.map(function (img, idx) {
+        return '<div class="flex-between" style="padding:8px 0;border-bottom:1px solid var(--color-border);" data-img-row="' + img.id + '">' +
+          '<span>' + img.title + (album.cover === img.id ? ' <span class="pill pill-success">Cover</span>' : '') + '</span>' +
+          '<div class="row-actions">' +
+            '<button class="btn btn-outline btn-sm" data-img-up ' + (idx === 0 ? 'disabled' : '') + '>&uarr;</button>' +
+            '<button class="btn btn-outline btn-sm" data-img-down ' + (idx === images.length - 1 ? 'disabled' : '') + '>&darr;</button>' +
+            '<button class="btn btn-outline btn-sm" data-img-cover ' + (album.cover === img.id ? 'disabled' : '') + '>Set Cover</button>' +
+            '<button class="btn btn-danger-outline btn-sm" data-img-delete>Delete</button>' +
+          '</div></div>';
+      }).join('');
+      return '<div class="stack">' + rows + '</div><button type="button" class="btn btn-primary btn-sm" id="img-add-btn" style="margin-top:14px;">+ Add Image</button>';
+    }
+
+    function openImagesModal(albumId) {
+      function refreshedAlbum() { return KKStore.findById('gallery', albumId); }
+
+      function renderModalBody() {
+        var album = refreshedAlbum();
+        var body = document.querySelector('[data-modal-body]');
+        body.innerHTML = imagesModalBodyHtml(album);
+        wireImageActions();
+      }
+
+      function wireImageActions() {
+        var album = refreshedAlbum();
+        var images = (album.images || []).slice();
+
+        var addBtn = document.getElementById('img-add-btn');
+        if (addBtn) addBtn.addEventListener('click', function () {
+          var title = window.prompt('Image title (demo — no real file upload yet):', 'New Photo');
+          if (title === null) return;
+          title = title.trim();
+          if (!title) return;
+          images.push({ id: 'img_' + Date.now(), title: title });
+          KKStore.update('gallery', albumId, { images: images });
+          KKStore.addAuditLog(CURRENT_ADMIN.username, 'gallery-image-add', albumId, title);
+          KKToast('Image added.', 'success');
+          renderModalBody();
+        });
+
+        document.querySelectorAll('[data-img-up]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.closest('[data-img-row]').getAttribute('data-img-row');
+            var idx = images.findIndex(function (i) { return i.id === id; });
+            if (idx <= 0) return;
+            var tmp = images[idx - 1]; images[idx - 1] = images[idx]; images[idx] = tmp;
+            KKStore.update('gallery', albumId, { images: images });
+            renderModalBody();
+          });
+        });
+        document.querySelectorAll('[data-img-down]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.closest('[data-img-row]').getAttribute('data-img-row');
+            var idx = images.findIndex(function (i) { return i.id === id; });
+            if (idx === -1 || idx >= images.length - 1) return;
+            var tmp = images[idx + 1]; images[idx + 1] = images[idx]; images[idx] = tmp;
+            KKStore.update('gallery', albumId, { images: images });
+            renderModalBody();
+          });
+        });
+        document.querySelectorAll('[data-img-cover]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.closest('[data-img-row]').getAttribute('data-img-row');
+            KKStore.update('gallery', albumId, { cover: id });
+            KKStore.addAuditLog(CURRENT_ADMIN.username, 'gallery-cover-set', albumId, id);
+            KKToast('Cover image set.', 'success');
+            renderModalBody();
+          });
+        });
+        document.querySelectorAll('[data-img-delete]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.closest('[data-img-row]').getAttribute('data-img-row');
+            KKConfirm('Delete this image from the album?', function () {
+              var remaining = images.filter(function (i) { return i.id !== id; });
+              var patch = { images: remaining };
+              if (album.cover === id) patch.cover = null;
+              KKStore.update('gallery', albumId, patch);
+              KKStore.addAuditLog(CURRENT_ADMIN.username, 'gallery-image-delete', albumId, id);
+              KKToast('Image deleted.', 'success');
+              renderModalBody();
+            }, { confirmLabel: 'Delete', danger: true, title: 'Delete Image' });
+          });
+        });
+      }
+
+      var album = refreshedAlbum();
+      KKModal.open({
+        title: 'Manage Images — ' + album.title,
+        bodyHtml: imagesModalBodyHtml(album),
+        buttons: [{ label: 'Done', className: 'btn btn-primary', onClick: function (close) { close(); render(); } }]
+      });
+      wireImageActions();
+    }
+
+    document.getElementById('add-album-btn').addEventListener('click', function () { openAlbumModal(null); });
+    render();
+  })();
+</script>
+</body>
+</html>

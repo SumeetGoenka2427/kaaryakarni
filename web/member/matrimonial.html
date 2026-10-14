@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Matrimonial Profiles — Khandelwal Samaj Membership Portal</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../../shared/js/store.js"></script>
+<script src="../../shared/js/session.js"></script>
+<script>var CURRENT_MEMBER = KKSession.requireMember('../login.html');</script>
+<style>
+  .mat-profile-card { display: flex; gap: 14px; align-items: center; }
+  .mat-profile-card .thumb {
+    flex: none; width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
+    background: var(--color-bg-navy-tint); border: 1px solid var(--color-border);
+  }
+  .mat-profile-card .thumb-fallback {
+    flex: none; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: var(--color-bg-navy-tint); color: var(--color-navy-800); font-weight: 700;
+  }
+  .bio-photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+  .bio-photo-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: var(--radius-sm); }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Member Area</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Member">
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li class="nav-dropdown" data-nav-dropdown>
+          <button type="button" class="nav-dropdown-toggle is-active" data-nav-dropdown-toggle aria-haspopup="true" aria-expanded="false">Matrimonial <span class="nav-dropdown-caret" aria-hidden="true">&#9662;</span></button>
+          <ul class="nav-dropdown-menu" data-nav-dropdown-menu hidden>
+            <li><a href="business.html">Business</a></li>
+            <li><a href="matrimonial.html" aria-current="page">My Matrimonial Profiles</a></li>
+            <li><a href="matrimonial-browse.html">Browse Matches</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav-cta">
+        <a href="../index.html" class="btn btn-outline btn-sm">Public Site</a>
+        <button type="button" class="btn btn-primary btn-sm" id="logout-btn">Logout</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" style="padding-top:32px;padding-bottom:0;">
+    <div class="container">
+      <div class="flex-between" style="flex-wrap:wrap;gap:12px;">
+        <div>
+          <h1 style="margin:0 0 4px;">My Matrimonial Profiles</h1>
+          <p class="muted" style="margin:0;font-size:0.9rem;">Register up to 3 profiles — for yourself, or family members you're registering on their behalf.</p>
+        </div>
+        <div class="flex gap-3" style="flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary btn-sm" id="add-profile-btn-top">+ Add Profile</button>
+          <a href="matrimonial-browse.html" class="btn btn-outline btn-sm">Browse Matches &rarr;</a>
+        </div>
+      </div>
+      <div class="form-alert form-alert-info" style="margin-top:16px;margin-bottom:0;">
+        This module is private to logged-in, verified Samaj members. Profiles are never publicly browsable and only
+        become visible to other members after Samaj admin approval. Your contact details are shown only if you choose
+        to make them visible.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:28px;">
+    <div class="container">
+      <div class="grid grid-2" style="align-items:start;gap:32px;">
+        <div>
+          <h2 style="font-size:1.1rem;margin-bottom:12px;">My Profiles</h2>
+          <div id="profile-list" class="stack" style="margin-bottom:16px;"></div>
+          <p class="muted" id="limit-note" style="font-size:0.82rem;" hidden>You have reached the maximum of 3 matrimonial profiles for your account.</p>
+        </div>
+
+        <div>
+          <div id="form-placeholder" class="card">
+            <div class="card-body text-center" style="padding:48px 24px;">
+              <p class="muted" style="margin:0;">Select <strong>Edit</strong> on a profile, or click <strong>+ Add Profile</strong> above, to view or edit a matrimonial profile here.</p>
+            </div>
+          </div>
+          <div id="form-wrap" hidden class="card">
+            <div class="card-body">
+              <h2 id="form-heading" style="font-size:1.1rem;margin:0 0 12px;">Add Profile</h2>
+              <div class="form-alert form-alert-success" id="save-success" hidden>Your matrimonial profile has been saved and submitted for admin approval.</div>
+              <div class="form-alert form-alert-danger" id="save-error" hidden>Please complete all required fields, including at least one photo.</div>
+              <form id="mat-form" class="form-grid">
+                <div class="form-row-3">
+                  <div class="field"><label for="mm-relation">This profile is for <span class="required">*</span></label>
+                    <select id="mm-relation" required>
+                      <option value="Self">Self</option><option value="Son">Son</option><option value="Daughter">Daughter</option>
+                      <option value="Brother">Brother</option><option value="Sister">Sister</option><option value="Other Relative">Other Relative</option>
+                    </select>
+                  </div>
+                  <div class="field"><label for="mm-name">Full Name <span class="required">*</span></label><input type="text" id="mm-name" required></div>
+                  <div class="field"><label for="mm-father">Father's Name</label><input type="text" id="mm-father"></div>
+                </div>
+                <div class="form-row-3">
+                  <div class="field"><label for="mm-mother">Mother's Name</label><input type="text" id="mm-mother"></div>
+                  <div class="field"><label for="mm-age">Age <span class="required">*</span></label><input type="number" id="mm-age" min="18" max="80" required></div>
+                  <div class="field"><label for="mm-gender">Gender <span class="required">*</span></label>
+                    <select id="mm-gender" required><option value="">Select</option><option>Male</option><option>Female</option></select>
+                  </div>
+                </div>
+                <div class="form-row-3">
+                  <div class="field"><label for="mm-height">Height</label><input type="text" id="mm-height" placeholder="e.g. 5'6&quot;"></div>
+                  <div class="field"><label for="mm-native">Native Place</label><input type="text" id="mm-native" placeholder="e.g. Jaipur"></div>
+                  <div class="field"><label for="mm-area">Area / Locality</label><select id="mm-area"></select></div>
+                </div>
+                <div class="form-row">
+                  <div class="field"><label for="mm-education">Education</label><input type="text" id="mm-education" placeholder="e.g. B.Tech, M.Com"></div>
+                  <div class="field"><label for="mm-occupation">Occupation</label><input type="text" id="mm-occupation" placeholder="e.g. Business, Service"></div>
+                </div>
+                <div class="field"><label for="mm-about">About</label><textarea id="mm-about" rows="2" placeholder="Brief description for prospective matches"></textarea></div>
+
+                <div class="field">
+                  <label for="mm-photos">Photos <span class="required">*</span></label>
+                  <input type="file" id="mm-photos" accept="image/png,image/jpeg,image/webp" multiple>
+                  <span class="hint">1 photo required, up to 3 additional optional (maximum 4 photos, image files only, up to ~8MB each).</span>
+                  <span class="error-text" id="mm-photos-error">Please choose at least one photo.</span>
+                  <div class="bio-photo-grid" id="mm-photos-preview"></div>
+                  <span class="hint" id="mm-photos-existing-note" hidden>Choosing new files will replace the existing saved photos.</span>
+                </div>
+
+                <div class="field">
+                  <label for="mm-biodata">Bio Data PDF (optional)</label>
+                  <input type="file" id="mm-biodata" accept="application/pdf">
+                  <span class="hint">PDF only, maximum 3MB. Members who view an approved profile can open or download this file.</span>
+                  <span class="hint" id="mm-biodata-existing" hidden></span>
+                </div>
+
+                <div class="checkbox-row">
+                  <input type="checkbox" id="mm-show-contact">
+                  <label for="mm-show-contact" style="font-weight:400;">Show contact number to other approved, logged-in members</label>
+                </div>
+                <div class="flex gap-3">
+                  <button type="submit" class="btn btn-primary" id="mat-submit-btn" style="flex:1;">Save &amp; Submit for Approval</button>
+                  <button type="button" class="btn btn-outline" id="mat-cancel-btn">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="dashboard.html">Back to Dashboard</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+  (function () {
+    var member = CURRENT_MEMBER;
+    if (!member) return;
+
+    var MAX_PROFILES = 3;
+    var MAX_PHOTOS = 4;
+    var MAX_PDF_BYTES = 3 * 1024 * 1024;
+    var MAX_PHOTO_SOURCE_BYTES = 8 * 1024 * 1024;
+
+    var areaSelect = document.getElementById('mm-area');
+    var opt0 = document.createElement('option'); opt0.value = ''; opt0.textContent = 'Select area'; areaSelect.appendChild(opt0);
+    KKStore.all('areas').filter(function (a) { return a.active; }).sort(function (a, b) { return a.order - b.order; })
+      .forEach(function (a) { var opt = document.createElement('option'); opt.value = a.name; opt.textContent = a.name; areaSelect.appendChild(opt); });
+
+    var pillMap = { pending: 'pill-warning', approved: 'pill-success', rejected: 'pill-danger', hidden: 'pill-neutral' };
+    var editingId = null;      // null = creating a new profile
+    var pendingPhotos = null;  // array of resized dataURLs staged from the file input, or null = keep existing
+    var pendingPdf = undefined; // undefined = keep existing, null = cleared, object = new file
+
+    function myProfiles() {
+      return KKStore.all('matrimonial').filter(function (m) { return m.memberId === member.id; });
+    }
+
+    function initials(name) {
+      return (name || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+    }
+
+    function renderProfileList() {
+      var list = myProfiles();
+      var wrap = document.getElementById('profile-list');
+      wrap.innerHTML = '';
+      if (!list.length) {
+        wrap.innerHTML = '<p class="muted">You have not added a matrimonial profile yet.</p>';
+      }
+      list.forEach(function (m) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        var thumb = (m.photos && m.photos[0])
+          ? '<img class="thumb" src="' + m.photos[0] + '" alt="">'
+          : '<span class="thumb-fallback">' + initials(m.name) + '</span>';
+        card.innerHTML =
+          '<div class="card-body mat-profile-card">' + thumb +
+          '<div style="flex:1;min-width:0;">' +
+          '<div class="flex-between"><h3 style="margin:0;font-size:1rem;">' + m.name + '</h3><span class="pill ' + (pillMap[m.status] || 'pill-neutral') + '">' + m.status + '</span></div>' +
+          '<p class="muted" style="margin:2px 0 0;font-size:0.82rem;">' + m.relation + ' · ' + (m.age || '—') + ' / ' + (m.gender || '—') + ' · ' + (m.area || '—') + '</p>' +
+          '</div>' +
+          '<button type="button" class="btn btn-outline btn-sm" data-edit>Edit</button>' +
+          '</div>';
+        card.querySelector('[data-edit]').addEventListener('click', function () { openForm(m); });
+        wrap.appendChild(card);
+      });
+      var count = list.length;
+      document.getElementById('add-profile-btn-top').disabled = count >= MAX_PROFILES;
+      document.getElementById('limit-note').hidden = count < MAX_PROFILES;
+    }
+
+    function resetPhotoPreview() {
+      pendingPhotos = null;
+      document.getElementById('mm-photos-preview').innerHTML = '';
+      document.getElementById('mm-photos').value = '';
+    }
+
+    function showPhotoPreview(dataUrls) {
+      var wrap = document.getElementById('mm-photos-preview');
+      wrap.innerHTML = '';
+      dataUrls.forEach(function (url) {
+        var img = document.createElement('img');
+        img.src = url;
+        wrap.appendChild(img);
+      });
+    }
+
+    function openForm(profile) {
+      editingId = profile ? profile.id : null;
+      pendingPhotos = null;
+      pendingPdf = undefined;
+      document.getElementById('save-success').hidden = true;
+      document.getElementById('save-error').hidden = true;
+      document.getElementById('form-heading').textContent = profile ? ('Edit Profile: ' + profile.name) : 'Add Profile';
+      document.getElementById('mm-relation').value = profile ? profile.relation : 'Self';
+      document.getElementById('mm-name').value = profile ? profile.name : (myProfiles().length === 0 ? member.name : '');
+      document.getElementById('mm-father').value = profile ? (profile.fatherName || '') : '';
+      document.getElementById('mm-mother').value = profile ? (profile.motherName || '') : '';
+      document.getElementById('mm-native').value = profile ? (profile.nativePlace || '') : '';
+      document.getElementById('mm-age').value = profile ? (profile.age || '') : '';
+      document.getElementById('mm-gender').value = profile ? (profile.gender || '') : '';
+      document.getElementById('mm-height').value = profile ? (profile.height || '') : '';
+      areaSelect.value = profile ? (profile.area || '') : '';
+      document.getElementById('mm-education').value = profile ? (profile.education || '') : '';
+      document.getElementById('mm-occupation').value = profile ? (profile.occupation || '') : '';
+      document.getElementById('mm-about').value = profile ? (profile.about || '') : '';
+      document.getElementById('mm-show-contact').checked = !!(profile && profile.privacy && profile.privacy.showContact);
+
+      resetPhotoPreview();
+      if (profile && profile.photos && profile.photos.length) {
+        showPhotoPreview(profile.photos);
+        document.getElementById('mm-photos-existing-note').hidden = false;
+      } else {
+        document.getElementById('mm-photos-existing-note').hidden = true;
+      }
+      document.getElementById('mm-biodata').value = '';
+      var pdfNote = document.getElementById('mm-biodata-existing');
+      if (profile && profile.bioDataPdf) {
+        pdfNote.hidden = false;
+        pdfNote.innerHTML = 'Current file: <a href="' + profile.bioDataPdf.dataUrl + '" target="_blank" rel="noopener">' + profile.bioDataPdf.name + '</a> (choosing a new file will replace it).';
+      } else {
+        pdfNote.hidden = true;
+      }
+
+      document.getElementById('mat-cancel-btn').hidden = !(profile || myProfiles().length > 0);
+      document.getElementById('form-placeholder').hidden = true;
+      document.getElementById('form-wrap').hidden = false;
+      document.getElementById('form-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function closeForm() {
+      document.getElementById('form-wrap').hidden = true;
+      document.getElementById('form-placeholder').hidden = false;
+    }
+
+    document.getElementById('add-profile-btn-top').addEventListener('click', function () {
+      if (myProfiles().length >= MAX_PROFILES) return;
+      openForm(null);
+    });
+    document.getElementById('mat-cancel-btn').addEventListener('click', closeForm);
+
+    document.getElementById('mm-photos').addEventListener('change', function () {
+      var files = Array.prototype.slice.call(this.files || []);
+      if (!files.length) return;
+      if (files.length > MAX_PHOTOS) {
+        setFieldErrorState(true, 'Choose at most ' + MAX_PHOTOS + ' photos.');
+        this.value = '';
+        return;
+      }
+      var oversize = files.some(function (f) { return f.size > MAX_PHOTO_SOURCE_BYTES; });
+      if (oversize) {
+        setFieldErrorState(true, 'Each photo must be smaller than 8MB.');
+        this.value = '';
+        return;
+      }
+      setFieldErrorState(false);
+      Promise.all(files.map(resizeImageFile)).then(function (dataUrls) {
+        pendingPhotos = dataUrls;
+        showPhotoPreview(dataUrls);
+        document.getElementById('mm-photos-existing-note').hidden = true;
+      });
+
+      function setFieldErrorState(isError, msg) {
+        var field = document.getElementById('mm-photos').closest('.field');
+        field.classList.toggle('has-error', isError);
+        if (msg) document.getElementById('mm-photos-error').textContent = msg;
+      }
+    });
+
+    function resizeImageFile(file) {
+      return readFileAsDataUrl(file).then(function (raw) {
+        return new Promise(function (resolve) {
+          var img = new Image();
+          img.onload = function () {
+            var maxDim = 640;
+            var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+            var w = Math.max(1, Math.round(img.width * scale));
+            var h = Math.max(1, Math.round(img.height * scale));
+            var canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.78));
+          };
+          img.onerror = function () { resolve(raw); };
+          img.src = raw;
+        });
+      });
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('mm-biodata').addEventListener('change', function () {
+      var file = this.files && this.files[0];
+      if (!file) { pendingPdf = undefined; return; }
+      if (file.type !== 'application/pdf') {
+        KKToastFallback('Bio data file must be a PDF.');
+        this.value = '';
+        return;
+      }
+      if (file.size > MAX_PDF_BYTES) {
+        KKToastFallback('Bio data PDF must be smaller than 3MB.');
+        this.value = '';
+        return;
+      }
+      readFileAsDataUrl(file).then(function (dataUrl) {
+        pendingPdf = { name: file.name, dataUrl: dataUrl };
+        var pdfNote = document.getElementById('mm-biodata-existing');
+        pdfNote.hidden = false;
+        pdfNote.textContent = 'Selected: ' + file.name;
+      });
+    });
+
+    function KKToastFallback(msg) { window.alert(msg); }
+
+    document.getElementById('mat-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var existing = editingId ? KKStore.findById('matrimonial', editingId) : null;
+      var finalPhotos = pendingPhotos !== null ? pendingPhotos : (existing ? (existing.photos || []) : []);
+      if (!finalPhotos.length) {
+        document.getElementById('save-error').hidden = false;
+        document.getElementById('save-error').textContent = 'Please upload at least one photo (1 required, up to 3 additional optional).';
+        document.getElementById('mm-photos').closest('.field').classList.add('has-error');
+        return;
+      }
+      if (!editingId && myProfiles().length >= MAX_PROFILES) {
+        document.getElementById('save-error').hidden = false;
+        document.getElementById('save-error').textContent = 'You already have the maximum of 3 matrimonial profiles.';
+        return;
+      }
+      document.getElementById('save-error').hidden = true;
+
+      var finalPdf = pendingPdf !== undefined ? pendingPdf : (existing ? existing.bioDataPdf : null);
+
+      var payload = {
+        memberId: member.id,
+        relation: document.getElementById('mm-relation').value,
+        name: document.getElementById('mm-name').value.trim(),
+        fatherName: document.getElementById('mm-father').value.trim(),
+        motherName: document.getElementById('mm-mother').value.trim(),
+        nativePlace: document.getElementById('mm-native').value.trim(),
+        age: parseInt(document.getElementById('mm-age').value, 10) || null,
+        gender: document.getElementById('mm-gender').value,
+        height: document.getElementById('mm-height').value.trim(),
+        area: areaSelect.value,
+        education: document.getElementById('mm-education').value.trim(),
+        occupation: document.getElementById('mm-occupation').value.trim(),
+        about: document.getElementById('mm-about').value.trim(),
+        photos: finalPhotos,
+        bioDataPdf: finalPdf,
+        privacy: { showContact: document.getElementById('mm-show-contact').checked },
+        status: 'pending'
+      };
+
+      var saved;
+      if (existing) { saved = KKStore.update('matrimonial', existing.id, payload); }
+      else { saved = KKStore.add('matrimonial', payload); }
+      KKStore.addAuditLog('member:self', 'matrimonial-submit', saved.id, payload.name + "'s matrimonial profile submitted/updated, pending admin approval.");
+
+      editingId = saved.id;
+      document.getElementById('save-success').hidden = false;
+      renderProfileList();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    renderProfileList();
+    if (!myProfiles().length) openForm(null);
+
+    document.getElementById('logout-btn').addEventListener('click', function () {
+      KKSession.logoutMember();
+      window.location.href = '../index.html';
+    });
+  })();
+</script>
+</body>
+</html>

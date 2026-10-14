@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Registration — Khandelwal Samaj Membership Portal</title>
+<meta name="description" content="Register as a Khandelwal Samaj lifetime member using mobile OTP verification.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Jaipur Membership Portal</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html">Business Directory</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="donations.html">Donations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta"><a href="login.html" class="btn btn-outline btn-sm">Login</a></div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" style="padding-top:56px;">
+    <div class="container">
+      <div class="auth-shell" style="max-width:640px;" data-otp-flow>
+        <div class="text-center" style="margin-bottom:24px;">
+          <h1 style="font-size:1.6rem;">Become a Lifetime Member</h1>
+          <p class="muted" style="margin:0;">One-time registration. No renewals, no recurring fees.</p>
+        </div>
+        <div class="auth-steps" aria-hidden="true">
+          <div class="step is-active"></div><div class="step"></div><div class="step"></div>
+        </div>
+
+        <form data-validate novalidate>
+          <!-- Step 1: mobile verification -->
+          <div data-step="mobile">
+            <div class="field" style="margin-bottom:20px;">
+              <label for="reg-mobile">Mobile Number <span class="required">*</span></label>
+              <input type="tel" id="reg-mobile" name="mobile" inputmode="numeric" maxlength="10" placeholder="98XXXXXXXX" data-rule="mobile" required>
+              <span class="hint">This mobile number will be your primary login identifier.</span>
+              <span class="error-text">Please enter a valid 10-digit mobile number.</span>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" data-action="send-otp">
+              <span class="spinner" aria-hidden="true"></span> Send OTP
+            </button>
+          </div>
+
+          <!-- Step 2: OTP -->
+          <div data-step="otp" hidden>
+            <div class="form-alert form-alert-warning" data-dev-otp-hint></div>
+            <div class="field" style="margin-bottom:12px;">
+              <label>Enter 6-Digit OTP <span class="required">*</span></label>
+              <div class="otp-inputs">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 1">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
+                <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
+              </div>
+            </div>
+            <p class="form-alert form-alert-danger" data-otp-error hidden style="margin-top:8px;"></p>
+            <div class="resend-row" style="margin-bottom:16px;">
+              <span class="muted" data-attempts-left>3 attempts left</span>
+              <span>
+                <button type="button" class="btn btn-outline btn-sm" data-action="resend-otp" disabled>Resend OTP</button>
+                <span class="muted" data-resend-timer>Resend OTP in 30s</span>
+              </span>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" data-action="verify-otp">
+              <span class="spinner" aria-hidden="true"></span> Verify Mobile Number
+            </button>
+          </div>
+
+          <!-- Step 3a: already registered -->
+          <div id="reg-already-exists" hidden class="text-center">
+            <div class="form-alert form-alert-warning">This mobile number is already registered with a Samaj member profile.</div>
+            <a href="login.html" class="btn btn-primary btn-block">Go to Member Login</a>
+          </div>
+
+          <!-- Step 3b: profile completion -->
+          <div data-step="success" hidden id="reg-profile-step">
+            <div class="form-alert form-alert-success">Mobile number verified. Please complete your member profile.</div>
+            <div class="form-alert form-alert-danger" id="reg-form-error" hidden></div>
+            <div class="form-grid" data-mock-submit-wrap>
+              <div class="form-row">
+                <div class="field">
+                  <label for="full-name">Full Name <span class="required">*</span></label>
+                  <input type="text" id="full-name" placeholder="e.g. Ramesh Khandelwal">
+                </div>
+                <div class="field">
+                  <label for="dob">Date of Birth</label>
+                  <input type="date" id="dob">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="gender">Gender</label>
+                  <select id="gender">
+                    <option value="">Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="email">Email (optional)</label>
+                  <input type="email" id="email" placeholder="you@example.com">
+                </div>
+              </div>
+              <div class="field">
+                <label for="area">Area / Locality <span class="required">*</span></label>
+                <select id="area" required>
+                  <option value="">Select your Jaipur area</option>
+                </select>
+                <span class="hint">Select the Jaipur area/locality where you live.</span>
+              </div>
+              <div class="field">
+                <label for="address">Address</label>
+                <textarea id="address" rows="2" placeholder="House no., street, landmark"></textarea>
+              </div>
+              <div class="field">
+                <label for="photo">Profile Photo</label>
+                <input type="file" id="photo" accept="image/png,image/jpeg">
+                <span class="hint">JPG or PNG, up to 2MB.</span>
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" id="consent" required>
+                <label for="consent" style="font-weight:400;">I confirm the information provided is accurate and I agree to the Samaj membership terms.</label>
+              </div>
+              <button type="button" class="btn btn-primary btn-block" id="continue-to-payment">Continue to Membership Payment</button>
+              <p class="muted" style="font-size:0.8rem;text-align:center;">Demo note: payment step will connect to the online/offline payment workflow once the backend is available.</p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="contact.html">Need help registering? Contact the Samaj office</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  (function () {
+    var areaSelect = document.getElementById('area');
+    if (areaSelect) {
+      KKStore.all('areas').filter(function (a) { return a.active; })
+        .sort(function (a, b) { return a.order - b.order; })
+        .forEach(function (a) {
+          var opt = document.createElement('option');
+          opt.value = a.name;
+          opt.textContent = a.name;
+          areaSelect.appendChild(opt);
+        });
+    }
+
+    var flow = document.querySelector('[data-otp-flow]');
+    var verifiedMobile = '';
+    var stepEls = document.querySelectorAll('.auth-steps .step');
+    function setActiveStep(index) {
+      stepEls.forEach(function (el, i) {
+        el.classList.toggle('is-done', i < index);
+        el.classList.toggle('is-active', i === index);
+      });
+    }
+    if (flow) {
+      flow.addEventListener('kk:otp-sent', function () { setActiveStep(1); });
+      flow.addEventListener('kk:otp-verified', function (e) {
+        verifiedMobile = (e.detail && e.detail.mobile) || '';
+        var existing = KKStore.getMemberByMobile(verifiedMobile);
+        var profileStep = document.getElementById('reg-profile-step');
+        var existsStep = document.getElementById('reg-already-exists');
+        if (existing) {
+          profileStep.hidden = true;
+          existsStep.hidden = false;
+        } else {
+          profileStep.hidden = false;
+          existsStep.hidden = true;
+          setActiveStep(2);
+        }
+      });
+    }
+
+    var continueBtn = document.getElementById('continue-to-payment');
+    if (continueBtn) {
+      continueBtn.addEventListener('click', function () {
+        var name = document.getElementById('full-name').value.trim();
+        var area = document.getElementById('area').value;
+        var consent = document.getElementById('consent').checked;
+        var errorBox = document.getElementById('reg-form-error');
+
+        if (!name || !area || !consent) {
+          errorBox.hidden = false;
+          errorBox.textContent = 'Please enter your name, select your area and accept the membership terms to continue.';
+          return;
+        }
+        errorBox.hidden = true;
+
+        var member = KKStore.add('members', {
+          membershipId: KKStore.generateMembershipId(),
+          name: name,
+          mobile: verifiedMobile,
+          email: document.getElementById('email').value.trim(),
+          dob: document.getElementById('dob').value,
+          gender: document.getElementById('gender').value,
+          area: area,
+          address: document.getElementById('address').value.trim(),
+          photo: null,
+          status: 'Payment Pending',
+          verified: false
+        });
+        KKStore.addAuditLog('member:self', 'register', member.id, 'New member profile created, awaiting membership payment.');
+        KKSession.loginMember(member.id);
+        window.location.href = 'member/pay-membership.html';
+      });
+    }
+  })();
+</script>
+</body>
+</html>

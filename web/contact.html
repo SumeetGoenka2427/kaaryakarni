@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — Khandelwal Samaj Membership Portal</title>
+<meta name="description" content="Contact the Khandelwal Samaj office in Jaipur.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">KS</span>
+      <span class="brand-text"><strong>Khandelwal Samaj</strong><span>Jaipur Membership Portal</span></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle navigation menu" aria-controls="main-nav"><span></span><span></span><span></span></button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Samaj</a></li>
+        <li><a href="membership.html">Membership</a></li>
+        <li><a href="business-directory.html">Business Directory</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="donations.html">Donations</a></li>
+        <li><a href="contact.html" aria-current="page">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+        <a href="register.html" class="btn btn-gold btn-sm">Become a Member</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Home</a> / Contact</div>
+      <h1>Contact the Samaj Office</h1>
+      <p>Reach out for membership queries, business directory listings, donations or general Samaj information.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2" style="align-items:start;">
+        <div>
+          <h2>Send a Message</h2>
+          <form data-validate data-mock-submit novalidate>
+            <div class="form-alert form-alert-success" data-submit-success hidden>Thank you for reaching out. The Samaj office will respond shortly.</div>
+            <div class="form-row" style="margin-bottom:16px;">
+              <div class="field">
+                <label for="contact-name">Full Name <span class="required">*</span></label>
+                <input type="text" id="contact-name" data-rule="required" placeholder="Your name">
+                <span class="error-text">Please enter your name.</span>
+              </div>
+              <div class="field">
+                <label for="contact-mobile">Mobile Number <span class="required">*</span></label>
+                <input type="tel" id="contact-mobile" data-rule="mobile" maxlength="10" placeholder="98XXXXXXXX">
+                <span class="error-text">Please enter a valid 10-digit mobile number.</span>
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:16px;">
+              <label for="contact-email">Email (optional)</label>
+              <input type="email" id="contact-email" data-rule="email" placeholder="you@example.com">
+              <span class="error-text">Please enter a valid email address.</span>
+            </div>
+            <div class="field" style="margin-bottom:16px;">
+              <label for="contact-subject">Subject <span class="required">*</span></label>
+              <select id="contact-subject">
+                <option>Membership Query</option>
+                <option>Business Directory Listing</option>
+                <option>Donation Query</option>
+                <option>Matrimonial Module</option>
+                <option>General Enquiry</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:20px;">
+              <label for="contact-message">Message <span class="required">*</span></label>
+              <textarea id="contact-message" rows="4" data-rule="required" placeholder="How can we help you?"></textarea>
+              <span class="error-text">Please enter your message.</span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              <span class="spinner" aria-hidden="true"></span> Send Message
+            </button>
+          </form>
+        </div>
+
+        <div>
+          <h2>Samaj Bhawan Office</h2>
+          <div class="card" style="margin-bottom:16px;"><div class="card-body">
+            <h3 style="font-size:1rem;">Address</h3>
+            <p style="margin:0;">Khandelwal Samaj Bhawan, Chandpole Bazaar, Jaipur, Rajasthan — 302001</p>
+          </div></div>
+          <div class="card" style="margin-bottom:16px;"><div class="card-body">
+            <h3 style="font-size:1rem;">Phone</h3>
+            <p style="margin:0;"><a href="tel:+911411234567">+91 141 123 4567</a></p>
+          </div></div>
+          <div class="card" style="margin-bottom:16px;"><div class="card-body">
+            <h3 style="font-size:1rem;">Email</h3>
+            <p style="margin:0;"><a href="mailto:info@khandelwalsamajjaipur.org">info@khandelwalsamajjaipur.org</a></p>
+          </div></div>
+          <div class="card"><div class="card-body">
+            <h3 style="font-size:1rem;">Office Hours</h3>
+            <p style="margin:0;">Monday – Saturday, 10:00 AM – 6:00 PM</p>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span>&copy; 2026 Khandelwal Samaj, Jaipur. All rights reserved.</span>
+      <span><a href="index.html">Back to Home</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../shared/js/store.js"></script>
+<script src="../shared/js/session.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
