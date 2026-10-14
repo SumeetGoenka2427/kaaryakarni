@@ -201,6 +201,19 @@ class PaymentService
         return $payment;
     }
 
+    /** Record that a completed payment's money was returned (refund handled at the gateway / by cheque). */
+    public function markRefunded(Payment $payment, string $reason): void
+    {
+        $payment = Payment::whereKey($payment->id)->lockForUpdate()->firstOrFail();
+        if (! $payment->isComplete()) {
+            throw new DomainException('Only completed payments can be refunded.');
+        }
+        $payment->status = PaymentStatus::Refunded;
+        $payment->failure_reason = Str::limit($reason, 490);
+        $payment->meta = array_merge($payment->meta ?? [], ['refunded_at' => now()->toIso8601String(), 'refunded_by' => auth('admin')->id()]);
+        $payment->save();
+    }
+
     private function notify(Payment $payment, string $template): void
     {
         $payment->loadMissing(['member', 'receipt', 'payable']);

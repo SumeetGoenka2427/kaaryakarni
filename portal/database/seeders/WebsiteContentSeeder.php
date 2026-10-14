@@ -24,7 +24,7 @@ class WebsiteContentSeeder extends Seeder
             }
         }
 
-        BannerPanel::firstOrCreate(['position' => 'left'], ['mode' => 'membership_cta', 'is_active' => true]);
+        BannerPanel::firstOrCreate(['position' => 'left'], ['mode' => 'campaign_progress', 'is_active' => true]);
         BannerPanel::firstOrCreate(['position' => 'right'], ['mode' => 'advertisement', 'is_active' => true,
             'ad_label_en' => 'Advertise with the Samaj', 'ad_label_hi' => 'समाज के साथ विज्ञापन करें', 'ad_url' => '/contact']);
     }

@@ -91,6 +91,20 @@ if (! function_exists('inr')) {
     }
 }
 
+if (! function_exists('inr_short')) {
+    /** Compact rupees for statistics: 482600 → ₹4.83 L, 12500000 → ₹1.25 Cr, 9500 → ₹9,500. */
+    function inr_short(int|float|string|null $amount): string
+    {
+        $amount = (float) $amount;
+
+        return match (true) {
+            $amount >= 10000000 => '₹'.rtrim(rtrim(number_format($amount / 10000000, 2), '0'), '.').' Cr',
+            $amount >= 100000 => '₹'.rtrim(rtrim(number_format($amount / 100000, 2), '0'), '.').' L',
+            default => inr($amount),
+        };
+    }
+}
+
 if (! function_exists('safe_url')) {
     /**
      * Admin-entered link: allow site paths ("/membership") and https:// URLs

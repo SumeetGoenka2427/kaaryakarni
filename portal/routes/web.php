@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\Auth\OtpController;
 use App\Http\Controllers\Web\Auth\RegistrationController;
 use App\Http\Controllers\Web\ContactController;
+use App\Http\Controllers\Web\DonationController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\PaymentController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,11 @@ Route::localized(function () {
     Route::get('membership', [PageController::class, 'membership'])->name('membership');
     Route::get('contact', [ContactController::class, 'show'])->name('contact');
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:5,10')->name('contact.store');
+
+    // Donations (members and guests)
+    Route::get('donations', [DonationController::class, 'index'])->name('donations.index');
+    Route::post('donations', [DonationController::class, 'store'])->middleware('throttle:10,1')->name('donations.store');
+    Route::get('donations/{campaign}', [DonationController::class, 'show'])->name('donations.show');
 
     // Member login / registration (mobile + OTP)
     Route::middleware('guest:member')->group(function () {

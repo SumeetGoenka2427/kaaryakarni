@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Concerns\HandlesImageUpload;
 use App\Http\Controllers\Controller;
 use App\Models\BannerPanel;
 use App\Models\BannerSlide;
+use App\Models\DonationCampaign;
 use App\Services\Audit\AuditLogger;
 use App\Services\Media\ImageService;
 use Illuminate\Http\RedirectResponse;
@@ -36,6 +37,7 @@ class BannerController extends Controller
         return view('admin.banners.index', [
             'slides' => BannerSlide::orderBy('sort_order')->orderBy('id')->get(),
             'panels' => BannerPanel::all()->keyBy('position'),
+            'campaigns' => DonationCampaign::orderByDesc('is_permanent')->orderBy('sort_order')->pluck('title_en', 'id'),
         ]);
     }
 
@@ -93,6 +95,7 @@ class BannerController extends Controller
 
         $data = $request->validate([
             'mode' => ['required', Rule::in(array_keys(BannerPanel::MODES))],
+            'campaign_id' => ['nullable', 'integer', Rule::exists('donation_campaigns', 'id')->whereNull('deleted_at')],
             'ad_url' => ['nullable', 'string', 'max:500', 'regex:#^(/(?!/)\S*|https://\S+)$#'],
             'ad_label_en' => ['nullable', 'string', 'max:120'],
             'ad_label_hi' => ['nullable', 'string', 'max:120'],
@@ -100,7 +103,9 @@ class BannerController extends Controller
         ], ['ad_url.regex' => 'Use a site path like /contact or a full https:// link.']);
 
         $old = $panel->only(['mode', 'ad_url', 'is_active']);
-        $panel->fill(collect($data)->except('ad_image')->all());
+        $panel->fill(collect($data)->except(['ad_image', 'campaign_id'])->all());
+        $panel->campaign_id = $data['campaign_id'] ?? null;
+        $panel->options = collect(BannerPanel::OPTIONS)->keys()->mapWithKeys(fn ($k) => [$k => $request->boolean("options.{$k}")])->all();
         $panel->is_active = $request->boolean('is_active');
         $this->syncImage($request, $panel, 'ad_image', 'ads', [400, 800], null, 'ad_image');
         $panel->save();

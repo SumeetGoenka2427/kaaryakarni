@@ -14,7 +14,7 @@ class ProductionSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([RolesAndPermissionsSeeder::class, NotificationTemplateSeeder::class, WebsiteContentSeeder::class]);
+        $this->call([RolesAndPermissionsSeeder::class, NotificationTemplateSeeder::class, DonationCampaignSeeder::class, WebsiteContentSeeder::class]);
 
         $seed = config('portal.admin.seed');
 

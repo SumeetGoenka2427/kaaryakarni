@@ -20,7 +20,15 @@ export function initSidebar() {
 // <button data-modal-open="slide-form">…</button> <dialog id="slide-form" class="admin-modal">…</dialog>
 export function initModals() {
     document.querySelectorAll('[data-modal-open]').forEach((btn) => {
-        btn.addEventListener('click', () => document.getElementById(btn.dataset.modalOpen)?.showModal());
+        btn.addEventListener('click', () => {
+            const dlg = document.getElementById(btn.dataset.modalOpen);
+            if (!dlg) return;
+            // One shared dialog per table: the clicked row supplies the form action + label.
+            if (btn.dataset.formAction) dlg.querySelector('form')?.setAttribute('action', btn.dataset.formAction);
+            const label = dlg.querySelector('[data-form-label-target]');
+            if (label && btn.dataset.formLabel) label.textContent = btn.dataset.formLabel;
+            dlg.showModal();
+        });
     });
     document.querySelectorAll('dialog').forEach((dlg) => {
         dlg.querySelectorAll('[data-modal-close]').forEach((b) => b.addEventListener('click', () => dlg.close()));

@@ -2,6 +2,7 @@
 
 namespace App\Services\Content;
 
+use App\Enums\DonationStatus;
 use App\Enums\MemberStatus;
 use App\Models\Announcement;
 use App\Models\Area;
@@ -9,6 +10,8 @@ use App\Models\BannerPanel;
 use App\Models\BannerSlide;
 use App\Models\CommitteeMember;
 use App\Models\ContentBlock;
+use App\Models\Donation;
+use App\Models\DonationCampaign;
 use App\Models\Member;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -49,7 +52,21 @@ class PublicContent
 
     public function panels(): Collection
     {
-        return $this->remember('panels', fn () => BannerPanel::where('is_active', true)->get()->keyBy('position'));
+        return $this->remember('panels', fn () => BannerPanel::where('is_active', true)->with('campaign')->get()->keyBy('position'));
+    }
+
+    /** Open donation campaigns, permanent "Samaj Donation" first. */
+    public function campaigns(): Collection
+    {
+        return $this->remember('campaigns', fn () => DonationCampaign::open()->get());
+    }
+
+    /** Latest confirmed donations for a campaign (names shown only with consent — see Donation::publicName). */
+    public function recentDonations(int $campaignId, int $limit = 5): Collection
+    {
+        return $this->remember("recent_donations.{$campaignId}.{$limit}", fn () => Donation::where('campaign_id', $campaignId)
+            ->whereIn('status', [DonationStatus::Successful, DonationStatus::Verified])
+            ->latest('updated_at')->limit($limit)->get(['id', 'donor_name', 'is_anonymous', 'amount', 'type', 'updated_at']));
     }
 
     public function announcements(int $limit = 3): Collection
@@ -74,12 +91,14 @@ class PublicContent
         $raw = Cache::remember('public_content.stats', 600, fn () => [
             'members' => Member::where('status', MemberStatus::Verified)->count(),
             'areas' => Area::where('is_active', true)->count(),
+            'donations' => (float) DonationCampaign::withTrashed()->sum('raised_amount'),
         ]);
 
         // A statistic is shown only once it has a real, non-zero value.
         $stats = array_values(array_filter([
             $raw['members'] > 0 ? ['value' => number_format($raw['members']), 'label' => __('web.home.stat_members')] : null,
             $raw['areas'] > 0 ? ['value' => (string) $raw['areas'], 'label' => __('web.home.stat_areas')] : null,
+            ($raw['donations'] ?? 0) > 0 ? ['value' => inr_short($raw['donations']), 'label' => __('web.home.stat_donations')] : null,
         ]));
 
         if ($founded = setting('founded_year')) {

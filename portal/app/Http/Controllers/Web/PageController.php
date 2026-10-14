@@ -20,6 +20,7 @@ class PageController extends Controller
             'about' => $this->content->block('home', 'about'),
             'stats' => $this->content->stats(),
             'announcements' => $this->content->announcements(3),
+            'campaigns' => $this->content->campaigns()->take(3),
             'links' => $this->content->blocks('home', 'links'),
         ]);
     }

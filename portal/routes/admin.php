@@ -6,10 +6,12 @@ use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BrandingController;
+use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\CommitteeMemberController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ContentBlockController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DonationAdminController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberFamilyController;
 use App\Http\Controllers\Admin\MembershipAdminController;
@@ -83,6 +85,22 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
     // Lifetime memberships
     Route::get('memberships', [MembershipAdminController::class, 'index'])->middleware('permission:memberships.view,admin')->name('memberships.index');
     Route::put('memberships/fee', [MembershipAdminController::class, 'updateFee'])->middleware('permission:memberships.manage,admin')->name('memberships.fee');
+
+    // Donation campaigns + records
+    Route::middleware('permission:donations.view,admin')->group(function () {
+        Route::get('campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
+        Route::get('donations', [DonationAdminController::class, 'index'])->name('donations.index');
+        Route::get('donations/export', [DonationAdminController::class, 'export'])->name('donations.export');
+    });
+    Route::middleware('permission:donations.manage,admin')->group(function () {
+        Route::get('campaigns/create', [CampaignController::class, 'create'])->name('campaigns.create');
+        Route::post('campaigns', [CampaignController::class, 'store'])->name('campaigns.store');
+        Route::get('campaigns/{campaign:id}/edit', [CampaignController::class, 'edit'])->name('campaigns.edit');
+        Route::put('campaigns/{campaign:id}', [CampaignController::class, 'update'])->name('campaigns.update');
+        Route::patch('campaigns/{campaign:id}/toggle', [CampaignController::class, 'toggle'])->name('campaigns.toggle');
+        Route::delete('campaigns/{campaign:id}', [CampaignController::class, 'destroy'])->name('campaigns.destroy');
+        Route::patch('donations/{donation}/refund', [DonationAdminController::class, 'refund'])->name('donations.refund');
+    });
 
     // Payments & receipts
     Route::middleware('permission:payments.view,admin')->group(function () {

@@ -63,7 +63,15 @@
                 <div class="admin-panel-head"><h3>{{ $title }}</h3></div>
                 <div class="admin-panel-body form-grid">
                     <x-field name="mode" :id="'mode-'.$position" type="select" label="Shows" :options="\App\Models\BannerPanel::MODES" :value="$panel->mode" required
-                             hint="Live donation campaign displays become available here once donation campaigns are set up." />
+                             hint="Use a different campaign mode on each side so the two panels never look the same." />
+                    <fieldset class="panel-fieldset">
+                        <legend>Live donation settings (campaign modes)</legend>
+                        <x-field name="campaign_id" :id="'campaign-'.$position" type="select" label="Campaign" placeholder="Permanent Samaj Donation (default)" :options="$campaigns" :value="$panel->campaign_id"
+                                 hint="If the chosen campaign closes, the permanent Samaj Donation is shown instead." />
+                        @foreach (\App\Models\BannerPanel::OPTIONS as $key => $label)
+                            <label class="checkbox-row"><input type="hidden" name="options[{{ $key }}]" value="0"><input type="checkbox" name="options[{{ $key }}]" value="1" @checked($panel->option($key))> {{ $label }}</label>
+                        @endforeach
+                    </fieldset>
                     <fieldset class="panel-fieldset">
                         <legend>Advertisement settings (used when “Advertisement” is selected)</legend>
                         <x-admin.image-field name="ad_image" label="Advertisement image" :current="$panel->ad_image" :id-prefix="$position.'-'" />

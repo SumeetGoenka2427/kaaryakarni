@@ -1,9 +1,9 @@
 {{--
     Homepage (web/index.html). Every section is admin-managed:
     banner → Admin › Homepage Banners · about/links → Admin › Page Content ·
-    events → Admin › Announcements · stats → live database counts ·
-    headings → Admin › Site Texts. Campaign, business and gallery sections
-    appear here automatically once those modules have data (P07, P09, P11).
+    campaigns → Admin › Donations (live totals) · events → Admin › Announcements ·
+    stats → live database counts · headings → Admin › Site Texts.
+    Business and gallery sections are added with P09 / P11.
 --}}
 <x-layouts.web>
     @if ($slides->isNotEmpty())
@@ -113,6 +113,21 @@
             </div>
         </div>
     </section>
+
+    {{-- ===== Donation campaigns (live totals) ===== --}}
+    @if ($campaigns->isNotEmpty())
+        <section class="section section-alt" id="donations">
+            <div class="container">
+                <x-section-head :eyebrow="__('web.home.campaigns_eyebrow')" :title="__('web.home.campaigns_heading')" :text="__('web.home.campaigns_text')" />
+                <div class="grid grid-3">
+                    @foreach ($campaigns as $campaign)
+                        @include('web.donations.partials.campaign-card')
+                    @endforeach
+                </div>
+                <div class="section-actions"><a href="{{ localized_route('donations.index') }}" class="btn btn-outline">{{ __('web.home.campaigns_all') }}</a></div>
+            </div>
+        </section>
+    @endif
 
     {{-- ===== Events & announcements ===== --}}
     @if ($announcements->isNotEmpty())

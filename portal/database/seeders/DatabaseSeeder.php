@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             SampleAreasSeeder::class,
             SampleWebsiteSeeder::class,
             SampleMembersSeeder::class,
+            SampleDonationsSeeder::class,
         ]);
     }
 }
