@@ -9,14 +9,10 @@ return [
     'skip_link' => 'Skip to main content',
     'language' => 'Language',
 
+    // Organisation name, tagline, address and contact are admin Settings (setting_t()).
     'org' => [
-        'name' => 'Khandelwal Samaj, Jaipur',
-        'short' => 'Khandelwal Samaj',
         'portal' => 'Jaipur Membership Portal',
         'member_area' => 'Member Area',
-        'tagline' => 'Serving the Khandelwal community of Jaipur through membership, welfare, business collaboration and cultural life.',
-        'address' => 'Samaj Bhawan, Chandpole, Jaipur, Rajasthan',
-        'address_short' => 'Samaj Bhawan, Jaipur',
     ],
 
     'meta' => [

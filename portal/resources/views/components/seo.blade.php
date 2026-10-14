@@ -6,9 +6,10 @@
 ])
 @php
     $siteTitle = __('web.meta.default_title');
-    $fullTitle = $title ? $title.' — '.__('web.org.name') : $siteTitle;
+    $fullTitle = $title ? $title.' — '.setting_t('org_name') : $siteTitle;
     $description = $description ?: __('web.meta.default_description');
     $locales = array_keys(config('portal.locales'));
+    $image ??= app(\App\Services\Branding\BrandingService::class)->url('og_image');
 @endphp
 <title>{{ $fullTitle }}</title>
 <meta name="description" content="{{ $description }}">
@@ -22,7 +23,7 @@
 <link rel="alternate" hreflang="x-default" href="{{ switch_locale_url($locales[0]) }}">
 @endif
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{{ __('web.org.name') }}">
+<meta property="og:site_name" content="{{ setting_t('org_name') }}">
 <meta property="og:title" content="{{ $title ?: $siteTitle }}">
 <meta property="og:description" content="{{ $description }}">
 <meta property="og:url" content="{{ url()->current() }}">

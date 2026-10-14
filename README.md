@@ -37,12 +37,19 @@ CREATE DATABASE kaaryakarni_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_c
 Then:
 
 ```bash
-php artisan migrate
+php artisan migrate --seed       # creates roles + first super-admin from ADMIN_SEED_* in .env
+php artisan storage:link        # serves uploaded logos/images
 npm run build                  # or `npm run dev` while editing CSS/JS
 php artisan serve              # http://localhost:8000  (Hindi: /hi)
 ```
 
 `composer dev` runs the server, queue worker, log viewer and Vite together.
+
+## Admin panel
+
+Open `/admin` and log in with `ADMIN_SEED_USERNAME` / `ADMIN_SEED_PASSWORD` from `.env`
+(change the password after the first login). Five wrong attempts lock the username for
+15 minutes, and sessions end after 30 idle minutes.
 
 ## Commands
 
@@ -64,4 +71,4 @@ php artisan serve              # http://localhost:8000  (Hindi: /hi)
 
 ## Build progress
 
-See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**.
+See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**, **P03 Settings, Branding/Logo, Site Texts + admin login**.

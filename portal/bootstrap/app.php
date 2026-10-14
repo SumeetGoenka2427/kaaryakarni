@@ -7,6 +7,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -30,14 +32,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'setlocale' => SetLocale::class,
             'admin.idle' => AdminIdleTimeout::class,
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
         ]);
 
         // Guests hitting a protected page go to the matching login screen.
         $middleware->redirectGuestsTo(fn ($request) => $request->is('admin', 'admin/*')
             ? route('admin.login')
-            : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : route('home')));
+            : (Route::has('login') ? route('login') : route('home')));
         $middleware->redirectUsersTo(fn ($request) => $request->is('admin', 'admin/*')
             ? route('admin.dashboard')
             : route('home'));

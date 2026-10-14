@@ -14,6 +14,7 @@
     <meta name="robots" content="noindex, nofollow">
     <title>{{ $title }} — Samaj Admin Panel</title>
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
+    @include('partials.head-brand')
     {{ $head ?? '' }}
 </head>
 <body class="admin-body">

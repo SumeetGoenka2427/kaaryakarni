@@ -8,7 +8,7 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <x-logo variant="footer" />
-                <p>{{ __('web.org.tagline') }}</p>
+                <p>{{ setting_t('tagline') }}</p>
             </div>
             <div>
                 <h2 class="footer-heading">{{ __('web.footer.explore') }}</h2>
@@ -31,14 +31,21 @@
             <div>
                 <h2 class="footer-heading">{{ __('web.footer.office') }}</h2>
                 <ul class="footer-links">
-                    <li>{{ __('web.org.address') }}</li>
-                    <li><a href="tel:+911411234567">+91 141 123 4567</a></li>
-                    <li><a href="mailto:info@khandelwalsamajjaipur.org">info@khandelwalsamajjaipur.org</a></li>
+                    <li>{{ setting_t('address') }}</li>
+                    @if ($phone = setting('phone_primary'))
+                        <li><a href="tel:{{ preg_replace('/[^0-9+]/', '', $phone) }}">{{ $phone }}</a></li>
+                    @endif
+                    @if ($email = setting('email'))
+                        <li><a href="mailto:{{ $email }}">{{ $email }}</a></li>
+                    @endif
+                    @if ($hours = setting_t('office_hours'))
+                        <li>{{ $hours }}</li>
+                    @endif
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; {{ now()->year }} {{ __('web.org.name') }}. {{ __('web.footer.rights') }}</span>
+            <span>&copy; {{ now()->year }} {{ setting_t('org_name') }}. {{ __('web.footer.rights') }}</span>
             <span>{{ __('web.footer.built_for') }}</span>
         </div>
     </div>

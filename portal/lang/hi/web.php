@@ -9,14 +9,10 @@ return [
     'skip_link' => 'मुख्य सामग्री पर जाएं',
     'language' => 'भाषा',
 
+    // Organisation name, tagline, address and contact are admin Settings (setting_t()).
     'org' => [
-        'name' => 'खंडेलवाल समाज, जयपुर',
-        'short' => 'खंडेलवाल समाज',
         'portal' => 'जयपुर सदस्यता पोर्टल',
         'member_area' => 'सदस्य क्षेत्र',
-        'tagline' => 'सदस्यता, कल्याण, व्यावसायिक सहयोग और सांस्कृतिक गतिविधियों के माध्यम से जयपुर के खंडेलवाल समुदाय की सेवा।',
-        'address' => 'समाज भवन, चांदपोल, जयपुर, राजस्थान',
-        'address_short' => 'समाज भवन, जयपुर',
     ],
 
     'meta' => [

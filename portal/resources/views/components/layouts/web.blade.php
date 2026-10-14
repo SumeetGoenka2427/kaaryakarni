@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <x-seo :title="$title" :description="$description" :image="$image" :noindex="$noindex" />
     @vite(['resources/css/web.css', 'resources/js/web.js'])
+    @include('partials.head-brand')
     {{ $head ?? '' }}
 </head>
 <body>

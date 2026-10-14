@@ -16,8 +16,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
-    <title>{{ __("web.errors.{$code}_title") }} — {{ __('web.org.name') }}</title>
+    <title>{{ __("web.errors.{$code}_title") }} — {{ setting_t('org_name') }}</title>
     @vite(['resources/css/web.css'])
+    @include('partials.head-brand')
 </head>
 <body>
     <main id="main" class="section">

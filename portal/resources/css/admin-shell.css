@@ -141,3 +141,29 @@ dialog.admin-modal::backdrop { background: rgba(10,15,25,0.5); }
 /* Bilingual admin field (EN / हिन्दी tabs) */
 .translatable-field .tabs-compact { margin-bottom: 10px; }
 .translatable-field .tab-btn { padding: 6px 12px; }
+
+/* Login */
+.login-head { margin-bottom: var(--space-5); }
+.login-head h1 { font-size: 1.4rem; margin-bottom: var(--space-1); }
+.login-head p { margin: 0; }
+.login-mark { margin: 0 auto var(--space-3); display: flex; }
+.login-logo { height: 64px; width: auto; margin: 0 auto var(--space-3); }
+.login-back { margin-top: var(--space-5); font-size: 0.85rem; }
+.admin-sidebar .brand-logo { height: 38px; max-width: 120px; }
+
+/* Settings / branding / site texts */
+.settings-panel { margin-bottom: var(--space-5); max-width: 860px; }
+.settings-actions { position: sticky; bottom: 0; padding: var(--space-4) 0; background: var(--color-bg-alt); max-width: 860px; }
+.branding-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-5); }
+.branding-preview { min-height: 110px; display: flex; align-items: center; justify-content: center; gap: var(--space-3); border: 1px dashed var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-white); }
+.branding-preview.is-dark { background: var(--color-navy-900); }
+.branding-preview img { max-height: 90px; width: auto; max-width: 100%; object-fit: contain; }
+.branding-help { font-size: 0.82rem; margin: 0; }
+.audit-row { display: flex; flex-direction: column; gap: 2px; padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); font-size: 0.88rem; }
+.audit-row:last-child { border-bottom: none; padding-bottom: 0; }
+.filter-check { align-self: center; }
+.site-texts-table table.data-table { min-width: 860px; }
+.site-texts-table td { vertical-align: top; }
+.site-texts-table td:first-child { width: 26%; }
+.site-texts-table textarea { width: 100%; padding: 0.5rem 0.65rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font: inherit; font-size: 0.9rem; resize: vertical; }
+.text-key { display: block; font-size: 0.75rem; color: var(--color-text-muted); word-break: break-all; margin-bottom: 4px; }

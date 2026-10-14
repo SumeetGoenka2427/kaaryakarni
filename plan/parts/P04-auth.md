@@ -2,9 +2,8 @@
 
 ## Tasks
 ### Admin
-- [ ] `admin_users` migration, `admin` guard, seeded super-admin from `.env`
-- [ ] Roles/permissions (Super Admin, Membership Manager, Content Manager, Accounts, Matrimonial Moderator)
-- [ ] `/admin/login` (existing design): throttled, lockout, session regenerate, optional TOTP 2FA
+- [x] Guard, roles, login, lockout, idle timeout — done early in P03
+- [ ] Optional TOTP 2FA
 - [ ] Admin → Admin Users screen (create, role assign, deactivate, reset password)
 
 ### SMS abstraction

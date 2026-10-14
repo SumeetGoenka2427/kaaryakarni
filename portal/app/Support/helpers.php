@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\Settings\SettingsService;
 use Illuminate\Support\Facades\Route;
 
 if (! function_exists('localized_route')) {
@@ -94,7 +95,7 @@ if (! function_exists('setting')) {
     /** setting('membership_fee') — admin-editable site setting (cached). */
     function setting(string $key, mixed $default = null): mixed
     {
-        return app(\App\Services\Settings\SettingsService::class)->get($key, $default);
+        return app(SettingsService::class)->get($key, $default);
     }
 }
 
@@ -102,6 +103,6 @@ if (! function_exists('setting_t')) {
     /** setting_t('org_name') — bilingual setting in the current language, English fallback. */
     function setting_t(string $key): ?string
     {
-        return app(\App\Services\Settings\SettingsService::class)->localized($key);
+        return app(SettingsService::class)->localized($key);
     }
 }

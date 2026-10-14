@@ -434,3 +434,7 @@ table.data-table tbody tr:hover { background: var(--color-bg-alt); }
 
 /* Inline forms inside nav / chips (logout buttons) */
 .nav-cta form, .admin-user-chip form { margin: 0; display: inline-flex; }
+
+/* Uploaded logo image (Admin → Branding) in place of the "KS" mark */
+.brand-logo { height: 46px; width: auto; max-width: 220px; object-fit: contain; flex-shrink: 0; }
+.align-start { align-items: start; }

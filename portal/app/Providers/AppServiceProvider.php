@@ -10,9 +10,9 @@ use App\Translation\DatabaseOverrideLoader;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\FileLoader;
 use ReflectionClass;
-use Illuminate\Support\ServiceProvider;
 use RuntimeException;
 
 class AppServiceProvider extends ServiceProvider

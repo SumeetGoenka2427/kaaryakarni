@@ -16,6 +16,11 @@ function check(input) {
 }
 
 export function initForms() {
+    // <select data-autosubmit> submits its form on change (no inline handlers: CSP).
+    document.querySelectorAll('[data-autosubmit]').forEach((el) => {
+        el.addEventListener('change', () => el.form?.requestSubmit());
+    });
+
     // Confirm before destructive actions: <form data-confirm="Delete this album?">
     document.querySelectorAll('form[data-confirm]').forEach((form) => {
         form.addEventListener('submit', (e) => {

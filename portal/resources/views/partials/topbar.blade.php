@@ -1,15 +1,19 @@
 <div class="topbar">
     <div class="container">
         <div class="topbar-contacts">
-            <span class="topbar-tag">{{ __('web.org.name') }}</span>
-            <a href="tel:+911411234567">+91 141 123 4567</a>
-            <a href="mailto:info@khandelwalsamajjaipur.org">info@khandelwalsamajjaipur.org</a>
+            <span class="topbar-tag">{{ setting_t('org_name') }}</span>
+            @if ($phone = setting('phone_primary'))
+                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $phone) }}">{{ $phone }}</a>
+            @endif
+            @if ($email = setting('email'))
+                <a href="mailto:{{ $email }}">{{ $email }}</a>
+            @endif
         </div>
         <div class="topbar-contacts">
             @if (Route::has('contact'))
-                <a href="{{ localized_route('contact') }}">{{ __('web.org.address_short') }}</a>
+                <a href="{{ localized_route('contact') }}">{{ setting_t('office_name') }}</a>
             @else
-                <span>{{ __('web.org.address_short') }}</span>
+                <span>{{ setting_t('office_name') }}</span>
             @endif
         </div>
     </div>
