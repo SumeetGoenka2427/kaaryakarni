@@ -51,7 +51,7 @@ class SecurityHeaders
             "img-src 'self' data: blob:",
             "font-src 'self'",
             "connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com",
-            'frame-src https://api.razorpay.com https://checkout.razorpay.com',
+            'frame-src https://api.razorpay.com https://checkout.razorpay.com https://www.google.com',
             "form-action 'self'",
             "base-uri 'self'",
             "object-src 'none'",

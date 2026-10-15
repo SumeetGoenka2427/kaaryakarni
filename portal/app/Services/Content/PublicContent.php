@@ -8,6 +8,7 @@ use App\Models\Announcement;
 use App\Models\Area;
 use App\Models\BannerPanel;
 use App\Models\BannerSlide;
+use App\Models\BusinessProfile;
 use App\Models\CommitteeMember;
 use App\Models\ContentBlock;
 use App\Models\Donation;
@@ -55,6 +56,14 @@ class PublicContent
         return $this->remember('panels', fn () => BannerPanel::where('is_active', true)->with('campaign')->get()->keyBy('position'));
     }
 
+    /** Approved businesses for the homepage: featured first. */
+    public function featuredBusinesses(int $limit = 4): Collection
+    {
+        return $this->remember("businesses.featured.{$limit}", fn () => BusinessProfile::approved()
+            ->with(['category:id,name_en,name_hi', 'area:id,name_en,name_hi'])
+            ->orderByDesc('is_featured')->latest('approved_at')->limit($limit)->get());
+    }
+
     /** Open donation campaigns, permanent "Samaj Donation" first. */
     public function campaigns(): Collection
     {
@@ -92,12 +101,14 @@ class PublicContent
             'members' => Member::where('status', MemberStatus::Verified)->count(),
             'areas' => Area::where('is_active', true)->count(),
             'donations' => (float) DonationCampaign::withTrashed()->sum('raised_amount'),
+            'businesses' => BusinessProfile::approved()->count(),
         ]);
 
         // A statistic is shown only once it has a real, non-zero value.
         $stats = array_values(array_filter([
             $raw['members'] > 0 ? ['value' => number_format($raw['members']), 'label' => __('web.home.stat_members')] : null,
             $raw['areas'] > 0 ? ['value' => (string) $raw['areas'], 'label' => __('web.home.stat_areas')] : null,
+            ($raw['businesses'] ?? 0) > 0 ? ['value' => number_format($raw['businesses']), 'label' => __('web.home.stat_businesses')] : null,
             ($raw['donations'] ?? 0) > 0 ? ['value' => inr_short($raw['donations']), 'label' => __('web.home.stat_donations')] : null,
         ]));
 

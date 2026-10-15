@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Member\BusinessController;
 use App\Http\Controllers\Member\DashboardController;
 use App\Http\Controllers\Member\FamilyController;
 use App\Http\Controllers\Member\MembershipController;
@@ -29,6 +30,10 @@ Route::localized(function () {
         Route::get('family/{family}/edit', [FamilyController::class, 'edit'])->name('family.edit');
         Route::put('family/{family}', [FamilyController::class, 'update'])->name('family.update');
         Route::delete('family/{family}', [FamilyController::class, 'destroy'])->name('family.destroy');
+
+        // Business listing (one per member)
+        Route::get('business', [BusinessController::class, 'edit'])->name('business');
+        Route::put('business', [BusinessController::class, 'update'])->middleware('throttle:10,1')->name('business.update');
 
         // Lifetime membership (one-time fee) and payment history
         Route::get('membership', [MembershipController::class, 'show'])->name('membership');

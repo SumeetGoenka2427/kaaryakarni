@@ -614,3 +614,17 @@ table.data-table tbody tr:hover { background: var(--color-bg-alt); }
 .type-options { display: grid; gap: 10px; }
 .field input[type="radio"], .field input[type="checkbox"] { width: auto; padding: 0; flex-shrink: 0; }
 .type-options .checkbox-row { color: var(--color-text); }
+
+/* ---- Business directory ---- */
+.business-card .card-body { gap: 6px; }
+.business-name { font-size: 1.05rem; margin: 0; }
+.business-meta { margin: 0; font-size: 0.85rem; }
+.results-count { margin: 0 0 var(--space-4); font-size: 0.88rem; }
+.business-photo { aspect-ratio: 4 / 3; }
+.business-title { margin: 10px 0 4px; }
+.business-facts { display: grid; gap: 10px; margin: var(--space-4) 0 var(--space-5); }
+.business-facts div { display: flex; gap: 10px; flex-wrap: wrap; }
+.business-facts dt { font-weight: 700; color: var(--color-navy-900); min-width: 80px; }
+.business-facts dd { margin: 0; color: var(--color-text-muted); }
+.business-thumb { width: 120px; height: 90px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
+.status-row { margin-bottom: var(--space-4); }

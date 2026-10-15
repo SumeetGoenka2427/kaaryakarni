@@ -3,13 +3,19 @@
 namespace App\Models\Concerns;
 
 use App\Services\Content\PublicContent;
+use Illuminate\Support\Facades\Cache;
 
-/** Any change to this model refreshes the cached public website content. */
+/** Any change to this model refreshes the cached public website content and homepage statistics. */
 trait BustsPublicCache
 {
     public static function bootBustsPublicCache(): void
     {
-        static::saved(fn () => PublicContent::flush());
-        static::deleted(fn () => PublicContent::flush());
+        $flush = function () {
+            PublicContent::flush();
+            Cache::forget('public_content.stats');
+        };
+
+        static::saved($flush);
+        static::deleted($flush);
     }
 }

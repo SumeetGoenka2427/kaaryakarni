@@ -198,3 +198,9 @@ dialog.admin-modal { width: min(560px, calc(100% - 32px)); }
 .proof-image { max-width: 100%; max-height: 420px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
 .no-margin { margin: 0; }
 .action-gap { margin-top: var(--space-3); }
+
+/* Inline edit rows (business categories) */
+.inline-edit { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.inline-edit input, .order-input { width: 100%; padding: 0.45rem 0.6rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font: inherit; font-size: 0.9rem; }
+.order-input { max-width: 80px; }
+@media (max-width: 720px) { .inline-edit { grid-template-columns: 1fr; } }

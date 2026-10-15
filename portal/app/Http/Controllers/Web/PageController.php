@@ -21,6 +21,7 @@ class PageController extends Controller
             'stats' => $this->content->stats(),
             'announcements' => $this->content->announcements(3),
             'campaigns' => $this->content->campaigns()->take(3),
+            'businesses' => $this->content->featuredBusinesses(4),
             'links' => $this->content->blocks('home', 'links'),
         ]);
     }

@@ -3,7 +3,7 @@
     banner → Admin › Homepage Banners · about/links → Admin › Page Content ·
     campaigns → Admin › Donations (live totals) · events → Admin › Announcements ·
     stats → live database counts · headings → Admin › Site Texts.
-    Business and gallery sections are added with P09 / P11.
+    businesses → approved listings (featured first). Gallery is added with P11.
 --}}
 <x-layouts.web>
     @if ($slides->isNotEmpty())
@@ -125,6 +125,21 @@
                     @endforeach
                 </div>
                 <div class="section-actions"><a href="{{ localized_route('donations.index') }}" class="btn btn-outline">{{ __('web.home.campaigns_all') }}</a></div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ===== Business highlights (approved only, featured first) ===== --}}
+    @if ($businesses->isNotEmpty())
+        <section class="section">
+            <div class="container">
+                <x-section-head :eyebrow="__('web.home.business_eyebrow')" :title="__('web.home.business_heading')" />
+                <div class="grid grid-4">
+                    @foreach ($businesses as $business)
+                        @include('web.business.partials.card')
+                    @endforeach
+                </div>
+                <div class="section-actions"><a href="{{ localized_route('business.index') }}" class="btn btn-outline">{{ __('web.home.business_all') }}</a></div>
             </div>
         </section>
     @endif

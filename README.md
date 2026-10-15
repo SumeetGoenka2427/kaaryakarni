@@ -78,4 +78,4 @@ DLT/MSG91 template id.
 
 ## Build progress
 
-See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**, **P03 Settings, Branding/Logo, Site Texts + admin login**, **P04 Member OTP login/registration, SMS layer, Admin Users**, **W01 Website pages + content admin**, **P05 Areas, profile, family, admin members**, **P06 Payments, lifetime membership, PDF receipts**, **P07 Donations**.
+See [plan/README.md](plan/README.md). Completed: **P01 Foundation**, **P02 Design system, layouts & bilingual engine**, **P03 Settings, Branding/Logo, Site Texts + admin login**, **P04 Member OTP login/registration, SMS layer, Admin Users**, **W01 Website pages + content admin**, **P05 Areas, profile, family, admin members**, **P06 Payments, lifetime membership, PDF receipts**, **P07 Donations**, **P09 Business Directory**.

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Auth\OtpController;
 use App\Http\Controllers\Web\Auth\RegistrationController;
+use App\Http\Controllers\Web\BusinessDirectoryController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\DonationController;
 use App\Http\Controllers\Web\PageController;
@@ -23,6 +24,10 @@ Route::localized(function () {
     Route::get('membership', [PageController::class, 'membership'])->name('membership');
     Route::get('contact', [ContactController::class, 'show'])->name('contact');
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:5,10')->name('contact.store');
+
+    // Business directory (approved listings only)
+    Route::get('business-directory', [BusinessDirectoryController::class, 'index'])->name('business.index');
+    Route::get('business-directory/{business}', [BusinessDirectoryController::class, 'show'])->name('business.show');
 
     // Donations (members and guests)
     Route::get('donations', [DonationController::class, 'index'])->name('donations.index');

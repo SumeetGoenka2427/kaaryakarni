@@ -63,6 +63,21 @@ class NotificationTemplateSeeder extends Seeder
             'sms_en' => 'Dear {name}, your offline payment of Rs {amount} could not be verified. Please log in or contact the Samaj office.',
             'sms_hi' => 'प्रिय {name}, आपके Rs {amount} के ऑफ़लाइन भुगतान का सत्यापन नहीं हो सका। कृपया लॉगिन करें या समाज कार्यालय से संपर्क करें।',
         ],
+        'business_approved' => [
+            'description' => 'Business listing approved',
+            'sms_en' => 'Dear {name}, your business "{business}" is now live in the Khandelwal Samaj Jaipur Business Directory.',
+            'sms_hi' => 'प्रिय {name}, आपका व्यवसाय "{business}" अब खंडेलवाल समाज जयपुर व्यवसाय निर्देशिका में प्रकाशित है।',
+        ],
+        'business_rejected' => [
+            'description' => 'Business listing rejected',
+            'sms_en' => 'Dear {name}, your business listing "{business}" was not approved. Please log in to see the reason.',
+            'sms_hi' => 'प्रिय {name}, आपकी व्यवसाय सूची "{business}" स्वीकृत नहीं हुई। कारण जानने के लिए लॉगिन करें।',
+        ],
+        'business_changes_requested' => [
+            'description' => 'Changes requested on business listing',
+            'sms_en' => 'Dear {name}, the Samaj office has requested changes to your business listing "{business}". Please log in to update it.',
+            'sms_hi' => 'प्रिय {name}, समाज कार्यालय ने आपकी व्यवसाय सूची "{business}" में बदलाव का अनुरोध किया है। कृपया लॉगिन करके अपडेट करें।',
+        ],
     ];
 
     public function run(): void

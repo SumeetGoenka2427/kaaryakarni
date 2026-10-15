@@ -7,6 +7,7 @@ use App\Enums\MemberStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -66,6 +67,11 @@ class Member extends Authenticatable
     public function family(): HasMany
     {
         return $this->hasMany(FamilyMember::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function business(): HasOne
+    {
+        return $this->hasOne(BusinessProfile::class);
     }
 
     public function verifications(): HasMany

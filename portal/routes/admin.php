@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BrandingController;
+use App\Http\Controllers\Admin\BusinessAdminController;
+use App\Http\Controllers\Admin\BusinessCategoryController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\CommitteeMemberController;
 use App\Http\Controllers\Admin\ContactMessageController;
@@ -85,6 +87,28 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
     // Lifetime memberships
     Route::get('memberships', [MembershipAdminController::class, 'index'])->middleware('permission:memberships.view,admin')->name('memberships.index');
     Route::put('memberships/fee', [MembershipAdminController::class, 'updateFee'])->middleware('permission:memberships.manage,admin')->name('memberships.fee');
+
+    // Business directory
+    Route::middleware('permission:businesses.view,admin')->group(function () {
+        Route::get('businesses', [BusinessAdminController::class, 'index'])->name('businesses.index');
+        Route::get('businesses/{business:id}', [BusinessAdminController::class, 'show'])->whereNumber('business')->name('businesses.show');
+    });
+    Route::middleware('permission:businesses.manage,admin')->group(function () {
+        Route::get('businesses/{business:id}/edit', [BusinessAdminController::class, 'edit'])->name('businesses.edit');
+        Route::put('businesses/{business:id}', [BusinessAdminController::class, 'update'])->name('businesses.update');
+        Route::patch('businesses/{business:id}/approve', [BusinessAdminController::class, 'approve'])->name('businesses.approve');
+        Route::patch('businesses/{business:id}/reject', [BusinessAdminController::class, 'reject'])->name('businesses.reject');
+        Route::patch('businesses/{business:id}/changes', [BusinessAdminController::class, 'requestChanges'])->name('businesses.changes');
+        Route::patch('businesses/{business:id}/hide', [BusinessAdminController::class, 'hide'])->name('businesses.hide');
+        Route::patch('businesses/{business:id}/feature', [BusinessAdminController::class, 'feature'])->name('businesses.feature');
+        Route::delete('businesses/{business:id}', [BusinessAdminController::class, 'destroy'])->name('businesses.destroy');
+
+        Route::get('business-categories', [BusinessCategoryController::class, 'index'])->name('categories.index');
+        Route::post('business-categories', [BusinessCategoryController::class, 'store'])->name('categories.store');
+        Route::put('business-categories/{category}', [BusinessCategoryController::class, 'update'])->name('categories.update');
+        Route::patch('business-categories/{category}/toggle', [BusinessCategoryController::class, 'toggle'])->name('categories.toggle');
+        Route::delete('business-categories/{category}', [BusinessCategoryController::class, 'destroy'])->name('categories.destroy');
+    });
 
     // Donation campaigns + records
     Route::middleware('permission:donations.view,admin')->group(function () {
