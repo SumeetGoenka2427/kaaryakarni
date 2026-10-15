@@ -74,6 +74,11 @@ class Member extends Authenticatable
         return $this->hasOne(BusinessProfile::class);
     }
 
+    public function matrimonialProfiles(): HasMany
+    {
+        return $this->hasMany(MatrimonialProfile::class)->latest('id');
+    }
+
     public function verifications(): HasMany
     {
         return $this->hasMany(MemberVerification::class)->latest('id');

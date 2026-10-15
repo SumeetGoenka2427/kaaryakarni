@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DonationAdminController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberFamilyController;
+use App\Http\Controllers\Admin\MatrimonialAdminController;
 use App\Http\Controllers\Admin\MembershipAdminController;
 use App\Http\Controllers\Admin\PaymentAdminController;
 use App\Http\Controllers\Admin\ReceiptAdminController;
@@ -108,6 +109,22 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
         Route::put('business-categories/{category}', [BusinessCategoryController::class, 'update'])->name('categories.update');
         Route::patch('business-categories/{category}/toggle', [BusinessCategoryController::class, 'toggle'])->name('categories.toggle');
         Route::delete('business-categories/{category}', [BusinessCategoryController::class, 'destroy'])->name('categories.destroy');
+    });
+
+    // Matrimonial (private): review + moderation
+    Route::middleware('permission:matrimonial.view,admin')->group(function () {
+        Route::get('matrimonial', [MatrimonialAdminController::class, 'index'])->name('matrimonial.index');
+        Route::get('matrimonial/{profile}', [MatrimonialAdminController::class, 'show'])->name('matrimonial.show');
+    });
+    Route::middleware('permission:matrimonial.manage,admin')->group(function () {
+        Route::get('matrimonial/{profile}/edit', [MatrimonialAdminController::class, 'edit'])->name('matrimonial.edit');
+        Route::put('matrimonial/{profile}', [MatrimonialAdminController::class, 'update'])->name('matrimonial.update');
+        Route::patch('matrimonial/{profile}/approve', [MatrimonialAdminController::class, 'approve'])->name('matrimonial.approve');
+        Route::patch('matrimonial/{profile}/reject', [MatrimonialAdminController::class, 'reject'])->name('matrimonial.reject');
+        Route::patch('matrimonial/{profile}/hide', [MatrimonialAdminController::class, 'hide'])->name('matrimonial.hide');
+        Route::patch('matrimonial/{profile}/suspend', [MatrimonialAdminController::class, 'suspend'])->name('matrimonial.suspend');
+        Route::delete('matrimonial/{profile}', [MatrimonialAdminController::class, 'destroy'])->name('matrimonial.destroy');
+        Route::patch('matrimonial-reports/{report}/resolve', [MatrimonialAdminController::class, 'resolveReport'])->name('matrimonial.reports.resolve');
     });
 
     // Donation campaigns + records

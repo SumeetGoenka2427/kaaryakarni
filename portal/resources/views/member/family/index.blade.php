@@ -39,6 +39,10 @@
                                     @if ($person->mobile)<div><dt>{{ __('web.family.mobile') }}</dt><dd>{{ $person->mobile }}</dd></div>@endif
                                     @if ($person->blood_group)<div><dt>{{ __('web.family.blood_group') }}</dt><dd>{{ $person->blood_group }}</dd></div>@endif
                                 </dl>
+                                @if (in_array($person->relation->value, ['son', 'daughter', 'brother', 'sister', 'grandson', 'granddaughter'], true) && ! $person->is_deceased
+                                     && $person->marital_status !== \App\Enums\MaritalStatus::Married && ($person->age() ?? 0) >= 18)
+                                    <a href="{{ localized_route('member.matrimonial.index', ['new' => 1, 'family' => $person->ulid]) }}#mat-form" class="family-mat-link">{{ __('web.matrimonial.from_family') }} &rarr;</a>
+                                @endif
                                 <div class="row-actions family-actions">
                                     <a href="{{ localized_route('member.family.edit', ['family' => $person->ulid]) }}" class="btn btn-outline btn-sm">{{ __('web.common.edit') }}</a>
                                     <form method="POST" action="{{ localized_route('member.family.destroy', ['family' => $person->ulid]) }}" data-confirm="{{ __('web.family.delete_confirm', ['name' => $person->name]) }}">

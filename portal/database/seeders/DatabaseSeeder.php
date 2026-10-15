@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             SampleMembersSeeder::class,
             SampleDonationsSeeder::class,
             SampleBusinessesSeeder::class,
+            SampleMatrimonialSeeder::class,
         ]);
     }
 }

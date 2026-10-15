@@ -78,6 +78,16 @@ class NotificationTemplateSeeder extends Seeder
             'sms_en' => 'Dear {name}, the Samaj office has requested changes to your business listing "{business}". Please log in to update it.',
             'sms_hi' => 'प्रिय {name}, समाज कार्यालय ने आपकी व्यवसाय सूची "{business}" में बदलाव का अनुरोध किया है। कृपया लॉगिन करके अपडेट करें।',
         ],
+        'matrimonial_approved' => [
+            'description' => 'Matrimonial profile approved',
+            'sms_en' => 'Dear {name}, the matrimonial profile "{profile}" is approved and now visible to eligible Samaj members.',
+            'sms_hi' => 'प्रिय {name}, वैवाहिक प्रोफ़ाइल "{profile}" स्वीकृत हो गई है और अब पात्र समाज सदस्यों को दिखाई देगी।',
+        ],
+        'matrimonial_rejected' => [
+            'description' => 'Matrimonial profile not approved',
+            'sms_en' => 'Dear {name}, the matrimonial profile "{profile}" was not approved. Please log in to see the reason.',
+            'sms_hi' => 'प्रिय {name}, वैवाहिक प्रोफ़ाइल "{profile}" स्वीकृत नहीं हुई। कारण जानने के लिए लॉगिन करें।',
+        ],
     ];
 
     public function run(): void
