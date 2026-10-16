@@ -49,14 +49,4 @@ class PageController extends Controller
         ]);
     }
 
-    public function membership(): View
-    {
-        return view('web.membership', [
-            'benefits' => $this->content->blocks('membership', 'benefits'),
-            'included' => $this->content->block('membership', 'included'),
-            'steps' => $this->content->blocks('membership', 'steps'),
-            'faqs' => $this->content->blocks('membership', 'faqs'),
-            'fee' => (int) setting('membership_fee'),
-        ]);
-    }
 }

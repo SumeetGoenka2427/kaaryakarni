@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\RateLimiter;
 
 beforeEach(fn () => $this->seed(WebsiteContentSeeder::class));
 
+it('no longer has a public membership page', function () {
+    $this->get('/membership')->assertNotFound();
+    $this->get('/')->assertDontSee('href="'.url('/membership').'"', false);
+});
+
 it('renders every public page in English and Hindi', function (string $path, string $en, string $hi) {
     $this->get($path)->assertOk()->assertSee($en);
     $this->get('/hi'.($path === '/' ? '' : $path))->assertOk()->assertSee($hi)->assertSee('<html lang="hi">', false);
@@ -19,7 +24,6 @@ it('renders every public page in English and Hindi', function (string $path, str
     'home' => ['/', 'A Community Rooted in Trust and Tradition', 'विश्वास और परंपरा में निहित एक समुदाय'],
     'about' => ['/about', 'Our History', 'हमारा इतिहास'],
     'committee' => ['/committee', 'Samaj Committee Members', 'समाज समिति सदस्य'],
-    'membership' => ['/membership', 'Membership FAQs', 'सदस्यता संबंधी प्रश्न'],
     'contact' => ['/contact', 'Send a Message', 'संदेश भेजें'],
 ]);
 
@@ -34,10 +38,10 @@ it('shows admin-edited content on the website right away (cache refreshes on sav
 });
 
 it('falls back to English when Hindi content is empty', function () {
-    ContentBlock::where('page', 'membership')->where('section', 'faqs')->first()
-        ->update(['title_en' => 'Only English question?', 'title_hi' => null]);
+    ContentBlock::where('page', 'about')->where('section', 'values')->first()
+        ->update(['title_en' => 'Only English heading', 'title_hi' => null]);
 
-    $this->get('/hi/membership')->assertSee('Only English question?');
+    $this->get('/hi/about')->assertSee('Only English heading');
 });
 
 it('hides inactive content blocks', function () {
@@ -45,13 +49,6 @@ it('hides inactive content blocks', function () {
     PublicContent::flush();
 
     $this->get('/about')->assertDontSee('Our Vision');
-});
-
-it('shows the membership fee from settings with lifetime wording and no renewal', function () {
-    app(SettingsService::class)->update(['membership_fee' => 7100]);
-
-    $html = $this->get('/membership')->assertOk()->assertSee('₹7,100')->getContent();
-    expect(strtolower(strip_tags($html)))->not->toContain('renew now')->not->toContain('expires on');
 });
 
 it('shows only active, scheduled carousel slides in order', function () {

@@ -9,8 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Sets the website language from the URL.
  *
- * English is the default and has no prefix (/membership); Hindi pages live
- * under /hi (/hi/membership). The URL is the single source of truth so each
+ * English is the default and has no prefix (/register); Hindi pages live
+ * under /hi (/hi/register). The URL is the single source of truth so each
  * language version is a separate, indexable page for search engines.
  */
 class SetLocale

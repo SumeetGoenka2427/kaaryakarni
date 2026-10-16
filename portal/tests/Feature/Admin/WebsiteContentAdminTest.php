@@ -37,19 +37,19 @@ it('blocks admins without content permission', function () {
     $this->post(route('admin.banners.store'), ['title_en' => 'x'])->assertForbidden();
 });
 
-it('adds a FAQ in both languages and it appears on the membership page', function () {
-    $this->post(route('admin.content.store', ['membership', 'faqs']), [
-        'title_en' => 'Is there an age limit?', 'title_hi' => 'क्या कोई आयु सीमा है?',
-        'body_en' => 'No.', 'body_hi' => 'नहीं।', 'sort_order' => 9, 'is_active' => '1',
+it('adds a value card in both languages and it appears on the About page', function () {
+    $this->post(route('admin.content.store', ['about', 'values']), [
+        'title_en' => 'Our Seva', 'title_hi' => 'हमारी सेवा',
+        'body_en' => 'Service first.', 'body_hi' => 'सेवा पहले।', 'sort_order' => 9, 'is_active' => '1',
     ])->assertRedirect();
 
-    $this->get('/membership')->assertSee('Is there an age limit?');
-    $this->get('/hi/membership')->assertSee('क्या कोई आयु सीमा है?');
+    $this->get('/about')->assertSee('Our Seva');
+    $this->get('/hi/about')->assertSee('हमारी सेवा');
     expect(AuditLog::where('action', 'content.created')->count())->toBe(1);
 });
 
 it('refuses unknown pages/sections and deleting required single blocks', function () {
-    $this->post(route('admin.content.store', ['membership', 'hacked']), ['title_en' => 'x'])->assertNotFound();
+    $this->post(route('admin.content.store', ['membership', 'faqs']), ['title_en' => 'x'])->assertNotFound();
 
     $history = ContentBlock::where('page', 'about')->where('section', 'history')->sole();
     $this->delete(route('admin.content.destroy', $history))->assertForbidden();

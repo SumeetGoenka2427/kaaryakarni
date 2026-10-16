@@ -258,20 +258,6 @@ return [
         'load_more' => 'Load 20 More',
     ],
 
-    'membership' => [
-        'meta_description' => 'Become a lifetime member of the Khandelwal Samaj, Jaipur. One-time fee, no renewals, no expiry.',
-        'hero_title' => 'Become a Lifetime Member',
-        'hero_subtitle' => 'One-time membership with lifetime validity. No renewals, no recurring fees, no expiry date.',
-        'fee_heading' => 'Membership Fee',
-        'fee_label' => 'One-time Lifetime Membership Fee',
-        'fee_note' => 'This amount is set by the Samaj admin and may be revised for future applicants. Existing lifetime members are never charged again.',
-        'included_heading' => 'What’s Included',
-        'steps_heading' => 'Registration Steps',
-        'start' => 'Start Registration',
-        'faq_eyebrow' => 'Common Questions',
-        'faq_heading' => 'Membership FAQs',
-    ],
-
     'contact' => [
         'meta_description' => 'Contact the Khandelwal Samaj, Jaipur office at Samaj Bhawan.',
         'hero_title' => 'Contact the Samaj Office',

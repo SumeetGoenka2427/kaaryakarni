@@ -107,7 +107,7 @@ if (! function_exists('inr_short')) {
 
 if (! function_exists('safe_url')) {
     /**
-     * Admin-entered link: allow site paths ("/membership") and https:// URLs
+     * Admin-entered link: allow site paths ("/register") and https:// URLs
      * only, so javascript:, data: or protocol-relative links can never render.
      */
     function safe_url(?string $url): ?string

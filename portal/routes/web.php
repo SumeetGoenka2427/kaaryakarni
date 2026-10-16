@@ -21,7 +21,6 @@ Route::localized(function () {
     Route::get('/', [PageController::class, 'home'])->name('home');
     Route::get('about', [PageController::class, 'about'])->name('about');
     Route::get('committee', [PageController::class, 'committee'])->name('committee');
-    Route::get('membership', [PageController::class, 'membership'])->name('membership');
     Route::get('contact', [ContactController::class, 'show'])->name('contact');
     Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:5,10')->name('contact.store');
 

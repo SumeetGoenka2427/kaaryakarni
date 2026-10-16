@@ -14,7 +14,6 @@
                 <h2 class="footer-heading">{{ __('web.footer.explore') }}</h2>
                 <ul class="footer-links">
                     {!! $link('about', 'web.nav.about') !!}
-                    {!! $link('membership', 'web.nav.membership') !!}
                     {!! $link('business.index', 'web.nav.directory') !!}
                     {!! $link('gallery.index', 'web.nav.gallery') !!}
                 </ul>

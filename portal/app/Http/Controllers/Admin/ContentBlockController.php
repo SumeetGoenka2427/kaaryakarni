@@ -104,7 +104,7 @@ class ContentBlockController extends Controller
             $rules['image'] = ImageService::rules();
         }
 
-        $data = $request->validate($rules, ['link_url.regex' => 'Use a site path like /membership or a full https:// link.']);
+        $data = $request->validate($rules, ['link_url.regex' => 'Use a site path like /register or a full https:// link.']);
 
         $block->fill(collect($data)->except('image')->all());
         $block->is_active = $request->boolean('is_active');

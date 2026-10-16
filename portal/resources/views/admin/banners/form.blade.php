@@ -44,7 +44,7 @@
             <x-admin.translatable-field name="subtitle" label="Subtitle / description" type="textarea" :rows="2" :model="$slide" />
             <div class="form-row">
                 <x-admin.translatable-field name="cta_label" label="Button text" :model="$slide" />
-                <x-field name="cta_url" label="Button / slide link" :value="$slide->cta_url" placeholder="/membership" maxlength="500" hint="Site path like /membership or a full https:// link." />
+                <x-field name="cta_url" label="Button / slide link" :value="$slide->cta_url" placeholder="/register" maxlength="500" hint="Site path like /register or a full https:// link." />
             </div>
             <div class="form-row-3">
                 <x-field name="sort_order" type="number" label="Display order" :value="$slide->sort_order" min="0" max="999" />

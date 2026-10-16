@@ -128,7 +128,7 @@ class BannerController extends Controller
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'image' => ImageService::rules(! $slide->exists),
-        ], ['cta_url.regex' => 'Use a site path like /membership or a full https:// link.']);
+        ], ['cta_url.regex' => 'Use a site path like /register or a full https:// link.']);
 
         $slide->fill(collect($data)->except('image')->all());
         $slide->sort_order = (int) ($data['sort_order'] ?? 0);

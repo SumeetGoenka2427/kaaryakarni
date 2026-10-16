@@ -14,7 +14,6 @@ return [
     'public' => [
         ['route' => 'home', 'label' => 'web.nav.home', 'active' => ['home']],
         ['route' => 'about', 'label' => 'web.nav.about', 'active' => ['about', 'committee']],
-        ['route' => 'membership', 'label' => 'web.nav.membership', 'active' => ['membership']],
         ['route' => 'business.index', 'label' => 'web.nav.directory', 'active' => ['business.*']],
         ['route' => 'gallery.index', 'label' => 'web.nav.gallery', 'active' => ['gallery.*']],
         ['route' => 'donations.index', 'label' => 'web.nav.donations', 'active' => ['donations.*']],

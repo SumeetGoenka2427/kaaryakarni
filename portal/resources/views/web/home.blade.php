@@ -38,7 +38,7 @@
                                 </span>
                             </{{ $tag }}>
                         @empty
-                            <a href="{{ localized_route('membership') }}" class="carousel-slide is-active">
+                            <a href="{{ localized_route('register') }}" class="carousel-slide is-active">
                                 <span class="carousel-slide-scrim" aria-hidden="true"></span>
                                 <span class="carousel-slide-content">
                                     <span class="carousel-slide-title">{{ __('web.banner.membership_title') }}</span>

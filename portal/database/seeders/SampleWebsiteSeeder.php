@@ -23,7 +23,7 @@ class SampleWebsiteSeeder extends Seeder
 
         if (! BannerSlide::exists()) {
             foreach ([
-                [1, 'Become a Lifetime Member of Khandelwal Samaj', 'खंडेलवाल समाज के आजीवन सदस्य बनें', 'One-time registration. No renewals, no recurring fees — membership stays valid for life.', 'एक बार का पंजीकरण। कोई नवीनीकरण नहीं, कोई आवर्ती शुल्क नहीं — सदस्यता जीवनभर मान्य।', 'Explore Membership', 'सदस्यता देखें', '/membership'],
+                [1, 'Become a Lifetime Member of Khandelwal Samaj', 'खंडेलवाल समाज के आजीवन सदस्य बनें', 'One-time registration. No renewals, no recurring fees — membership stays valid for life.', 'एक बार का पंजीकरण। कोई नवीनीकरण नहीं, कोई आवर्ती शुल्क नहीं — सदस्यता जीवनभर मान्य।', 'Register Now', 'अभी पंजीकरण करें', '/register'],
                 [3, 'Diwali Utsav — Celebrate Together', 'दीवाली उत्सव — साथ मिलकर मनाएं', 'Community Diwali gathering with cultural programs at Samaj Bhawan.', 'समाज भवन में सांस्कृतिक कार्यक्रमों के साथ सामुदायिक दीवाली मिलन।', 'Contact the Office', 'कार्यालय से संपर्क करें', '/contact'],
                 [6, 'Discover Trusted Businesses Within the Samaj', 'समाज के विश्वसनीय व्यवसाय खोजें', 'Browse admin-approved businesses and professionals from the Khandelwal community in Jaipur.', 'जयपुर के खंडेलवाल समुदाय के स्वीकृत व्यवसाय और पेशेवर देखें।', 'About the Samaj', 'समाज के बारे में', '/about'],
             ] as $i => [$img, $ten, $thi, $sen, $shi, $cen, $chi, $url]) {

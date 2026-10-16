@@ -23,7 +23,7 @@
                 <x-admin.translatable-field name="body" :label="$spec['section'] === 'faqs' ? 'Answer' : 'Text'" type="textarea" :rows="6" :model="$block" :required="! in_array('title', $f, true)" />
             @endif
             @if (in_array('link_url', $f, true))
-                <x-field name="link_url" :label="$spec['section'] === 'about' ? 'Button link' : 'Link'" :value="$block->link_url" placeholder="/membership" hint="A site path like /membership or a full https:// link." maxlength="500" />
+                <x-field name="link_url" :label="$spec['section'] === 'about' ? 'Button link' : 'Link'" :value="$block->link_url" placeholder="/register" hint="A site path like /register or a full https:// link." maxlength="500" />
             @endif
             @if (in_array('image', $f, true))
                 <x-admin.image-field :current="$block->image" />

@@ -40,28 +40,4 @@ return [
             ],
         ],
     ],
-    'membership' => [
-        'label' => 'Membership',
-        'sections' => [
-            'benefits' => [
-                'label' => 'Highlight cards', 'single' => false,
-                'fields' => ['label', 'title', 'body'],
-                'help' => 'Label is the small coloured tag above the title.',
-            ],
-            'included' => [
-                'label' => '“What’s Included” list', 'single' => true,
-                'fields' => ['body'],
-                'help' => 'One item per line.',
-            ],
-            'steps' => [
-                'label' => 'Registration steps', 'single' => false,
-                'fields' => ['title', 'body'],
-            ],
-            'faqs' => [
-                'label' => 'Membership FAQs', 'single' => false,
-                'fields' => ['title', 'body'],
-                'help' => 'Title = question, Text = answer.',
-            ],
-        ],
-    ],
 ];
