@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ContentBlockController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DonationAdminController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberFamilyController;
 use App\Http\Controllers\Admin\MatrimonialAdminController;
@@ -179,6 +180,20 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
         Route::resource('banners', BannerController::class)->except('show');
         Route::patch('banners/{banner}/toggle', [BannerController::class, 'toggle'])->name('banners.toggle');
         Route::put('banner-panels/{position}', [BannerController::class, 'updatePanel'])->name('banner-panels.update');
+
+        // Gallery albums + photos
+        Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
+        Route::get('gallery/create', [GalleryController::class, 'create'])->name('gallery.create');
+        Route::post('gallery', [GalleryController::class, 'store'])->name('gallery.store');
+        Route::get('gallery/{album:id}/edit', [GalleryController::class, 'edit'])->name('gallery.edit');
+        Route::put('gallery/{album:id}', [GalleryController::class, 'update'])->name('gallery.update');
+        Route::patch('gallery/{album:id}/toggle', [GalleryController::class, 'toggle'])->name('gallery.toggle');
+        Route::delete('gallery/{album:id}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
+        Route::post('gallery/{album:id}/photos', [GalleryController::class, 'upload'])->name('gallery.upload');
+        Route::put('gallery-photos/{image}', [GalleryController::class, 'updateImage'])->name('gallery.images.update');
+        Route::patch('gallery-photos/{image}/move', [GalleryController::class, 'moveImage'])->name('gallery.images.move');
+        Route::patch('gallery-photos/{image}/cover', [GalleryController::class, 'coverImage'])->name('gallery.images.cover');
+        Route::delete('gallery-photos/{image}', [GalleryController::class, 'destroyImage'])->name('gallery.images.destroy');
 
         Route::resource('committee', CommitteeMemberController::class)->except('show');
         Route::resource('announcements', AnnouncementController::class)->except('show');

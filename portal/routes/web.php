@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\Auth\RegistrationController;
 use App\Http\Controllers\Web\BusinessDirectoryController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\DonationController;
+use App\Http\Controllers\Web\GalleryController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\PaymentController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,10 @@ Route::localized(function () {
     Route::get('business-directory/{business}', [BusinessDirectoryController::class, 'show'])->name('business.show');
 
     // Donations (members and guests)
+    // Gallery
+    Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
+    Route::get('gallery/{album}', [GalleryController::class, 'show'])->name('gallery.show');
+
     Route::get('donations', [DonationController::class, 'index'])->name('donations.index');
     Route::post('donations', [DonationController::class, 'store'])->middleware('throttle:10,1')->name('donations.store');
     Route::get('donations/{campaign}', [DonationController::class, 'show'])->name('donations.show');

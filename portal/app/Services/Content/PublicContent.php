@@ -13,6 +13,7 @@ use App\Models\CommitteeMember;
 use App\Models\ContentBlock;
 use App\Models\Donation;
 use App\Models\DonationCampaign;
+use App\Models\GalleryAlbum;
 use App\Models\Member;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -81,6 +82,12 @@ class PublicContent
     public function announcements(int $limit = 3): Collection
     {
         return $this->remember("announcements.{$limit}", fn () => Announcement::visible()->limit($limit)->get());
+    }
+
+    /** Homepage gallery preview: latest published albums with their cover photo. */
+    public function galleryPreview(int $limit = 4): Collection
+    {
+        return $this->remember("gallery.preview.{$limit}", fn () => GalleryAlbum::published()->with('cover')->limit($limit)->get());
     }
 
     public function committee(string $tier): Collection

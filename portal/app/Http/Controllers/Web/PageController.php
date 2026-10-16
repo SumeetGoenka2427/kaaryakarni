@@ -23,6 +23,7 @@ class PageController extends Controller
             'campaigns' => $this->content->campaigns()->take(3),
             'businesses' => $this->content->featuredBusinesses(4),
             'links' => $this->content->blocks('home', 'links'),
+            'albums' => $this->content->galleryPreview(4),
         ]);
     }
 

@@ -40,7 +40,7 @@ screens + tests for that module. Each part ends in a working, testable state.
 | [P08](parts/P08-homepage-banners-cms.md) ✅ (via W01) | Homepage 3-column banner, carousel, page content CMS | P07 |
 | [P09](parts/P09-business-directory.md) ✅ | Business directory + approval workflow | P05 |
 | [P10](parts/P10-matrimonial.md) ✅ | Private matrimonial module + approval workflow | P05 |
-| [P11](parts/P11-gallery-committee-announcements.md) | Gallery, committee members, announcements, contact | P03 |
+| [P11](parts/P11-gallery-committee-announcements.md) ✅ | Gallery, committee members, announcements, contact | P03 |
 | [P12](parts/P12-dashboard-reports-notifications.md) | Admin dashboard, reports, exports, notifications, audit logs | P06–P11 |
 | [P13](parts/P13-hardening-performance-launch.md) | Security pass, performance pass, full testing, deployment | all |
 

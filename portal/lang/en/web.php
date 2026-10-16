@@ -600,6 +600,23 @@ return [
         'private_note' => 'Private — visible only to eligible logged-in members. Please do not share these details outside the Samaj.',
     ],
 
+    'gallery' => [
+        'title' => 'Gallery',
+        'meta_description' => 'Photos from Khandelwal Samaj, Jaipur events, celebrations and community initiatives.',
+        'subtitle' => 'Moments from Samaj events, celebrations and community initiatives across Jaipur.',
+        'photos' => '{1} :count photo|[2,*] :count photos',
+        'view_all' => 'View all :count photos',
+        'photo_n' => 'Photo :n',
+        'empty' => 'No gallery albums are currently available',
+        'empty_text' => 'Please check back later for photos from Samaj events and activities.',
+        'share' => 'Have photos to share? Contact the Samaj office',
+        'back' => 'All Albums',
+        'preview' => 'Gallery photo preview',
+        'close' => 'Close preview',
+        'prev' => 'Previous',
+        'next' => 'Next',
+    ],
+
     'banner' => [
         'region' => 'Featured announcements and Samaj information',
         'membership_label' => 'Lifetime Membership',

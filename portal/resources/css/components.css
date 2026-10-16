@@ -339,23 +339,38 @@ table.data-table tbody tr:hover { background: var(--color-bg-alt); }
 .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
 @media (max-width: 960px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 640px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
-.gallery-tile { position: relative; border-radius: var(--radius-md); overflow: hidden; cursor: pointer; border: none; padding: 0; aspect-ratio: 1/1; }
-.gallery-tile .placeholder-media { transition: transform 0.3s ease; }
-.gallery-tile:hover .placeholder-media { transform: scale(1.05); }
+.gallery-tile { position: relative; display: block; border-radius: var(--radius-md); overflow: hidden; cursor: pointer; border: none; padding: 0; aspect-ratio: 1/1; background: var(--color-bg-navy-tint); }
+.gallery-tile .placeholder-media, .gallery-tile .gallery-img { transition: transform 0.3s ease; }
+.gallery-tile .gallery-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-tile:hover .placeholder-media, .gallery-tile:hover .gallery-img { transform: scale(1.05); }
+.gallery-tile:focus-visible { outline: 3px solid var(--color-gold-500); outline-offset: 2px; }
 .gallery-tile figcaption {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 10px; font-size: 0.78rem; font-weight: 700;
   background: linear-gradient(180deg, transparent, rgba(10,31,61,0.85)); color: var(--color-white); text-align: left;
 }
+@media (prefers-reduced-motion: reduce) { .gallery-tile .gallery-img, .gallery-tile .placeholder-media { transition: none; } }
+.gallery-album { margin-bottom: var(--space-7); }
+.gallery-album-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.gallery-album-head h2 { margin: 0 0 4px; }
+.gallery-album-meta, .gallery-album-desc { margin: 0; font-size: 0.9rem; }
+.gallery-album-desc { margin-top: 4px; max-width: 70ch; }
+.gallery-hero-meta { margin-top: 8px; opacity: 0.85; font-size: 0.9rem; }
+.gallery-share-note { margin-top: var(--space-6); }
+a.gallery-tile.album-tile figcaption { font-size: 0.9rem; padding: 12px; }
 
 .lightbox-overlay {
-  position: fixed; inset: 0; background: rgba(10,15,25,0.9); display: none; align-items: center; justify-content: center;
+  position: fixed; inset: 0; background: rgba(10,15,25,0.96); display: none; align-items: center; justify-content: center;
   z-index: 300; padding: var(--space-5);
 }
 .lightbox-overlay.is-open { display: flex; }
-.lightbox-box { max-width: 720px; width: 100%; color: var(--color-white); text-align: center; }
+.lightbox-box { max-width: 960px; width: 100%; color: var(--color-white); text-align: center; }
 .lightbox-box .placeholder-media { min-height: 320px; border-radius: var(--radius-md); }
-.lightbox-close { position: absolute; top: var(--space-5); right: var(--space-5); background: rgba(255,255,255,0.15); color: var(--color-white); border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
-.lightbox-nav { display: flex; justify-content: space-between; margin-top: var(--space-4); }
+.lightbox-stage img { display: block; max-width: 100%; max-height: 72vh; margin: 0 auto; border-radius: var(--radius-md); object-fit: contain; }
+.lightbox-title { color: var(--color-white); margin: 14px 0 2px; font-size: 1.05rem; }
+.lightbox-desc { color: rgba(255,255,255,0.75); margin: 0; font-size: 0.88rem; }
+.lightbox-close { position: absolute; top: var(--space-5); right: var(--space-5); z-index: 1; background: rgba(255,255,255,0.15); color: var(--color-white); border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
+.lightbox-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: var(--space-4); }
+.lightbox-count { font-size: 0.85rem; color: rgba(255,255,255,0.75); }
 
 /* Map embed (business detail location) */
 .map-embed {
@@ -404,7 +419,7 @@ table.data-table tbody tr:hover { background: var(--color-bg-alt); }
 
 /* Lightbox image (real photos replace the design's placeholder box) */
 .lightbox-box img { width: 100%; max-height: 72vh; object-fit: contain; border-radius: var(--radius-md); background: var(--color-navy-900); }
-.lightbox-nav button { background: rgba(255,255,255,0.15); color: var(--color-white); border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
+.lightbox-nav button { flex-shrink: 0; background: rgba(255,255,255,0.15); color: var(--color-white); border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
 
 /* Server-rendered page sections need a real <img> for carousel slides (LCP + srcset) */
 .carousel-slide > img.carousel-slide-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }

@@ -3,7 +3,7 @@
     banner → Admin › Homepage Banners · about/links → Admin › Page Content ·
     campaigns → Admin › Donations (live totals) · events → Admin › Announcements ·
     stats → live database counts · headings → Admin › Site Texts.
-    businesses → approved listings (featured first). Gallery is added with P11.
+    businesses → approved listings (featured first) · albums → Admin › Gallery.
 --}}
 <x-layouts.web>
     @if ($slides->isNotEmpty())
@@ -165,6 +165,24 @@
                         </article>
                     @endforeach
                 </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ===== Gallery preview: cover photo of the latest albums ===== --}}
+    @if ($albums->isNotEmpty())
+        <section class="section">
+            <div class="container">
+                <x-section-head :eyebrow="__('web.home.gallery_eyebrow')" :title="__('web.home.gallery_heading')" />
+                <div class="gallery-grid">
+                    @foreach ($albums as $album)
+                        <a href="{{ localized_route('gallery.show', ['album' => $album->slug]) }}" class="gallery-tile album-tile">
+                            <x-img :image="$album->cover?->image" alt="" class="gallery-img" sizes="(max-width: 640px) 50vw, (max-width: 960px) 33vw, 25vw" />
+                            <figcaption>{{ $album->t('title') }}</figcaption>
+                        </a>
+                    @endforeach
+                </div>
+                <div class="section-actions"><a href="{{ localized_route('gallery.index') }}" class="btn btn-outline">{{ __('web.home.gallery_all') }}</a></div>
             </div>
         </section>
     @endif
