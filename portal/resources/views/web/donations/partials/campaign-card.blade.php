@@ -4,7 +4,7 @@
         <x-img :image="$campaign->image" alt="" sizes="(max-width: 600px) 100vw, 33vw" :fallback="asset('images/sample/'.(($campaign->id % 6) + 1).'.jpg')" class="cover-img" />
     </a>
     <div class="card-body">
-        <x-pill :variant="$campaign->is_permanent ? 'neutral' : 'warning'" class="pill-start">{{ __($campaign->is_permanent ? 'web.donations.permanent_label' : 'web.donations.active_label') }}</x-pill>
+        <x-pill :variant="$campaign->is_permanent ? 'neutral' : 'warning'">{{ __($campaign->is_permanent ? 'web.donations.permanent_label' : 'web.donations.active_label') }}</x-pill>
         <h3><a href="{{ localized_route('donations.show', ['campaign' => $campaign->slug]) }}" class="card-title-link">{{ $campaign->t('title') }}</a></h3>
         @if ($campaign->t('description'))<p>{{ \Illuminate\Support\Str::limit($campaign->t('description'), 160) }}</p>@endif
         @include('web.donations.partials.progress')

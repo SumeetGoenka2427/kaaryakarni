@@ -87,7 +87,7 @@
     <section class="section section-alt">
         <div class="container">
             <x-section-head :eyebrow="__('web.home.stats_eyebrow')" :title="__('web.home.stats_heading')" />
-            <div @class(['grid', 'grid-3' => count($stats) === 3, 'grid-2' => count($stats) === 2, 'grid-1-center' => count($stats) === 1])>
+            <div @class(['grid', 'grid-4' => count($stats) >= 4, 'grid-3' => count($stats) === 3, 'grid-2' => count($stats) === 2, 'grid-1-center' => count($stats) === 1])>
                 @foreach ($stats as $stat)
                     <div class="card stat-card">
                         <div class="stat-value">{{ $stat['value'] }}</div>
@@ -153,13 +153,11 @@
                     @foreach ($announcements as $item)
                         <article class="card">
                             <div class="card-body">
-                                <div class="flex-between flex-wrap gap-3">
-                                    <x-pill :variant="$item->type === 'event' ? 'warning' : 'neutral'">{{ __('web.home.'.($item->type === 'event' ? 'event_upcoming' : 'event_notice')) }}</x-pill>
-                                    @if ($item->event_date)
-                                        <time class="muted event-date" datetime="{{ $item->event_date->toDateString() }}">{{ $item->event_date->translatedFormat('d M Y') }}</time>
-                                    @endif
-                                </div>
+                                <x-pill :variant="$item->type === 'event' ? 'warning' : 'neutral'">{{ __('web.home.'.($item->type === 'event' ? 'event_upcoming' : 'event_notice')) }}</x-pill>
                                 <h3>{{ $item->t('title') }}</h3>
+                                @if ($item->event_date)
+                                    <time class="muted event-date" datetime="{{ $item->event_date->toDateString() }}">{{ $item->event_date->translatedFormat('d M Y') }}</time>
+                                @endif
                                 @if ($item->t('body'))<p>{{ $item->t('body') }}</p>@endif
                             </div>
                         </article>
@@ -189,7 +187,7 @@
 
     {{-- ===== Important links ===== --}}
     @if ($links->isNotEmpty())
-        <section class="section">
+        <section class="section section-alt">
             <div class="container">
                 <x-section-head :eyebrow="__('web.home.links_eyebrow')" :title="__('web.home.links_heading')" />
                 <div class="grid grid-4">

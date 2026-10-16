@@ -3,7 +3,7 @@
 namespace App\Services\Content;
 
 use App\Enums\DonationStatus;
-use App\Enums\MemberStatus;
+use App\Enums\MembershipStatus;
 use App\Models\Announcement;
 use App\Models\Area;
 use App\Models\BannerPanel;
@@ -14,7 +14,7 @@ use App\Models\ContentBlock;
 use App\Models\Donation;
 use App\Models\DonationCampaign;
 use App\Models\GalleryAlbum;
-use App\Models\Member;
+use App\Models\Membership;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -105,7 +105,7 @@ class PublicContent
     public function stats(): array
     {
         $raw = Cache::remember('public_content.stats', 600, fn () => [
-            'members' => Member::where('status', MemberStatus::Verified)->count(),
+            'members' => Membership::where('status', MembershipStatus::Active)->count(),
             'areas' => Area::where('is_active', true)->count(),
             'donations' => (float) DonationCampaign::withTrashed()->sum('raised_amount'),
             'businesses' => BusinessProfile::approved()->count(),

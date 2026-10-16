@@ -85,7 +85,7 @@ return [
         'links_heading' => 'महत्वपूर्ण लिंक',
         'event_upcoming' => 'आगामी',
         'event_notice' => 'सूचना',
-        'stat_members' => 'सत्यापित सदस्य',
+        'stat_members' => 'आजीवन सदस्य',
         'stat_areas' => 'जयपुर के क्षेत्र',
         'stat_years' => 'सेवा के वर्ष',
         'stat_donations' => 'एकत्रित दान',

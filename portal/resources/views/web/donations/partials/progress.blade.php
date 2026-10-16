@@ -13,7 +13,7 @@
         </div>
     @endif
     <div class="meta-row">
-        @if ($showDonors ?? true)<span>{{ __('web.donations.donors', ['count' => number_format($campaign->donor_count)]) }}</span>@endif
+        @if ($showDonors ?? true)<span>{{ trans_choice('web.donations.donors', $campaign->donor_count, ['count' => number_format($campaign->donor_count)]) }}</span>@endif
         @if ($pct !== null && ($showPercent ?? true))<span>{{ __('web.donations.percent', ['percent' => $pct]) }}</span>@endif
     </div>
 </div>
