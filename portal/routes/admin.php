@@ -23,6 +23,9 @@ use App\Http\Controllers\Admin\PaymentAdminController;
 use App\Http\Controllers\Admin\ReceiptAdminController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SiteTextController;
+use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\NotificationAdminController;
+use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -143,6 +146,21 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
         Route::delete('campaigns/{campaign:id}', [CampaignController::class, 'destroy'])->name('campaigns.destroy');
         Route::patch('donations/{donation}/refund', [DonationAdminController::class, 'refund'])->name('donations.refund');
     });
+
+    // Reports & exports
+    Route::get('reports', [ReportController::class, 'index'])->middleware('permission:reports.view,admin')->name('reports.index');
+    Route::get('reports/{report}/export/{format}', [ReportController::class, 'export'])
+        ->middleware(['permission:reports.export,admin', 'throttle:20,1'])->whereIn('format', ['csv', 'xlsx', 'pdf'])->name('reports.export');
+
+    // Announcements + member notifications
+    Route::middleware('permission:notifications.send,admin')->group(function () {
+        Route::get('notifications', [NotificationAdminController::class, 'index'])->name('notifications.index');
+        Route::post('notifications', [NotificationAdminController::class, 'store'])->middleware('throttle:10,1')->name('notifications.store');
+        Route::delete('notifications/{broadcast}', [NotificationAdminController::class, 'destroy'])->name('notifications.destroy');
+    });
+
+    // Audit log (read-only)
+    Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('permission:audit.view,admin')->name('audit-logs.index');
 
     // Payments & receipts
     Route::middleware('permission:payments.view,admin')->group(function () {

@@ -689,3 +689,19 @@ a.gallery-tile.album-tile figcaption { font-size: 0.9rem; padding: 12px; }
 .mat-report { margin-top: var(--space-4); }
 .mat-report summary { cursor: pointer; font-weight: 600; color: var(--color-danger); }
 .family-mat-link { font-size: 0.84rem; }
+
+/* ---- Member notifications ---- */
+.nav-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--color-gold-500); color: var(--color-navy-900); font-size: 0.7rem; font-weight: 700; margin-left: 4px; }
+.nav-bell { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; color: var(--color-navy-800); border: 1px solid var(--color-border); }
+.nav-bell:hover, .nav-bell:focus-visible { background: var(--color-bg-navy-tint); }
+.nav-bell-count { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: var(--color-gold-500); color: var(--color-navy-900); font-size: 0.68rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.notif-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.notif-item.is-unread { border-left: 4px solid var(--color-gold-500); }
+.notif-body { flex-direction: row; align-items: flex-start; gap: 16px; }
+.notif-type { flex-shrink: 0; }
+.notif-text { flex: 1; min-width: 0; }
+.notif-title { margin: 0 0 2px; font-size: 0.98rem; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.notif-message { margin: 0; overflow-wrap: anywhere; }
+.notif-date { margin: 4px 0 0; font-size: 0.75rem; }
+.notif-action { flex-shrink: 0; align-self: center; }
+@media (max-width: 560px) { .notif-body { flex-direction: column; gap: 8px; } .notif-action { align-self: flex-start; } }

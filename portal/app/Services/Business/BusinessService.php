@@ -7,7 +7,7 @@ use App\Models\BusinessProfile;
 use App\Models\Member;
 use App\Services\Audit\AuditLogger;
 use App\Services\Media\ImageService;
-use App\Services\Sms\SmsService;
+use App\Services\Notifications\Notifier;
 use DomainException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
@@ -23,7 +23,7 @@ class BusinessService
 {
     public function __construct(
         private readonly ImageService $images,
-        private readonly SmsService $sms,
+        private readonly Notifier $notifier,
         private readonly AuditLogger $audit,
     ) {}
 
@@ -164,7 +164,7 @@ class BusinessService
     {
         $member = $business->member;
         if ($member) {
-            $this->sms->queue($member->mobile, $template, ['name' => $member->firstName(), 'business' => Str::limit($business->name, 40)], $member->locale);
+            $this->notifier->member($member, $template, ['name' => $member->firstName(), 'business' => Str::limit($business->name, 40)]);
         }
     }
 

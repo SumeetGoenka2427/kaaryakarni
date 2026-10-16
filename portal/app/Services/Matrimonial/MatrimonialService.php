@@ -13,7 +13,7 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Services\Audit\AuditLogger;
 use App\Services\Media\ImageService;
-use App\Services\Sms\SmsService;
+use App\Services\Notifications\Notifier;
 use DomainException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +34,7 @@ class MatrimonialService
 {
     public function __construct(
         private readonly ImageService $images,
-        private readonly SmsService $sms,
+        private readonly Notifier $notifier,
         private readonly AuditLogger $audit,
     ) {}
 
@@ -249,7 +249,7 @@ class MatrimonialService
     private function notify(MatrimonialProfile $profile, string $template): void
     {
         if ($member = $profile->loadMissing('member')->member) {
-            $this->sms->queue($member->mobile, $template, ['name' => $member->firstName(), 'profile' => Str::limit($profile->name, 40)], $member->locale);
+            $this->notifier->member($member, $template, ['name' => $member->firstName(), 'profile' => Str::limit($profile->name, 40)]);
         }
     }
 }

@@ -8,7 +8,7 @@ use App\Models\MemberVerification;
 use App\Services\Audit\AuditLogger;
 use App\Services\Content\PublicContent;
 use App\Services\Membership\MembershipService;
-use App\Services\Sms\SmsService;
+use App\Services\Notifications\Notifier;
 use DomainException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +22,7 @@ class MemberService
 {
     public function __construct(
         private readonly AuditLogger $audit,
-        private readonly SmsService $sms,
+        private readonly Notifier $notifier,
     ) {}
 
     public function recordSubmitted(Member $member): void
@@ -38,7 +38,7 @@ class MemberService
             $member->verified_at = now();
             $member->rejection_reason = null;
         });
-        $this->sms->queue($member->mobile, 'member_verified', ['name' => $member->firstName()], $member->locale);
+        $this->notifier->member($member, 'member_verified', ['name' => $member->firstName()]);
 
         // Fee already confirmed? Verification completes the lifetime membership.
         app(MembershipService::class)->activateIfReady($member);
@@ -51,7 +51,7 @@ class MemberService
         $this->transition($member, MemberStatus::Rejected, 'rejected', $reason, function () use ($member, $reason) {
             $member->rejection_reason = $reason;
         });
-        $this->sms->queue($member->mobile, 'member_rejected', ['name' => $member->firstName()], $member->locale);
+        $this->notifier->member($member, 'member_rejected', ['name' => $member->firstName()]);
     }
 
     public function suspend(Member $member, string $reason): void
@@ -63,7 +63,7 @@ class MemberService
         $this->transition($member, MemberStatus::Suspended, 'suspended', $reason, function () use ($member) {
             $member->suspended_at = now();
         });
-        $this->sms->queue($member->mobile, 'member_suspended', ['name' => $member->firstName()], $member->locale);
+        $this->notifier->member($member, 'member_suspended', ['name' => $member->firstName()]);
     }
 
     public function reinstate(Member $member): void
@@ -75,7 +75,7 @@ class MemberService
         $this->transition($member, $status, 'reinstated', null, function () use ($member) {
             $member->suspended_at = null;
         });
-        $this->sms->queue($member->mobile, 'member_reinstated', ['name' => $member->firstName()], $member->locale);
+        $this->notifier->member($member, 'member_reinstated', ['name' => $member->firstName()]);
     }
 
     private function guard(Member $member, array $allowedFrom, string $action): void

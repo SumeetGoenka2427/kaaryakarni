@@ -12,7 +12,7 @@ use App\Models\Payment;
 use App\Services\Audit\AuditLogger;
 use App\Services\Media\ImageService;
 use App\Services\Receipts\ReceiptService;
-use App\Services\Sms\SmsService;
+use App\Services\Notifications\Notifier;
 use DomainException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -38,7 +38,7 @@ class PaymentService
         private readonly PaymentGateway $gateway,
         private readonly ReceiptService $receipts,
         private readonly AuditLogger $audit,
-        private readonly SmsService $sms,
+        private readonly Notifier $notifier,
     ) {}
 
     public function onlineAvailable(): bool
@@ -222,12 +222,12 @@ class PaymentService
             return;
         }
 
-        $this->sms->queue($mobile, $template, [
+        $this->notifier->mobile($mobile, $template, [
             'name' => explode(' ', (string) $payment->displayName())[0],
             'amount' => number_format((float) $payment->amount, 0),
             'purpose' => $payment->payable?->paymentDescription() ?? $payment->purpose->label(),
             'receipt_no' => $payment->receipt?->receipt_no ?? '',
-        ], $payment->member?->locale ?? app()->getLocale());
+        ], app()->getLocale(), $payment->member);
     }
 
     private function fail(Payment $payment, string $reason): void

@@ -88,6 +88,11 @@ class NotificationTemplateSeeder extends Seeder
             'sms_en' => 'Dear {name}, the matrimonial profile "{profile}" was not approved. Please log in to see the reason.',
             'sms_hi' => 'प्रिय {name}, वैवाहिक प्रोफ़ाइल "{profile}" स्वीकृत नहीं हुई। कारण जानने के लिए लॉगिन करें।',
         ],
+        'announcement' => [
+            'description' => 'Samaj announcement (Admin → Notifications)',
+            'sms_en' => 'Khandelwal Samaj Jaipur: {title}. {message}',
+            'sms_hi' => 'खंडेलवाल समाज जयपुर: {title}। {message}',
+        ],
     ];
 
     public function run(): void

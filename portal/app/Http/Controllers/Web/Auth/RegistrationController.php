@@ -8,7 +8,7 @@ use App\Http\Requests\Web\RegisterMemberRequest;
 use App\Models\Area;
 use App\Models\Member;
 use App\Services\Members\MemberService;
-use App\Services\Sms\SmsService;
+use App\Services\Notifications\Notifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +36,7 @@ class RegistrationController extends Controller
         ]);
     }
 
-    public function store(RegisterMemberRequest $request, SmsService $sms, MemberService $members): RedirectResponse
+    public function store(RegisterMemberRequest $request, Notifier $notifier, MemberService $members): RedirectResponse
     {
         if (! $mobile = $this->verifiedMobile($request)) {
             return redirect(localized_route('register'))->with('warning', __('web.auth.verify_first'));
@@ -68,7 +68,7 @@ class RegistrationController extends Controller
         Auth::guard('member')->login($member);
         $request->session()->regenerate();
 
-        $sms->queue($member->mobile, 'registration_received', ['name' => $member->firstName()], $member->locale);
+        $notifier->member($member, 'registration_received', ['name' => $member->firstName()]);
 
         return redirect(localized_route('member.dashboard'))->with('success', __('web.auth.registered'));
     }

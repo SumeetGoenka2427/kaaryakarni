@@ -9,7 +9,7 @@ use App\Models\Membership;
 use App\Models\Payment;
 use App\Services\Audit\AuditLogger;
 use App\Services\Content\PublicContent;
-use App\Services\Sms\SmsService;
+use App\Services\Notifications\Notifier;
 use App\Services\Support\NumberSequence;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +24,7 @@ class MembershipService
 {
     public function __construct(
         private readonly NumberSequence $sequence,
-        private readonly SmsService $sms,
+        private readonly Notifier $notifier,
         private readonly AuditLogger $audit,
     ) {}
 
@@ -79,7 +79,7 @@ class MembershipService
         });
 
         $this->audit->record('membership.activated', $member, "{$member->name} is now a Lifetime Member ({$member->membership_no})");
-        $this->sms->queue($member->mobile, 'membership_active', ['name' => $member->firstName(), 'membership_no' => $member->membership_no], $member->locale);
+        $this->notifier->member($member, 'membership_active', ['name' => $member->firstName(), 'membership_no' => $member->membership_no]);
         Cache::forget('public_content.stats');
         PublicContent::flush();
 

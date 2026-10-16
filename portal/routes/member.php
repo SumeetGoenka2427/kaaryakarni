@@ -4,6 +4,7 @@ use App\Http\Controllers\Member\BusinessController;
 use App\Http\Controllers\Member\DashboardController;
 use App\Http\Controllers\Member\FamilyController;
 use App\Http\Controllers\Member\MatrimonialController;
+use App\Http\Controllers\Member\NotificationController;
 use App\Http\Controllers\Member\MembershipController;
 use App\Http\Controllers\Member\PaymentHistoryController;
 use App\Http\Controllers\Member\ProfileController;
@@ -44,6 +45,11 @@ Route::localized(function () {
         Route::post('matrimonial/profiles/{profile}/report', [MatrimonialController::class, 'report'])->middleware('throttle:5,10')->name('matrimonial.report');
         Route::put('matrimonial/{profile}', [MatrimonialController::class, 'update'])->middleware('throttle:10,1')->name('matrimonial.update');
         Route::delete('matrimonial/{profile}', [MatrimonialController::class, 'destroy'])->name('matrimonial.destroy');
+
+        // Notifications inbox
+        Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
+        Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+        Route::get('notifications/{id}/open', [NotificationController::class, 'open'])->whereUuid('id')->name('notifications.open');
 
         // Lifetime membership (one-time fee) and payment history
         Route::get('membership', [MembershipController::class, 'show'])->name('membership');

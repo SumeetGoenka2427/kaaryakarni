@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * A Samaj member. Logs in with mobile + OTP on the `member` guard.
@@ -18,7 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class Member extends Authenticatable
 {
-    use HasUlids, SoftDeletes;
+    use HasUlids, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name', 'father_or_husband_name', 'mobile', 'email', 'dob', 'gender',
@@ -67,6 +68,11 @@ class Member extends Authenticatable
     public function family(): HasMany
     {
         return $this->hasMany(FamilyMember::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function membership(): HasOne
+    {
+        return $this->hasOne(Membership::class);
     }
 
     public function business(): HasOne
