@@ -35,7 +35,7 @@
                                     <x-pill :variant="$st === 'Live' ? 'success' : ($st === 'Scheduled' ? 'warning' : 'neutral')">{{ $st }}</x-pill>
                                 </td>
                                 <td data-label="Actions">
-                                    <div class="row-actions">
+                                    <x-admin.actions>
                                         <a href="{{ route('admin.banners.edit', $s) }}" class="btn btn-outline btn-sm">Edit &amp; Preview</a>
                                         <form method="POST" action="{{ route('admin.banners.toggle', $s) }}" @if ($s->is_active) data-confirm="Deactivate this slide? It will be hidden from the homepage." @endif>
                                             @csrf @method('PATCH')
@@ -45,7 +45,7 @@
                                             @csrf @method('DELETE')
                                             <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button>
                                         </form>
-                                    </div>
+                                    </x-admin.actions>
                                 </td>
                             </tr>
                         @endforeach

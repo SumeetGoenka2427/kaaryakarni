@@ -29,7 +29,7 @@
                             <td data-label="Dates">{{ $c->is_permanent ? 'Always open' : (($c->starts_at?->format('d M Y') ?? 'Now').' → '.($c->ends_at?->format('d M Y') ?? 'No end')) }}</td>
                             <td data-label="Status"><x-pill :variant="$c->isOpen() ? 'success' : 'neutral'">{{ $c->isOpen() ? 'Open' : ($c->is_active ? 'Scheduled / ended' : 'Inactive') }}</x-pill></td>
                             <td data-label="Actions">
-                                <div class="row-actions">
+                                <x-admin.actions>
                                     <a href="{{ route('donations.show', $c->slug) }}" class="btn btn-outline btn-sm" target="_blank" rel="noopener">View</a>
                                     @can('donations.manage')
                                         <a href="{{ route('admin.campaigns.edit', $c->id) }}" class="btn btn-outline btn-sm">Edit</a>
@@ -40,7 +40,7 @@
                                                 <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button></form>
                                         @endunless
                                     @endcan
-                                </div>
+                                </x-admin.actions>
                             </td>
                         </tr>
                     @endforeach

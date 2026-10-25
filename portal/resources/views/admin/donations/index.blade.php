@@ -39,7 +39,7 @@
                             <td data-label="Reference"><span class="ref-text">{{ $d->payment?->reference() ?? '—' }}</span></td>
                             <td data-label="Date">{{ $d->created_at->format('d M Y') }}</td>
                             <td data-label="Actions">
-                                <div class="row-actions">
+                                <x-admin.actions>
                                     @if ($d->payment)<a href="{{ route('admin.payments.show', $d->payment) }}" @class(['btn', 'btn-sm', 'btn-primary' => $d->status->value === 'submitted', 'btn-outline' => $d->status->value !== 'submitted'])>{{ $d->status->value === 'submitted' ? 'Verify' : 'Payment' }}</a>@endif
                                     @can('donations.manage')
                                         @if (in_array($d->status->value, ['successful', 'verified'], true))
@@ -47,7 +47,7 @@
                                                     data-form-action="{{ route('admin.donations.refund', $d) }}" data-form-label="{{ inr($d->amount) }} from {{ $d->donor_name }}">Refund</button>
                                         @endif
                                     @endcan
-                                </div>
+                                </x-admin.actions>
                             </td>
                         </tr>
                     @endforeach

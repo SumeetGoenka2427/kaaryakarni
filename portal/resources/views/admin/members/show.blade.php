@@ -67,11 +67,11 @@
                                     <td data-label="Mobile">{{ $p->mobile ?? '—' }}</td>
                                     <td data-label="Actions">
                                         @can('members.manage')
-                                            <div class="row-actions">
+                                            <x-admin.actions>
                                                 <a href="{{ route('admin.members.family.edit', [$member, $p->ulid]) }}" class="btn btn-outline btn-sm">Edit</a>
                                                 <form method="POST" action="{{ route('admin.members.family.destroy', [$member, $p->ulid]) }}" data-confirm="Remove {{ $p->name }}?">@csrf @method('DELETE')
                                                     <button type="submit" class="btn btn-danger-outline btn-sm">Remove</button></form>
-                                            </div>
+                                            </x-admin.actions>
                                         @endcan
                                     </td>
                                 </tr>

@@ -245,3 +245,25 @@ a.admin-stat-card:hover, a.admin-stat-card:focus-visible { border-color: var(--c
 .audit-details summary { cursor: pointer; color: var(--color-navy-800); font-weight: 600; }
 table.data-table.table-compact { min-width: 0; }
 .data-table.table-compact th, .data-table.table-compact td { padding: 9px 10px; font-size: 0.86rem; }
+
+/* ---- Row "Actions" menu (x-admin.actions) ---- */
+.action-menu { display: inline-block; }
+.action-menu-toggle { white-space: nowrap; }
+.action-menu-caret { font-size: 0.7em; margin-left: 2px; }
+.action-menu-toggle[aria-expanded="true"], .action-menu-toggle[aria-expanded="true"]:hover { background: var(--color-navy-900); border-color: var(--color-navy-900); color: var(--color-white); }
+.action-menu-list {
+  position: fixed; z-index: 400; min-width: 180px; max-width: 280px; padding: 6px 0;
+  background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg); display: grid;
+}
+.action-menu-list[hidden] { display: none; }
+.action-menu-list form { margin: 0; display: block; }
+.action-menu-list .btn {
+  display: flex; width: 100%; justify-content: flex-start; text-align: left; gap: 8px;
+  border: 0; border-radius: 0; background: none; box-shadow: none;
+  padding: 9px 16px; font-size: 0.9rem; font-weight: 500; color: var(--color-text); white-space: nowrap;
+}
+.action-menu-list .btn:hover, .action-menu-list .btn:focus-visible { background: var(--color-bg-navy-tint); color: var(--color-navy-900); outline: none; }
+.action-menu-list .btn-primary { color: var(--color-navy-900); font-weight: 700; }
+.action-menu-list .btn-danger-outline { color: var(--color-danger); border-top: 1px solid var(--color-border); margin-top: 4px; padding-top: 11px; }
+.action-menu-list .btn-danger-outline:hover, .action-menu-list .btn-danger-outline:focus-visible { background: #fdecec; color: var(--color-danger); }

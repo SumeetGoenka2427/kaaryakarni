@@ -32,13 +32,13 @@
                             <td data-label="Mode">{{ $r->payment->mode->label() }}</td>
                             <td data-label="Date">{{ ($r->payment->paid_at ?? $r->issued_at)->format('d M Y') }}</td>
                             <td data-label="Actions">
-                                <div class="row-actions">
+                                <x-admin.actions>
                                     <a href="{{ route('admin.receipts.download', $r) }}" class="btn btn-outline btn-sm">Download PDF</a>
                                     @can('payments.verify')
                                         <form method="POST" action="{{ route('admin.receipts.regenerate', $r) }}">@csrf @method('PATCH')
                                             <button type="submit" class="btn btn-outline btn-sm" title="Rebuild after logo / address changes">Regenerate</button></form>
                                     @endcan
-                                </div>
+                                </x-admin.actions>
                             </td>
                         </tr>
                     @endforeach

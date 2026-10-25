@@ -47,7 +47,7 @@
                             <td data-label="Members">{{ $area->members_count }}</td>
                             <td data-label="Status"><x-pill :variant="$area->is_active ? 'success' : 'neutral'">{{ $area->is_active ? 'Active' : 'Inactive' }}</x-pill></td>
                             <td data-label="Actions">
-                                <div class="row-actions">
+                                <x-admin.actions>
                                     <a href="{{ route('admin.areas.edit', $area) }}" class="btn btn-outline btn-sm">Edit</a>
                                     <form method="POST" action="{{ route('admin.areas.toggle', $area) }}" @if ($area->is_active) data-confirm="Deactivate “{{ $area->name_en }}”? It will no longer be offered in forms; existing members keep it." @endif>
                                         @csrf @method('PATCH')
@@ -59,7 +59,7 @@
                                             <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button>
                                         </form>
                                     @endif
-                                </div>
+                                </x-admin.actions>
                             </td>
                         </tr>
                     @endforeach

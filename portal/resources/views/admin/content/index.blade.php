@@ -41,7 +41,7 @@
                                     <td data-label="Order">{{ $block->sort_order }}</td>
                                     <td data-label="Status"><x-pill :variant="$block->is_active ? 'success' : 'neutral'">{{ $block->is_active ? 'Visible' : 'Hidden' }}</x-pill></td>
                                     <td data-label="Actions">
-                                        <div class="row-actions">
+                                        <x-admin.actions>
                                             <a href="{{ route('admin.content.edit', $block) }}" class="btn btn-outline btn-sm">Edit</a>
                                             @unless ($spec['single'])
                                                 <form method="POST" action="{{ route('admin.content.destroy', $block) }}" data-confirm="Delete this item? This cannot be undone.">
@@ -49,7 +49,7 @@
                                                     <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button>
                                                 </form>
                                             @endunless
-                                        </div>
+                                        </x-admin.actions>
                                     </td>
                                 </tr>
                             @endforeach

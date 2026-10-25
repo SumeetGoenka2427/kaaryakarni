@@ -24,13 +24,13 @@
                             <td data-label="Schedule">{{ $a->starts_at?->format('d M Y') ?? 'Now' }} → {{ $a->ends_at?->format('d M Y') ?? 'No end' }}</td>
                             <td data-label="Status"><x-pill :variant="$a->is_active ? 'success' : 'neutral'">{{ $a->is_active ? 'Active' : 'Hidden' }}</x-pill></td>
                             <td data-label="Actions">
-                                <div class="row-actions">
+                                <x-admin.actions>
                                     <a href="{{ route('admin.announcements.edit', $a) }}" class="btn btn-outline btn-sm">Edit</a>
                                     <form method="POST" action="{{ route('admin.announcements.destroy', $a) }}" data-confirm="Delete this announcement?">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button>
                                     </form>
-                                </div>
+                                </x-admin.actions>
                             </td>
                         </tr>
                     @endforeach

@@ -42,7 +42,7 @@
                                 @else<x-pill variant="success">Active</x-pill>@endif
                             </td>
                             <td data-label="Actions">
-                                <div class="row-actions">
+                                <x-admin.actions>
                                     <a href="{{ route('admin.gallery.edit', $album->id) }}" class="btn btn-primary btn-sm">Manage Photos</a>
                                     <form method="POST" action="{{ route('admin.gallery.toggle', $album->id) }}" @if ($album->is_active) data-confirm="Hide “{{ $album->title_en }}” from the website?" @endif>@csrf @method('PATCH')
                                         <button type="submit" class="btn btn-outline btn-sm">{{ $album->is_active ? 'Deactivate' : 'Activate' }}</button></form>
@@ -51,7 +51,7 @@
                                     @endif
                                     <form method="POST" action="{{ route('admin.gallery.destroy', $album->id) }}" data-confirm="Delete “{{ $album->title_en }}” and all {{ $album->images_count }} photo(s) permanently?">@csrf @method('DELETE')
                                         <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button></form>
-                                </div>
+                                </x-admin.actions>
                             </td>
                         </tr>
                     @endforeach

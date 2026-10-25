@@ -33,13 +33,13 @@
                         <td data-label="Listings">{{ $c->businesses_count }}</td>
                         <td data-label="Status"><x-pill :variant="$c->is_active ? 'success' : 'neutral'">{{ $c->is_active ? 'Active' : 'Inactive' }}</x-pill></td>
                         <td data-label="Actions">
-                            <div class="row-actions">
+                            <x-admin.actions>
                                 <button type="submit" form="cat-{{ $c->id }}" class="btn btn-outline btn-sm">Save</button>
                                 <form method="POST" action="{{ route('admin.categories.toggle', $c) }}">@csrf @method('PATCH')<button type="submit" class="btn btn-outline btn-sm">{{ $c->is_active ? 'Deactivate' : 'Activate' }}</button></form>
                                 @if ($c->businesses_count === 0)
                                     <form method="POST" action="{{ route('admin.categories.destroy', $c) }}" data-confirm="Delete “{{ $c->name_en }}”?">@csrf @method('DELETE')<button type="submit" class="btn btn-danger-outline btn-sm">Delete</button></form>
                                 @endif
-                            </div>
+                            </x-admin.actions>
                         </td>
                     </tr>
                 @endforeach

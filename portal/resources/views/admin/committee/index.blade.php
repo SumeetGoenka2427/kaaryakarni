@@ -47,13 +47,13 @@
                             <td data-label="Order">{{ $m->sort_order }}</td>
                             <td data-label="Status"><x-pill :variant="$m->is_active ? 'success' : 'neutral'">{{ $m->is_active ? 'Visible' : 'Hidden' }}</x-pill></td>
                             <td data-label="Actions">
-                                <div class="row-actions">
+                                <x-admin.actions>
                                     <a href="{{ route('admin.committee.edit', $m) }}" class="btn btn-outline btn-sm">Edit</a>
                                     <form method="POST" action="{{ route('admin.committee.destroy', $m) }}" data-confirm="Remove {{ $m->name_en }} from the committee?">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="btn btn-danger-outline btn-sm">Remove</button>
                                     </form>
-                                </div>
+                                </x-admin.actions>
                             </td>
                         </tr>
                     @endforeach
