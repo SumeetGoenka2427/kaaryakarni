@@ -7,7 +7,6 @@ use App\Models\GalleryImage;
 use App\Services\Audit\AuditLogger;
 use App\Services\Media\ImageService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -72,30 +71,6 @@ class GalleryService
         $this->audit->record('gallery.images_added', $album, "Added {$added} photo(s) to gallery album {$album->title_en}");
 
         return $added;
-    }
-
-    public function updateCaption(GalleryImage $image, array $data): void
-    {
-        $image->fill($data)->save();
-    }
-
-    /** Swap with the neighbouring image ('up' = earlier) and renumber 1..n. */
-    public function move(GalleryImage $image, string $direction): void
-    {
-        $ids = GalleryImage::where('album_id', $image->album_id)->orderBy('sort_order')->orderBy('id')->pluck('id')->all();
-        $i = array_search($image->id, $ids, true);
-        $j = $direction === 'up' ? $i - 1 : $i + 1;
-        if ($i === false || ! isset($ids[$j])) {
-            return;
-        }
-        [$ids[$i], $ids[$j]] = [$ids[$j], $ids[$i]];
-
-        DB::transaction(function () use ($ids) {
-            foreach ($ids as $pos => $id) {
-                GalleryImage::whereKey($id)->update(['sort_order' => $pos + 1]);
-            }
-        });
-        GalleryAlbum::whereKey($image->album_id)->first()?->touch(); // query-builder updates skip model events: refresh the public cache
     }
 
     public function setCover(GalleryImage $image): void

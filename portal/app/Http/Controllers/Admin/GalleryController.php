@@ -9,10 +9,9 @@ use App\Services\Gallery\GalleryService;
 use App\Services\Media\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-/** Admin → Gallery (admin/gallery.html): albums, photos, captions, order, cover, visibility. */
+/** Admin → Gallery (admin/gallery.html): albums, photos, cover photo, visibility. */
 class GalleryController extends Controller
 {
     public function __construct(private readonly GalleryService $service) {}
@@ -84,24 +83,6 @@ class GalleryController extends Controller
         $added = $this->service->addImages($album, $request->file('photos'));
 
         return redirect()->route('admin.gallery.edit', $album->id)->with('success', "{$added} photo(s) uploaded.");
-    }
-
-    public function updateImage(Request $request, GalleryImage $image): RedirectResponse
-    {
-        $data = $request->validate([
-            'caption_en' => ['nullable', 'string', 'max:200'],
-            'caption_hi' => ['nullable', 'string', 'max:200'],
-        ]);
-        $this->service->updateCaption($image, $data);
-
-        return back()->with('success', 'Caption saved.');
-    }
-
-    public function moveImage(Request $request, GalleryImage $image): RedirectResponse
-    {
-        $this->service->move($image, $request->validate(['direction' => ['required', Rule::in(['up', 'down'])]])['direction']);
-
-        return back();
     }
 
     public function coverImage(GalleryImage $image): RedirectResponse

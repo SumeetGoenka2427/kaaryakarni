@@ -215,16 +215,18 @@ dialog.admin-modal { width: min(560px, calc(100% - 32px)); }
 
 /* ---- Gallery management ---- */
 .table-thumb { width: 64px; height: 48px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
-.gallery-admin-grid { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
-.gallery-admin-item { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px; display: grid; gap: 8px; background: var(--color-white); min-width: 0; }
-.gallery-admin-item.is-cover { border-color: var(--color-gold-500); box-shadow: 0 0 0 1px var(--color-gold-500); }
-.gallery-admin-thumb { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius-sm); background: var(--color-bg-navy-tint); }
+.gallery-admin-grid { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--space-4); }
+.gallery-admin-item { position: relative; display: grid; gap: 8px; min-width: 0; }
+.gallery-admin-thumb { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius-md); background: var(--color-bg-navy-tint); border: 2px solid transparent; }
+.gallery-admin-item.is-cover .gallery-admin-thumb { border-color: var(--color-gold-500); }
 .gallery-admin-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.gallery-cover-badge { position: absolute; top: 6px; left: 6px; }
-.gallery-caption-form { display: grid; gap: 6px; }
-.gallery-caption-form input { width: 100%; min-width: 0; padding: 6px 8px; font-size: 0.85rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
-.gallery-caption-form .btn { justify-self: start; }
-.gallery-admin-actions { flex-wrap: wrap; gap: 6px; }
+.gallery-delete { position: absolute; top: 6px; right: 6px; margin: 0; }
+.gallery-delete button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(10,15,25,0.65); color: var(--color-white); font-size: 1.15rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.gallery-delete button:hover, .gallery-delete button:focus-visible { background: var(--color-danger); outline: none; }
+.gallery-cover-label { font-size: 0.82rem; font-weight: 700; color: var(--color-gold-600); text-align: center; }
+.gallery-admin-item form { margin: 0; }
+.gallery-cover-btn { width: 100%; border: 0; background: none; padding: 0; font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--color-navy-800); cursor: pointer; text-align: center; }
+.gallery-cover-btn:hover, .gallery-cover-btn:focus-visible { text-decoration: underline; color: var(--color-navy-900); }
 
 /* ---- Dashboard, reports, notifications, audit log ---- */
 .table-flush { border: none; border-radius: 0; }

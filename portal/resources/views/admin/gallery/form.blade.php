@@ -46,39 +46,25 @@
                 @if ($images->isEmpty())
                     <x-empty-state title="No photos yet" icon="image"><p>Upload photos above. The album appears on the website once it has at least one photo.</p></x-empty-state>
                 @else
-                    <p class="muted">The cover photo is used on the homepage and album list. Captions are optional.</p>
-                    <ol class="gallery-admin-grid">
+                    <p class="muted">The cover photo is shown on the homepage and album list.</p>
+                    <ul class="gallery-admin-grid">
                         @foreach ($images as $img)
-                            <li class="gallery-admin-item @if ($album->cover_image_id === $img->id) is-cover @endif">
+                            @php $isCover = $album->cover_image_id === $img->id; @endphp
+                            <li @class(['gallery-admin-item', 'is-cover' => $isCover])>
                                 <a href="{{ $img->fullUrl() }}" target="_blank" rel="noopener" class="gallery-admin-thumb">
-                                    <x-img :image="$img->image" alt="Photo {{ $loop->iteration }}" sizes="240px" />
-                                    @if ($album->cover_image_id === $img->id)<span class="pill pill-success gallery-cover-badge">Cover</span>@endif
+                                    <x-img :image="$img->image" alt="Photo {{ $loop->iteration }}" sizes="200px" />
                                 </a>
-                                <form method="POST" action="{{ route('admin.gallery.images.update', $img->id) }}" class="gallery-caption-form">
-                                    @csrf @method('PUT')
-                                    <label class="visually-hidden" for="cap-en-{{ $img->id }}">Caption (English) for photo {{ $loop->iteration }}</label>
-                                    <input id="cap-en-{{ $img->id }}" type="text" name="caption_en" value="{{ $img->caption_en }}" placeholder="Caption (English)" maxlength="200">
-                                    <label class="visually-hidden" for="cap-hi-{{ $img->id }}">Caption (Hindi) for photo {{ $loop->iteration }}</label>
-                                    <input id="cap-hi-{{ $img->id }}" type="text" name="caption_hi" value="{{ $img->caption_hi }}" placeholder="कैप्शन (हिन्दी)" maxlength="200" lang="hi">
-                                    <button type="submit" class="btn btn-outline btn-sm">Save caption</button>
-                                </form>
-                                <div class="row-actions gallery-admin-actions">
-                                    <form method="POST" action="{{ route('admin.gallery.images.move', $img->id) }}">@csrf @method('PATCH')<input type="hidden" name="direction" value="up">
-                                        <button type="submit" class="btn btn-ghost btn-sm" @disabled($loop->first) aria-label="Move photo {{ $loop->iteration }} earlier">&uarr;</button></form>
-                                    <form method="POST" action="{{ route('admin.gallery.images.move', $img->id) }}">@csrf @method('PATCH')<input type="hidden" name="direction" value="down">
-                                        <button type="submit" class="btn btn-ghost btn-sm" @disabled($loop->last) aria-label="Move photo {{ $loop->iteration }} later">&darr;</button></form>
-                                    <x-admin.actions label="More">
-                                        @if ($album->cover_image_id !== $img->id)
-                                            <form method="POST" action="{{ route('admin.gallery.images.cover', $img->id) }}">@csrf @method('PATCH')
-                                                <button type="submit" class="btn btn-outline btn-sm">Set as cover photo</button></form>
-                                        @endif
-                                        <form method="POST" action="{{ route('admin.gallery.images.destroy', $img->id) }}" data-confirm="Delete this photo permanently?">@csrf @method('DELETE')
-                                            <button type="submit" class="btn btn-danger-outline btn-sm">Delete photo</button></form>
-                                    </x-admin.actions>
-                                </div>
+                                <form method="POST" action="{{ route('admin.gallery.images.destroy', $img->id) }}" class="gallery-delete" data-confirm="Delete this photo permanently?">@csrf @method('DELETE')
+                                    <button type="submit" aria-label="Delete photo {{ $loop->iteration }}" title="Delete photo">&times;</button></form>
+                                @if ($isCover)
+                                    <span class="gallery-cover-label">&#9733; Cover photo</span>
+                                @else
+                                    <form method="POST" action="{{ route('admin.gallery.images.cover', $img->id) }}">@csrf @method('PATCH')
+                                        <button type="submit" class="gallery-cover-btn">Set as cover</button></form>
+                                @endif
                             </li>
                         @endforeach
-                    </ol>
+                    </ul>
                 @endif
             </div>
         </div>

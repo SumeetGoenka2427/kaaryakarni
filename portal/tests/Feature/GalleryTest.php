@@ -62,15 +62,10 @@ it('hides inactive and empty albums from the public site', function () {
     $this->get('/')->assertDontSee('Hidden Album');
 });
 
-it('reorders photos, sets the cover and keeps counts right on delete', function () {
+it('sets the cover photo and keeps counts right on delete', function () {
     $album = albumWithPhotos(3);
     [$a, $b, $c] = $album->images()->get()->all();
     $this->actingAs($this->admin, 'admin');
-
-    $this->patch(route('admin.gallery.images.move', $c->id), ['direction' => 'up']);
-    expect($album->images()->pluck('id')->all())->toBe([$a->id, $c->id, $b->id]);
-    $this->patch(route('admin.gallery.images.move', $a->id), ['direction' => 'up']); // already first: no change
-    expect($album->images()->pluck('id')->all())->toBe([$a->id, $c->id, $b->id]);
 
     $this->patch(route('admin.gallery.images.cover', $b->id))->assertSessionHas('success');
     expect($album->fresh()->cover_image_id)->toBe($b->id);
@@ -79,11 +74,6 @@ it('reorders photos, sets the cover and keeps counts right on delete', function 
     $album->refresh();
     expect($album->images_count)->toBe(2)->and($album->cover_image_id)->toBe($a->id);
     Storage::disk('public')->assertMissing($b->image['path']);
-
-    $this->put(route('admin.gallery.images.update', $a->id), ['caption_en' => 'Lamp lighting', 'caption_hi' => 'दीप प्रज्ज्वलन']);
-    auth('admin')->logout();
-    $this->get('/gallery/diwali-milan-2026')->assertSee('Lamp lighting');
-    $this->get('/hi/gallery/diwali-milan-2026')->assertSee('दीप प्रज्ज्वलन');
 });
 
 it('deletes an album with all its photo files', function () {

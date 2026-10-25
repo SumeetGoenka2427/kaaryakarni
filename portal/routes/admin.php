@@ -208,8 +208,6 @@ Route::middleware(['auth:admin', 'admin.idle'])->group(function () {
         Route::patch('gallery/{album:id}/toggle', [GalleryController::class, 'toggle'])->name('gallery.toggle');
         Route::delete('gallery/{album:id}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
         Route::post('gallery/{album:id}/photos', [GalleryController::class, 'upload'])->name('gallery.upload');
-        Route::put('gallery-photos/{image}', [GalleryController::class, 'updateImage'])->name('gallery.images.update');
-        Route::patch('gallery-photos/{image}/move', [GalleryController::class, 'moveImage'])->name('gallery.images.move');
         Route::patch('gallery-photos/{image}/cover', [GalleryController::class, 'coverImage'])->name('gallery.images.cover');
         Route::delete('gallery-photos/{image}', [GalleryController::class, 'destroyImage'])->name('gallery.images.destroy');
 
