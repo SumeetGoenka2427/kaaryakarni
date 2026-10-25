@@ -8,6 +8,9 @@
     English is required when `required` is set; Hindi is always optional and
     falls back to English on the website. A tab with a validation error is
     opened automatically.
+
+    With JavaScript, these per-field tabs are hidden and replaced by ONE
+    English / हिन्दी switch per form (resources/js/modules/lang-switch.js).
 --}}
 @props([
     'name',
