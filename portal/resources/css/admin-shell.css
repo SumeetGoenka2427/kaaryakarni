@@ -301,3 +301,10 @@ table.data-table.table-compact { min-width: 0; }
 .page-actions-buttons { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .page-actions-buttons form { margin: 0; }
 .page-actions-buttons .action-menu-toggle { padding: 10px 16px; font-size: 0.92rem; }
+
+/* Slim dark scrollbar for the sidebar (instead of the bright default one) */
+.admin-sidebar { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.22) transparent; }
+.admin-sidebar::-webkit-scrollbar { width: 8px; }
+.admin-sidebar::-webkit-scrollbar-track { background: transparent; }
+.admin-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.22); border-radius: 999px; }
+.admin-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
