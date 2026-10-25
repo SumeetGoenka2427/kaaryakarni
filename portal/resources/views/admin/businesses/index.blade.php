@@ -27,7 +27,7 @@
                 <tbody>
                     @foreach ($businesses as $b)
                         <tr>
-                            <td data-label="Business"><strong>{{ $b->name }}</strong>@if ($b->is_featured) <span class="pill pill-success">Featured</span>@endif @if ($b->is_sample)<span class="sample-badge">Sample</span>@endif</td>
+                            <td data-label="Business"><strong>{{ $b->name }}</strong>@if ($b->is_featured) <span class="pill pill-success">Featured</span>@endif</td>
                             <td data-label="Category">{{ $b->category?->name_en }}</td>
                             <td data-label="Area">{{ $b->area?->name_en }}</td>
                             <td data-label="Owner">@if ($b->member)<a href="{{ route('admin.members.show', $b->member) }}">{{ $b->member->name }}</a>@endif</td>

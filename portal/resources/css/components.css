@@ -109,12 +109,6 @@
   .nav-dropdown-menu a { padding: 12px 4px 12px 20px; border-bottom: 1px solid var(--color-border); border-radius: 0; }
 }
 
-/* Sample data badge */
-.sample-badge {
-  display: inline-flex; align-items: center; gap: 6px; background: var(--color-warning-bg); color: var(--color-warning);
-  font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.03em; text-transform: uppercase;
-}
-
 /* ===== Homepage top banner (3-column) ===== */
 .top-banner {
   background: var(--color-bg-navy-tint);

@@ -40,7 +40,6 @@
                                     @if ($m->photo)<x-img :image="$m->photo" alt="" class="table-avatar" sizes="40px" />@else<span class="table-avatar initials-avatar" aria-hidden="true">{{ $m->initials() }}</span>@endif
                                     <span><strong>{{ $m->name_en }}</strong>@if ($m->name_hi)<br><span class="muted" lang="hi">{{ $m->name_hi }}</span>@endif</span>
                                 </div>
-                                @if ($m->is_sample)<span class="sample-badge">Sample</span>@endif
                             </td>
                             <td data-label="Designation">{{ $m->designation_en }}</td>
                             <td data-label="Group">{{ $m->tier === 'leadership' ? 'Leadership' : 'General' }}</td>

@@ -16,9 +16,6 @@
         </div>
     </form>
 
-    @if ($areas->where('is_sample', true)->isNotEmpty())
-        <div class="form-alert form-alert-warning" role="status">{{ $areas->where('is_sample', true)->count() }} area(s) are <strong>sample data</strong>. Replace them with the Samaj's final area list — editing an area marks it as real.</div>
-    @endif
 
     @if ($areas->isEmpty())
         <x-empty-state title="No areas yet">
@@ -42,7 +39,7 @@
                             <td data-label="Area">
                                 <strong>{{ $area->name_en }}</strong>
                                 @if ($area->name_hi)<span class="muted" lang="hi"> · {{ $area->name_hi }}</span>@else<span class="pill pill-danger">HI missing</span>@endif
-                                @if ($area->is_sample)<span class="sample-badge">Sample</span>@endif
+                               
                             </td>
                             <td data-label="Members">{{ $area->members_count }}</td>
                             <td data-label="Status"><x-pill :variant="$area->is_active ? 'success' : 'neutral'">{{ $area->is_active ? 'Active' : 'Inactive' }}</x-pill></td>

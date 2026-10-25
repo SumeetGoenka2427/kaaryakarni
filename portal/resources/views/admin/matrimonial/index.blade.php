@@ -65,7 +65,7 @@
                     <tbody>
                         @foreach ($profiles as $p)
                             <tr>
-                                <td data-label="Name"><strong>{{ $p->name }}</strong> <span class="muted">({{ ucfirst($p->relation) }})</span>@if ($p->open_reports_count) <span class="pill pill-danger">{{ $p->open_reports_count }} report(s)</span>@endif @if ($p->is_sample)<span class="sample-badge">Sample</span>@endif</td>
+                                <td data-label="Name"><strong>{{ $p->name }}</strong> <span class="muted">({{ ucfirst($p->relation) }})</span>@if ($p->open_reports_count) <span class="pill pill-danger">{{ $p->open_reports_count }} report(s)</span>@endif</td>
                                 <td data-label="Age / Gender">{{ $p->age() }} / {{ $p->gender->label() }}</td>
                                 <td data-label="Area">{{ $p->area?->name_en ?? '—' }}</td>
                                 <td data-label="Registered by">@if ($p->member)<a href="{{ route('admin.members.show', $p->member) }}">{{ $p->member->name }}</a>@endif</td>

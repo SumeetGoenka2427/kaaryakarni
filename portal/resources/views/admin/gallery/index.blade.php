@@ -28,7 +28,7 @@
                                 <div class="flex gap-3 align-center">
                                     @if ($album->cover)<x-img :image="$album->cover->image" alt="" class="table-thumb" sizes="64px" />@else<span class="table-thumb initials-avatar" aria-hidden="true">—</span>@endif
                                     <div>
-                                        <strong>{{ $album->title_en }}</strong>@if ($album->is_sample) <span class="sample-badge">Sample</span>@endif
+                                        <strong>{{ $album->title_en }}</strong>
                                         @if ($album->title_hi)<div class="muted">{{ $album->title_hi }}</div>@endif
                                     </div>
                                 </div>
