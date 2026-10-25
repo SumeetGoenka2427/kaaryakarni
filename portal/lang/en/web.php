@@ -52,6 +52,7 @@ return [
     ],
 
     'footer' => [
+        'social' => 'Follow the Samaj',
         'explore' => 'Explore',
         'account' => 'Account',
         'office' => 'Samaj Bhawan Office',

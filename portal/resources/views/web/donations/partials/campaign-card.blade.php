@@ -1,7 +1,7 @@
 {{-- Campaign card (web/index.html + web/donations.html "Active Campaigns"). --}}
 <article class="card">
     <a href="{{ localized_route('donations.show', ['campaign' => $campaign->slug]) }}" class="card-media media-link" tabindex="-1" aria-hidden="true">
-        <x-img :image="$campaign->image" alt="" sizes="(max-width: 600px) 100vw, 33vw" :fallback="asset('images/sample/'.(($campaign->id % 6) + 1).'.jpg')" class="cover-img" />
+        @if ($campaign->image)<x-img :image="$campaign->image" alt="" sizes="(max-width: 600px) 100vw, 33vw" class="cover-img" />@else<x-media-placeholder :text="$campaign->t('title')" class="cover-img" />@endif
     </a>
     <div class="card-body">
         <x-pill :variant="$campaign->is_permanent ? 'neutral' : 'warning'">{{ __($campaign->is_permanent ? 'web.donations.permanent_label' : 'web.donations.active_label') }}</x-pill>

@@ -120,3 +120,14 @@ it('uses office details from settings on the contact page', function () {
 
     $this->get('/contact')->assertSee('+91 141 555 0000')->assertSee('Mon–Fri 9–5');
 });
+
+it('shows social links in the footer only once they are set in Settings', function () {
+    $this->get('/')->assertDontSee('footer-social', false);
+    app(\App\Services\Settings\SettingsService::class)->update(['social_facebook' => 'https://facebook.com/khandelwalsamajjaipur']);
+    $this->get('/')->assertSee('https://facebook.com/khandelwalsamajjaipur', false)->assertSee('footer-social', false);
+});
+
+it('uses a neutral placeholder, never a demo photo, when no image is uploaded', function () {
+    $html = $this->get('/about')->getContent();
+    expect($html)->not->toContain('images/sample/');
+});

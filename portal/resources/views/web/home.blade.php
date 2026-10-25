@@ -68,7 +68,7 @@
             <div class="container">
                 <div class="grid grid-2 align-center">
                     <div class="card-media media-rounded">
-                        <x-img :image="$about->image" alt="" sizes="(max-width: 600px) 100vw, 50vw" :fallback="asset('images/sample/1.jpg')" />
+                        @if ($about->image)<x-img :image="$about->image" alt="" sizes="(max-width: 600px) 100vw, 50vw" />@else<x-media-placeholder />@endif
                     </div>
                     <div>
                         <h2>{{ $about->t('title') }}</h2>

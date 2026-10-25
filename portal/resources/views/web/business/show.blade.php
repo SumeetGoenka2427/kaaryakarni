@@ -23,7 +23,7 @@
             </nav>
             <div class="grid grid-2 align-start">
                 <div class="card-media media-rounded business-photo">
-                    <x-img :image="$business->logo" alt="{{ $business->name }}" class="cover-img" sizes="(max-width: 600px) 100vw, 50vw" :priority="true" :fallback="asset('images/sample/'.(($business->id % 6) + 1).'.jpg')" />
+                    @if ($business->logo)<x-img :image="$business->logo" alt="{{ $business->name }}" class="cover-img" sizes="(max-width: 600px) 100vw, 50vw" :priority="true" />@else<x-media-placeholder :text="$business->name" class="cover-img" />@endif
                 </div>
                 <div>
                     <x-pill :variant="$business->is_featured ? 'success' : 'neutral'" class="pill-start">{{ __($business->is_featured ? 'web.business.featured' : 'web.business.approved') }}</x-pill>

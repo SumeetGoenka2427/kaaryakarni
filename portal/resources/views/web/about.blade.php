@@ -12,7 +12,7 @@
                         @foreach ($history->paragraphs() as $p)<p>{{ $p }}</p>@endforeach
                     </div>
                     <div class="card-media media-rounded">
-                        <x-img :image="$history->image" alt="" sizes="(max-width: 600px) 100vw, 50vw" :fallback="asset('images/sample/2.jpg')" />
+                        @if ($history->image)<x-img :image="$history->image" alt="" sizes="(max-width: 600px) 100vw, 50vw" />@else<x-media-placeholder />@endif
                     </div>
                 </div>
             </div>
