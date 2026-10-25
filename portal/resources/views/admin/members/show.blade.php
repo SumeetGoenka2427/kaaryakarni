@@ -15,21 +15,40 @@
 
     @can('members.manage')
         <div class="admin-panel content-section">
-            <div class="admin-panel-body row-actions">
-                <a href="{{ route('admin.members.edit', $member) }}" class="btn btn-outline btn-sm">Edit Details</a>
-                @if (in_array($s, [MemberStatus::UnderVerification, MemberStatus::Rejected, MemberStatus::Pending], true))
-                    <form method="POST" action="{{ route('admin.members.verify', $member) }}" data-confirm="Verify {{ $member->name }}'s profile?">@csrf @method('PATCH')
-                        <button type="submit" class="btn btn-primary btn-sm">Verify Profile</button></form>
-                @endif
-                @if (in_array($s, [MemberStatus::UnderVerification, MemberStatus::Pending, MemberStatus::Verified], true))
-                    <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="reject-dialog">Reject</button>
-                @endif
-                @if ($s === MemberStatus::Suspended)
-                    <form method="POST" action="{{ route('admin.members.reinstate', $member) }}" data-confirm="Reinstate {{ $member->name }}?">@csrf @method('PATCH')
-                        <button type="submit" class="btn btn-outline btn-sm">Reinstate</button></form>
-                @else
-                    <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="suspend-dialog">Suspend</button>
-                @endif
+            <div class="admin-panel-body page-actions">
+                <p class="page-actions-status">
+                    @switch($s)
+                        @case(MemberStatus::UnderVerification) <strong>Waiting for verification.</strong> Check the details below, then verify or reject the profile. @break
+                        @case(MemberStatus::Pending) <strong>Registration not finished.</strong> The member has not submitted the full profile yet. @break
+                        @case(MemberStatus::Verified) <strong>Verified member.</strong> @break
+                        @case(MemberStatus::Rejected) <strong>Rejected.</strong> You can verify the profile after the member corrects it. @break
+                        @case(MemberStatus::Suspended) <strong>Suspended.</strong> The member cannot log in. @break
+                    @endswitch
+                </p>
+                <div class="page-actions-buttons">
+                    @if (in_array($s, [MemberStatus::UnderVerification, MemberStatus::Rejected, MemberStatus::Pending], true))
+                        <form method="POST" action="{{ route('admin.members.verify', $member) }}" data-confirm="Verify {{ $member->name }}'s profile?">@csrf @method('PATCH')
+                            <button type="submit" class="btn btn-primary">Verify Profile</button></form>
+                    @endif
+                    @if ($s === MemberStatus::Suspended)
+                        <form method="POST" action="{{ route('admin.members.reinstate', $member) }}" data-confirm="Reinstate {{ $member->name }}?">@csrf @method('PATCH')
+                            <button type="submit" class="btn btn-primary">Reinstate Member</button></form>
+                    @endif
+                    @if ($s === MemberStatus::Verified)
+                        <a href="{{ route('admin.members.edit', $member) }}" class="btn btn-outline">Edit Details</a>
+                    @endif
+                    <x-admin.actions label="More actions">
+                        @unless ($s === MemberStatus::Verified)
+                            <a href="{{ route('admin.members.edit', $member) }}" class="btn btn-outline btn-sm">Edit details</a>
+                        @endunless
+                        @if (in_array($s, [MemberStatus::UnderVerification, MemberStatus::Pending, MemberStatus::Verified], true))
+                            <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="reject-dialog">Reject profile</button>
+                        @endif
+                        @unless ($s === MemberStatus::Suspended)
+                            <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="suspend-dialog">Suspend member</button>
+                        @endunless
+                    </x-admin.actions>
+                </div>
             </div>
         </div>
     @endcan

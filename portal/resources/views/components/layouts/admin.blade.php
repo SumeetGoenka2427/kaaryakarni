@@ -5,6 +5,7 @@
     $initials = $admin ? collect(explode(' ', $admin->name))->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->implode('') : '';
     $canSee = fn (array $item) => Route::has($item['route'])
         && (! isset($item['can']) || ($admin && $admin->can($item['can'])));
+    $badges = $admin ? app(\App\Services\Reports\AdminNavBadges::class)->all() : [];
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -27,10 +28,21 @@
                 @foreach (config('navigation.admin') as $group => $items)
                     @php $visible = array_filter($items, $canSee); @endphp
                     @continue(empty($visible))
-                    <li class="nav-group-label">{{ $group }}</li>
-                    @foreach ($visible as $item)
-                        <li><a href="{{ route($item['route']) }}" @if (request()->routeIs(str_replace(['.index', '.edit'], '.*', $item['route']))) aria-current="page" @endif>{{ $item['label'] }}</a></li>
-                    @endforeach
+                    <li class="nav-group">
+                        <span class="nav-group-label" id="nav-{{ \Illuminate\Support\Str::slug($group) }}">{{ $group }}</span>
+                        <ul aria-labelledby="nav-{{ \Illuminate\Support\Str::slug($group) }}">
+                            @foreach ($visible as $item)
+                                @php $count = isset($item['badge']) ? ($badges[$item['badge']] ?? 0) : 0; @endphp
+                                <li>
+                                    <a href="{{ route($item['route']) }}" @if (request()->routeIs(...($item['active'] ?? [$item['route']]))) aria-current="page" @endif>
+                                        <x-admin.nav-icon :name="$item['icon'] ?? 'default'" />
+                                        <span class="nav-text">{{ $item['label'] }}</span>
+                                        @if ($count)<span class="nav-count" title="{{ $count }} waiting">{{ $count > 99 ? '99+' : $count }}<span class="visually-hidden"> waiting</span></span>@endif
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </li>
                 @endforeach
             </ul>
         </nav>

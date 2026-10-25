@@ -83,6 +83,6 @@ it('blocks admins without the permission (server-side, not just hidden menus)', 
 
     // The sidebar only shows what this admin may open.
     $this->get(route('admin.dashboard'))->assertOk()
-        ->assertSee('Site Texts')
+        ->assertSee('Website Texts (EN / HI)')
         ->assertDontSee('Branding &amp; Logo', false);
 });

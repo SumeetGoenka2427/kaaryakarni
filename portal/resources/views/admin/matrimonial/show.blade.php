@@ -10,24 +10,41 @@
 
     @can('matrimonial.manage')
         <div class="admin-panel content-section">
-            <div class="admin-panel-body row-actions">
-                @if (in_array($s, [MS::Pending, MS::Rejected, MS::Hidden, MS::Suspended], true))
-                    <form method="POST" action="{{ route('admin.matrimonial.approve', $profile) }}" data-confirm="Approve “{{ $profile->name }}”? Eligible members will be able to see this profile.">@csrf @method('PATCH')
-                        <button type="submit" class="btn btn-primary btn-sm">{{ $s === MS::Hidden ? 'Unhide (Approve)' : 'Approve' }}</button></form>
-                @endif
-                @if (in_array($s, [MS::Pending, MS::Approved, MS::Hidden], true))
-                    <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.matrimonial.reject', $profile) }}" data-form-label="Reject profile">Reject</button>
-                @endif
-                @if ($s === MS::Approved)
-                    <form method="POST" action="{{ route('admin.matrimonial.hide', $profile) }}" data-confirm="Hide “{{ $profile->name }}” from members?">@csrf @method('PATCH')
-                        <button type="submit" class="btn btn-outline btn-sm">Hide</button></form>
-                @endif
-                @if (in_array($s, [MS::Pending, MS::Approved, MS::Hidden], true))
-                    <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.matrimonial.suspend', $profile) }}" data-form-label="Suspend profile">Suspend</button>
-                @endif
-                <a href="{{ route('admin.matrimonial.edit', $profile) }}" class="btn btn-outline btn-sm">Edit</a>
-                <form method="POST" action="{{ route('admin.matrimonial.destroy', $profile) }}" data-confirm="Delete “{{ $profile->name }}” permanently? Photos and bio data will be removed.">@csrf @method('DELETE')
-                    <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button></form>
+            <div class="admin-panel-body page-actions">
+                <p class="page-actions-status">
+                    @switch($s)
+                        @case(MS::Pending) <strong>Waiting for your review.</strong> Approve to show it to eligible Lifetime Members. @break
+                        @case(MS::Approved) <strong>Approved</strong> — visible to eligible logged-in Lifetime Members only. @break
+                        @case(MS::Rejected) <strong>Rejected.</strong> Not visible to members. @break
+                        @case(MS::Hidden) <strong>Hidden.</strong> Not visible to members until approved again. @break
+                        @case(MS::Suspended) <strong>Suspended.</strong> Not visible to members. @break
+                        @default Not visible to members.
+                    @endswitch
+                </p>
+                <div class="page-actions-buttons">
+                    @if (in_array($s, [MS::Pending, MS::Rejected, MS::Hidden, MS::Suspended], true))
+                        <form method="POST" action="{{ route('admin.matrimonial.approve', $profile) }}" data-confirm="Approve “{{ $profile->name }}”? Eligible members will be able to see this profile.">@csrf @method('PATCH')
+                            <button type="submit" class="btn btn-primary">{{ $s === MS::Pending ? 'Approve Profile' : 'Approve & Show Again' }}</button></form>
+                    @endif
+                    @if ($s === MS::Pending)
+                        <button type="button" class="btn btn-danger-outline" data-modal-open="note-dialog" data-form-action="{{ route('admin.matrimonial.reject', $profile) }}" data-form-label="Reject profile">Reject</button>
+                    @endif
+                    <x-admin.actions label="More actions">
+                        <a href="{{ route('admin.matrimonial.edit', $profile) }}" class="btn btn-outline btn-sm">Edit profile details</a>
+                        @if ($s === MS::Approved)
+                            <form method="POST" action="{{ route('admin.matrimonial.hide', $profile) }}" data-confirm="Hide “{{ $profile->name }}” from members?">@csrf @method('PATCH')
+                                <button type="submit" class="btn btn-outline btn-sm">Hide from members</button></form>
+                        @endif
+                        @if (in_array($s, [MS::Approved, MS::Hidden], true))
+                            <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.matrimonial.reject', $profile) }}" data-form-label="Reject profile">Reject</button>
+                        @endif
+                        @if (in_array($s, [MS::Pending, MS::Approved, MS::Hidden], true))
+                            <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.matrimonial.suspend', $profile) }}" data-form-label="Suspend profile">Suspend</button>
+                        @endif
+                        <form method="POST" action="{{ route('admin.matrimonial.destroy', $profile) }}" data-confirm="Delete “{{ $profile->name }}” permanently? Photos and bio data will be removed.">@csrf @method('DELETE')
+                            <button type="submit" class="btn btn-danger-outline btn-sm">Delete permanently</button></form>
+                    </x-admin.actions>
+                </div>
             </div>
         </div>
     @endcan

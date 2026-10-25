@@ -10,27 +10,47 @@
 
     @can('businesses.manage')
         <div class="admin-panel content-section">
-            <div class="admin-panel-body row-actions">
-                @if (in_array($s, [BS::Pending, BS::ChangesRequested, BS::Rejected, BS::Hidden], true))
-                    <form method="POST" action="{{ route('admin.businesses.approve', $business->id) }}" data-confirm="Approve and publish “{{ $business->name }}”?">@csrf @method('PATCH')
-                        <button type="submit" class="btn btn-primary btn-sm">{{ $s === BS::Hidden ? 'Unhide (Approve)' : 'Approve & Publish' }}</button></form>
-                @endif
-                @if (in_array($s, [BS::Pending, BS::Approved], true))
-                    <button type="button" class="btn btn-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.businesses.changes', $business->id) }}" data-form-label="Request changes">Request Changes</button>
-                @endif
-                @if ($s !== BS::Rejected)
-                    <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.businesses.reject', $business->id) }}" data-form-label="Reject listing">Reject</button>
-                @endif
-                @if ($s === BS::Approved)
-                    <form method="POST" action="{{ route('admin.businesses.feature', $business->id) }}">@csrf @method('PATCH')
-                        <button type="submit" class="btn btn-outline btn-sm">{{ $business->is_featured ? 'Unfeature' : 'Feature on Homepage' }}</button></form>
-                    <form method="POST" action="{{ route('admin.businesses.hide', $business->id) }}" data-confirm="Hide “{{ $business->name }}” from the directory?">@csrf @method('PATCH')
-                        <button type="submit" class="btn btn-outline btn-sm">Hide</button></form>
-                    <a href="{{ route('business.show', $business->slug) }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">View Live</a>
-                @endif
-                <a href="{{ route('admin.businesses.edit', $business->id) }}" class="btn btn-outline btn-sm">Edit</a>
-                <form method="POST" action="{{ route('admin.businesses.destroy', $business->id) }}" data-confirm="Delete “{{ $business->name }}” permanently?">@csrf @method('DELETE')
-                    <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button></form>
+            <div class="admin-panel-body page-actions">
+                <p class="page-actions-status">
+                    @switch($s)
+                        @case(BS::Pending) <strong>Waiting for your review.</strong> Approve to publish it in the directory, or ask the owner for changes. @break
+                        @case(BS::Approved) <strong>Live in the business directory</strong>{{ $business->is_featured ? ' and featured on the homepage' : '' }}. @break
+                        @case(BS::ChangesRequested) <strong>Changes requested.</strong> The owner has been asked to update the listing. @break
+                        @case(BS::Rejected) <strong>Rejected.</strong> Not shown on the website. @break
+                        @case(BS::Hidden) <strong>Hidden.</strong> Not shown on the website until you approve it again. @break
+                        @default Not shown on the website.
+                    @endswitch
+                </p>
+                <div class="page-actions-buttons">
+                    @if (in_array($s, [BS::Pending, BS::ChangesRequested, BS::Rejected, BS::Hidden], true))
+                        <form method="POST" action="{{ route('admin.businesses.approve', $business->id) }}" data-confirm="Approve and publish “{{ $business->name }}”?">@csrf @method('PATCH')
+                            <button type="submit" class="btn btn-primary">{{ $s === BS::Hidden ? 'Approve & Show Again' : 'Approve & Publish' }}</button></form>
+                    @endif
+                    @if ($s === BS::Approved)
+                        <a href="{{ route('admin.businesses.edit', $business->id) }}" class="btn btn-outline">Edit Listing</a>
+                    @endif
+                    <x-admin.actions label="More actions">
+                        @if ($s === BS::Approved)
+                            <a href="{{ route('business.show', $business->slug) }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">View on website</a>
+                            <form method="POST" action="{{ route('admin.businesses.feature', $business->id) }}">@csrf @method('PATCH')
+                                <button type="submit" class="btn btn-outline btn-sm">{{ $business->is_featured ? 'Remove from homepage' : 'Feature on homepage' }}</button></form>
+                        @else
+                            <a href="{{ route('admin.businesses.edit', $business->id) }}" class="btn btn-outline btn-sm">Edit listing</a>
+                        @endif
+                        @if (in_array($s, [BS::Pending, BS::Approved], true))
+                            <button type="button" class="btn btn-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.businesses.changes', $business->id) }}" data-form-label="Request changes">Request changes from owner</button>
+                        @endif
+                        @if ($s === BS::Approved)
+                            <form method="POST" action="{{ route('admin.businesses.hide', $business->id) }}" data-confirm="Hide “{{ $business->name }}” from the directory?">@csrf @method('PATCH')
+                                <button type="submit" class="btn btn-outline btn-sm">Hide from directory</button></form>
+                        @endif
+                        @if ($s !== BS::Rejected)
+                            <button type="button" class="btn btn-danger-outline btn-sm" data-modal-open="note-dialog" data-form-action="{{ route('admin.businesses.reject', $business->id) }}" data-form-label="Reject listing">Reject</button>
+                        @endif
+                        <form method="POST" action="{{ route('admin.businesses.destroy', $business->id) }}" data-confirm="Delete “{{ $business->name }}” permanently?">@csrf @method('DELETE')
+                            <button type="submit" class="btn btn-danger-outline btn-sm">Delete permanently</button></form>
+                    </x-admin.actions>
+                </div>
             </div>
         </div>
     @endcan

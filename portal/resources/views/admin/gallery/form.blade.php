@@ -67,12 +67,14 @@
                                         <button type="submit" class="btn btn-ghost btn-sm" @disabled($loop->first) aria-label="Move photo {{ $loop->iteration }} earlier">&uarr;</button></form>
                                     <form method="POST" action="{{ route('admin.gallery.images.move', $img->id) }}">@csrf @method('PATCH')<input type="hidden" name="direction" value="down">
                                         <button type="submit" class="btn btn-ghost btn-sm" @disabled($loop->last) aria-label="Move photo {{ $loop->iteration }} later">&darr;</button></form>
-                                    @if ($album->cover_image_id !== $img->id)
-                                        <form method="POST" action="{{ route('admin.gallery.images.cover', $img->id) }}">@csrf @method('PATCH')
-                                            <button type="submit" class="btn btn-outline btn-sm">Set as cover</button></form>
-                                    @endif
-                                    <form method="POST" action="{{ route('admin.gallery.images.destroy', $img->id) }}" data-confirm="Delete this photo permanently?">@csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-danger-outline btn-sm">Delete</button></form>
+                                    <x-admin.actions label="More">
+                                        @if ($album->cover_image_id !== $img->id)
+                                            <form method="POST" action="{{ route('admin.gallery.images.cover', $img->id) }}">@csrf @method('PATCH')
+                                                <button type="submit" class="btn btn-outline btn-sm">Set as cover photo</button></form>
+                                        @endif
+                                        <form method="POST" action="{{ route('admin.gallery.images.destroy', $img->id) }}" data-confirm="Delete this photo permanently?">@csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-danger-outline btn-sm">Delete photo</button></form>
+                                    </x-admin.actions>
                                 </div>
                             </li>
                         @endforeach
